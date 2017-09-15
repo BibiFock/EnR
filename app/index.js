@@ -2,14 +2,10 @@ require('bootstrap/dist/css/bootstrap.min.css');
 require('../css/main.css');
 
 import Vue from 'vue';
-
-Vue.component('my-button', {
- template: '<input type="button" class="btn btn-primary" value="Hello   bootstrap">'
-});
+import App from './App';
 
 new Vue({
     el: '#app',
-    data: {
-      message: "Hello There"
-    }
+    template: '<App/>',
+    components: { App }
 });

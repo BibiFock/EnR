@@ -14,6 +14,7 @@ module.exports = {
         filename: 'bundle.js'
     },
     resolve: {
+        extensions: ['.js', '.vue'],
         alias: {
             'vue': 'vue/dist/vue.min.js'
         }
@@ -24,6 +25,9 @@ module.exports = {
     },
     module: {
         loaders: [{
+            test: /\.vue$/,
+            loader: 'vue-loader'
+        }, {
             test: /\.css$/,
             loaders: ['style-loader','css-loader']
         }, {
