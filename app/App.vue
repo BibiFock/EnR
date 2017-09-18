@@ -30,28 +30,14 @@ export default {
 }
 @import "../../node_modules/leaflet/dist/leaflet.css";
 */
-#side {
-  float:left;
-  width:200px;
+
+.leaflet-fake-icon-image-2x {
+  background-image: url(../node_modules/leaflet/dist/images/marker-icon-2x.png);
+}
+.leaflet-fake-icon-shadow {
+  background-image: url(../node_modules/leaflet/dist/images/marker-shadow.png);
 }
 
-#container {
-  margin: 0 0 0 200px;
-}
-#top_div {
-  position: absolute;
-  overflow-x: auto;
-  top: 0;
-  right: 0;
-  left: 200px;
-  bottom: 50%;
-}
+@import "../node_modules/leaflet/dist/leaflet.css";
 
-#bottom_div {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  left: 200px;
-  bottom: 0;
-}
 </style>
