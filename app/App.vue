@@ -1,6 +1,9 @@
 <template>
     <div class="container">
         <component :is="currentView"></component>
+        <div class="search">
+            <input type="text" placeholder="search" v-on:change="search"/>
+        </div>
     </div>
 </template>
 
@@ -9,15 +12,21 @@
 import Simple from './Simple';
 
 export default {
-  name: 'app',
-  components: {
-    Simple,
-  },
-  data () {
-    return {
-      currentView: 'simple'
+    name: 'app',
+    components: {
+        Simple,
+    },
+    methods: {
+        search: function() {
+            console.log('this test');
+        }
+
+    },
+    data () {
+        return {
+            currentView: 'simple'
+        }
     }
-  }
 }
 </script>
 
@@ -39,5 +48,9 @@ export default {
 }
 
 @import "../node_modules/leaflet/dist/leaflet.css";
+
+.search {
+    position:absolute; top:0; left:0; z-index:800;
+}
 
 </style>
