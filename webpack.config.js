@@ -2,7 +2,8 @@ const path = require('path');
 
 const PATHS = {
     app: path.resolve(__dirname,'app'),
-    build: path.resolve(__dirname,'build')
+    build: path.resolve(__dirname,'build'),
+    // assets: path.resolve(__dirname,'assets')
 };
 
 module.exports = {
@@ -11,6 +12,7 @@ module.exports = {
     },
     output: {
         path: PATHS.build,
+        publicPath: '/',
         filename: 'bundle.js'
     },
     resolve: {
@@ -31,11 +33,8 @@ module.exports = {
             test: /\.css$/,
             loaders: ['style-loader','css-loader']
         }, {
-            test: /\.png$/,
-            loader: "url-loader?limit=100000"
-        }, {
-            test: /\.jpg$/,
-            loader: "file-loader"
+            test: /\.(jpg|png)$/,
+            loader: 'file-loader?name=images/[name].[ext]'
         }, {
             test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
             loader: 'url-loader?limit=10000&mimetype=application/font-woff'
