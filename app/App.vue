@@ -2,7 +2,15 @@
     <div class="container">
         <component :is="currentView"></component>
         <div class="search">
-            <input type="text" placeholder="search" v-on:change="search"/>
+            <autocomplete
+                url="http://nominatim.openstreetmap.org/search"
+                anchor="formatted_address"
+                label="geometry.location.lat"
+                name="autocomplete"
+                :customParams="{ format: 'json' }"
+                :classes="{ input: 'form-control', wrapper: 'input-wrapper'}"
+                :process="processJSON"
+                :onSelect="handleSelect" > </autocomplete>
         </div>
     </div>
 </template>
@@ -10,17 +18,17 @@
 <script>
 
 import Simple from './Simple';
+import Autocomplete from 'vue2-autocomplete-js'
 
 export default {
     name: 'app',
     components: {
-        Simple,
+        Simple, Autocomplete
     },
     methods: {
         search: function() {
             console.log('this test');
         }
-
     },
     data () {
         return {
@@ -50,7 +58,7 @@ export default {
 @import "../node_modules/leaflet/dist/leaflet.css";
 
 .search {
-    position:absolute; top:0; left:0; z-index:800;
+    position:absolute; top:0; right:0; z-index:800;
 }
 
 </style>
