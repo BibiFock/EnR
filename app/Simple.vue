@@ -3,7 +3,7 @@
       <!-- <h2>Simple map</h2> -->
         <!-- Marker is placed at {{ marker.lat }}, {{ marker.lng }} -->
       <!-- </br> -->
-      <v-map class="map-container" :zoom="zoom" :center="center">
+      <v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]">
         <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
         <v-marker :lat-lng="marker"></v-marker>
       </v-map>
@@ -14,21 +14,24 @@
 import Vue2Leaflet from 'vue2-leaflet';
 
 export default {
-  name: 'example',
-  components: {
-    'v-map': Vue2Leaflet.Map,
-    'v-tilelayer' :Vue2Leaflet.TileLayer,
-    'v-marker': Vue2Leaflet.Marker
-  },
-  data () {
-    return {
-      zoom:13,
-      center: L.latLng(47.413220, -1.219482),
-      url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-      attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      marker: L.latLng(47.413220, -1.219482),
+    props: {
+        lat:{ type:Number, default:47.413220 },
+        lng: { type:Number, default: -1.219482 }
+    },
+    components: {
+        'v-map': Vue2Leaflet.Map,
+        'v-tilelayer': Vue2Leaflet.TileLayer,
+        'v-marker': Vue2Leaflet.Marker
+    },
+    data () {
+        console.log('getData');
+        return {
+            zoom:13,
+            url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+            attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            marker: L.latLng(47.413220, -1.219482),
+        }
     }
-  }
 }
 </script>
 
