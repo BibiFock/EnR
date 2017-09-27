@@ -1,12 +1,14 @@
 <template>
     <div class="map-container">
-      <!-- <h2>Simple map</h2> -->
+        <!-- <h2>Simple map</h2> -->
         <!-- Marker is placed at {{ marker.lat }}, {{ marker.lng }} -->
-      <!-- </br> -->
-      <v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]">
-        <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
-        <v-marker :lat-lng="marker"></v-marker>
-      </v-map>
+        <!-- </br> -->
+        <v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]">
+            <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
+            <v-marker v-for="marker in markers"  :key="marker.id" :lat-lng="marker.position">
+                <v-popup :content="marker.tooltip"></v-popup>
+            </v-marker>
+        </v-map>
     </div>
 </template>
 
@@ -21,7 +23,8 @@ export default {
     components: {
         'v-map': Vue2Leaflet.Map,
         'v-tilelayer': Vue2Leaflet.TileLayer,
-        'v-marker': Vue2Leaflet.Marker
+        'v-marker': Vue2Leaflet.Marker,
+        'v-popup': Vue2Leaflet.Popup
     },
     data () {
         console.log('getData');
@@ -29,7 +32,13 @@ export default {
             zoom:13,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            marker: L.latLng(47.413220, -1.219482),
+            markers:[
+                { position: { lat:46.423221, lng:-1.333482}, tooltip: 'marker 1'},
+                { position: { lat:46.413220, lng:-1.219482}, tooltip: 'marker 2'},
+                { position: { lat:46.457809, lng:-1.571045}, tooltip: 'marker 3'}
+            ],
+            // marker: L.latLng(47.413220, -1.219482),
+            // tooltip: 'testation bla bla<br/> bla'
         }
     }
 }
