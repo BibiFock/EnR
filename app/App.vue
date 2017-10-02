@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <simple :lat="lat" :lng="lng" ></simple>
+        <simple :lat="lat" :lng="lng" v-on:showDetail="showDetail"></simple>
         <div class="search">
             <autocomplete
                 url="http://nominatim.openstreetmap.org/search"
@@ -31,6 +31,10 @@ export default {
         handleSelect: function(obj) {
             this.lat = obj.lat;
             this.lng = obj.lon;
+        },
+        showDetail: function(marker) {
+            console.log('----- showDetail ----');
+            console.log(marker);
         }
     },
     data () {
