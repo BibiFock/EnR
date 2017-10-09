@@ -1,14 +1,11 @@
 <template>
     <div class="map-container">
-        <!-- <h2>Simple map</h2> -->
-        <!-- Marker is placed at {{ marker.lat }}, {{ marker.lng }} -->
-        <!-- </br> -->
         <v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]">
             <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
             <v-marker v-for="marker in markers"  :key="marker.id"
-                :lat-lng="marker.position"
+                :lat-lng="[marker.latitude, marker.longitude]"
                 v-on:l-click="showDetail(marker)" >
-                <v-popup :content="marker.tooltip"></v-popup>
+                <!-- <v-popup :content="marker.name"></v-popup> -->
             </v-marker>
         </v-map>
     </div>
@@ -19,8 +16,9 @@ import Vue2Leaflet from 'vue2-leaflet';
 
 export default {
     props: {
-        lat:{ type:Number, default:47.413220 },
-        lng: { type:Number, default: -1.219482 }
+        lat:{ type:Number, default:48.8566 },
+        lng: { type:Number, default: 2.3522 },
+        markers: { type: Array, default: [] }
     },
     components: {
         'v-map': Vue2Leaflet.Map,
@@ -30,32 +28,29 @@ export default {
     },
     methods: {
         showDetail: function(marker) {
-            console.log('this is ok');
-            console.log(marker);
-            // this.$emit('test', 'test');
             this.$emit('showDetail', marker);
-        }
+        },
     },
     data () {
-        console.log('getData');
         return {
             zoom:13,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            markers:[
-                { position: { lat:46.423221, lng:-1.333482}, tooltip: 'marker 1'},
-                { position: { lat:46.413220, lng:-1.219482}, tooltip: 'marker 2'},
-                { position: { lat:46.457809, lng:-1.571045}, tooltip: 'marker 3'},
-                { position: { lat: 47.413220, lng:-1.219482}, tooltip: 'this is a fucking test'}
-            ],
-            // marker: L.latLng(47.413220, -1.219482),
-            // tooltip: 'testation bla bla<br/> bla'
         }
     }
 }
 </script>
 
 <style>
+@import "../node_modules/leaflet/dist/leaflet.css";
+
+.leaflet-fake-icon-image-2x {
+  background-image: url(../node_modules/leaflet/dist/images/marker-icon.png);
+}
+.leaflet-fake-icon-shadow {
+  background-image: url(../node_modules/leaflet/dist/images/marker-shadow.png);
+}
+
 .map-container {
     position:absolute;
     top:0;
