@@ -46,7 +46,7 @@ export default {
         },
         loadMarkers: function () {
             this.$http.get(
-                'https://raw.githubusercontent.com/BibiFock/EnR/preview/data.json'
+                'https://raw.githubusercontent.com/BibiFock/EnR/master/data.json'
             ).then(
                 response => {
                     this.markers = response.body.map((el, index) => {
