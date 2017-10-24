@@ -24,7 +24,7 @@
 import Map from './Map';
 import Detail from './Detail'
 import Autocomplete from 'vue2-autocomplete-js'
-require("../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete.css")
+require("../../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete.css")
 
 export default {
     name: 'app',

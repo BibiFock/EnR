@@ -1,5 +1,5 @@
 require('bootstrap/dist/css/bootstrap.min.css');
-require('../css/main.css');
+ require('../style/main.css');
 
 import Vue from 'vue';
 import VueResource from 'vue-resource';

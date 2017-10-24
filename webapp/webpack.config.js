@@ -1,10 +1,15 @@
 const path = require('path');
 
 const PATHS = {
-    app: path.resolve(__dirname,'app'),
-    build: path.resolve(__dirname,'build'),
+    app: path.resolve(__dirname,'src/app'),
+    build: path.resolve(__dirname,'../html'),
     // assets: path.resolve(__dirname,'assets')
 };
+
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+
+var ENV = process.env.npm_lifecycle_event;
+var isProd = ENV === 'build';
 
 module.exports = {
     entry: {
@@ -12,8 +17,9 @@ module.exports = {
     },
     output: {
         path: PATHS.build,
-        publicPath: '/',
-        filename: 'bundle.js'
+        publicPath: isProd ? '/' : 'http://localhost:6868/',
+        filename: isProd ? 'js/[name].[hash].js' : 'js/[name].js',
+        chunkFilename: isProd ? '[id].[hash].chunk.js' : '[id].chunk.js'
     },
     resolve: {
         extensions: ['.js', '.vue'],
@@ -45,8 +51,17 @@ module.exports = {
             test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
             loader: 'file-loader'
         }, {
+            test: /\.html$/,
+            loader: 'raw-loader', exclude: path.resolve(__dirname,'src/public')
+        }, {
             test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
             loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
-        }]
-    }
+        }],
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: 'underscore-template-loader!./src/public/index.html',
+        chunksSortMode: 'dependency'
+      }),
+    ]
 };
