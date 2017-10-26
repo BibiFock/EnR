@@ -13,17 +13,32 @@ class CreateDatabase extends Migration
      */
     public function up()
     {
-        Schema::create('probability', function (Blueprint $table) {
+        Schema::create('tilt', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 100);
             $table->timestamps();
         });
 
-        DB::table('probability')->insert(
-            array('name' => 'acquise'),
-            array('name' => 'forte'),
-            array('name' => 'moyenne'),
-            array('name' => 'faible')
+        DB::table('tilt')->insert(
+            array('name' => '35° optimale'),
+            array('name' => '> 25°/40°<'),
+            array('name' => '0° (à plat) à 10°'),
+            array('name' => '90° verticale (déconseillée)'),
+            array('name' => '> 10°/25°<')
+        );
+
+        Schema::create('south_orientation', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 100);
+            $table->timestamps();
+        });
+
+        DB::table('south_orientation')->insert(
+            array('name' => '180° Sud'),
+            array('name' => '+/-5°'),
+            array('name' => '+/- 10°'),
+            array('name' => '+/- 15°'),
+            array('name' => '> 20°')
         );
 
         Schema::create('department', function (Blueprint $table) {
@@ -141,8 +156,8 @@ class CreateDatabase extends Migration
             $table->increments('id');
             $table->string('first_name', 200);
             $table->string('last_name', 200);
-            $table->string('phone', 50);
-            $table->string('email', 250);
+            $table->string('phone', 50)->nullable();
+            $table->string('email', 250)->nullable();
             $table->timestamps();
         });
 
@@ -165,8 +180,8 @@ class CreateDatabase extends Migration
         Schema::create('structure', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 250);
-            $table->integer('typeId');
-            $table->integer('contactId');
+            $table->integer('type_id');
+            $table->integer('contact_id');
             $table->timestamps();
         });
 
@@ -199,43 +214,44 @@ class CreateDatabase extends Migration
 
         Schema::create('quote', function (Blueprint $table) {
             $table->increments('id');
-            $table->float('total_off');
-            $table->float('roi_off');
-            $table->float('total');
-            $table->float('roi');
-            $table->string('panel_type', 200);
-            $table->string('inverter_type', 200);
-            $table->string('guarantee', 250);
-            $table->string('certifications', 250);
-            $table->text('remarks');
+            $table->integer('roof_id');
+            $table->float('total_off')->nullable();
+            $table->float('roi_off')->nullable();
+            $table->float('total')->nullable();
+            $table->float('roi')->nullable();
+            $table->string('panel_type', 200)->nullable();
+            $table->string('inverter_type', 200)->nullable();
+            $table->string('guarantee', 250)->nullable();
+            $table->string('certifications', 250)->nullable();
+            $table->text('remarks')->nullable();
             $table->timestamps();
         });
 
         Schema::create('roof', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('probability_id');
-            $table->integer('structure_id');
-            $table->integer('square_area');
-            $table->integer('power_max');
-            $table->integer('power_min');
-            $table->integer('purchase_category_id');
+            $table->enum('propability', array('acquise', 'forte', 'moyenne', 'faible'))->nullable();
+            $table->integer('structure_id')->nullable();
+            $table->integer('square_area')->nullable();
+            $table->integer('power_max')->nullable();
+            $table->integer('power_min')->nullable();
+            $table->integer('purchase_category_id')->nullable();
             $table->integer('type_id');
-            $table->string('tilt', 50);
-            $table->string('south_orientation', 50);
-            $table->boolean('erp');
-            $table->integer('building_size');
-            $table->boolean('perimeter_abf');
-            $table->text('remarks');
-            $table->string('inverter_location');
-            $table->integer('inverter_distance');
-            $table->string('street', 250);
-            $table->string('zip', 250);
-            $table->string('city', 250);
-            $table->integer('department_id');
-            $table->float('latitude');
-            $table->float('longitude');
-            $table->integer('owner_id'); // --> structureId
-            $table->integer('quote_id');
+            $table->integer('tilt_id')->nullable();
+            $table->integer('south_orientation_id');
+            $table->boolean('erp')->nullable();
+            $table->integer('building_size')->nullable();
+            $table->boolean('perimeter_abf')->nullable();
+            $table->text('remarks')->nullable();
+            $table->string('inverter_location')->nullable();
+            $table->integer('inverter_distance')->nullable();
+            $table->string('street', 250)->nullable();
+            $table->string('zip', 250)->nullable();
+            $table->string('city', 250)->nullable();
+            $table->integer('department_id')->nullable();
+            $table->float('latitude')->nullable();
+            $table->float('longitude')->nullable();
+            $table->integer('owner_id')->nullable(); // --> structureId
+            $table->integer('quote_id')->nullable();
             $table->timestamps();
         });
     }
@@ -247,7 +263,8 @@ class CreateDatabase extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('probability');
+        Schema::dropIfExists('tilt');
+        Schema::dropIfExists('south_orientation');
         Schema::dropIfExists('department');
         Schema::dropIfExists('contact');
         Schema::dropIfExists('structure_type');
