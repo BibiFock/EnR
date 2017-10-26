@@ -27,7 +27,8 @@ class CreateDatabase extends Migration
         );
 
         Schema::create('department', function (Blueprint $table) {
-            $table->string('zip', 3)->unique();
+            $table->increments('id');
+            $table->string('zip', 3);
             $table->string('name', 150);
             $table->timestamps();
         });
@@ -138,33 +139,50 @@ class CreateDatabase extends Migration
 
         Schema::create('contact', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('firstName', 200);
-            $table->string('lastName', 200);
+            $table->string('first_name', 200);
+            $table->string('last_name', 200);
             $table->string('phone', 50);
             $table->string('email', 250);
             $table->timestamps();
         });
 
-        Schema::create('structure', function (Blueprint $table) {
+        Schema::create('structure_type', function (Blueprint $table) {
             $table->increments('id');
-            $table->increments('name');
-            $table->increments('contactId');
+            $table->string('name', 250);
             $table->timestamps();
         });
 
-        Schema::create('purchageCategory', function (Blueprint $table) {
+        DB::table('structure_type')->insert(array(
+            array('name' => 'structure initiatrice'),
+            array('name' => 'autre'),
+            array('name' => 'bailleur social'),
+            array('name' => 'collectivité'),
+            array('name' => 'copropriété'),
+            array('name' => 'entreprise'),
+            array('name' => 'particulier'),
+        ));
+
+        Schema::create('structure', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 250);
+            $table->integer('typeId');
+            $table->integer('contactId');
+            $table->timestamps();
+        });
+
+        Schema::create('purchase_category', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 300);
             $table->timestamps();
         });
 
-        Schema::create('roofType', function (Blueprint $table) {
+        Schema::create('roof_type', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 100);
             $table->timestamps();
         });
 
-        DB::table('roofType')->insert(array(
+        DB::table('roof_type')->insert(array(
             array('name' => 'ardoise'),
             array('name' => 'autre (pécisions ds commentaires)'),
             array('name' => 'bac acier'),
@@ -179,24 +197,45 @@ class CreateDatabase extends Migration
             array('name' => 'zinc')
         ));
 
-
-        Schema::create('roof', function (Blueprint $table) {
+        Schema::create('quote', function (Blueprint $table) {
             $table->increments('id');
-            $table->int('probabilityId');
-            $table->string('departmentId', 3);
-            $table->int('structureId');
-            $table->int('squareArea');
-            $table->int('powerMax');
-            $table->int('powerMin');
-            $table->int('purchaseCategoryId');
-            $table->int('typeId');
-
-            // TODO finish it
+            $table->float('total_off');
+            $table->float('roi_off');
+            $table->float('total');
+            $table->float('roi');
+            $table->string('panel_type', 200);
+            $table->string('inverter_type', 200);
+            $table->string('guarantee', 250);
+            $table->string('certifications', 250);
+            $table->text('remarks');
             $table->timestamps();
         });
 
-        Schema::create('roofType', function (Blueprint $table) {
+        Schema::create('roof', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('probability_id');
+            $table->integer('structure_id');
+            $table->integer('square_area');
+            $table->integer('power_max');
+            $table->integer('power_min');
+            $table->integer('purchase_category_id');
+            $table->integer('type_id');
+            $table->string('tilt', 50);
+            $table->string('south_orientation', 50);
+            $table->boolean('erp');
+            $table->integer('building_size');
+            $table->boolean('perimeter_abf');
+            $table->text('remarks');
+            $table->string('inverter_location');
+            $table->integer('inverter_distance');
+            $table->string('street', 250);
+            $table->string('zip', 250);
+            $table->string('city', 250);
+            $table->integer('department_id');
+            $table->float('latitude');
+            $table->float('longitude');
+            $table->integer('owner_id'); // --> structureId
+            $table->integer('quote_id');
             $table->timestamps();
         });
     }
@@ -208,6 +247,14 @@ class CreateDatabase extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('probability');
+        Schema::dropIfExists('department');
+        Schema::dropIfExists('contact');
+        Schema::dropIfExists('structure_type');
+        Schema::dropIfExists('structure');
+        Schema::dropIfExists('purchase_category');
+        Schema::dropIfExists('roof_type');
+        Schema::dropIfExists('quote');
         Schema::dropIfExists('roof');
     }
 }
