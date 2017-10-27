@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Structure extends Model
 {
 
+    protected $table = 'structure';
+
     /**
      * The attributes that are mass assignable.
      *

@@ -181,7 +181,7 @@ class CreateDatabase extends Migration
             $table->increments('id');
             $table->string('name', 250);
             $table->integer('type_id');
-            $table->integer('contact_id');
+            $table->integer('contact_id')->nullable();
             $table->timestamps();
         });
 
