@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-class ExampleController extends Controller
+use App\Roof;
+
+class RoofController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -11,8 +13,13 @@ class ExampleController extends Controller
      */
     public function __construct()
     {
-        //
     }
 
-    //
+
+    public function index()
+    {
+        $roofs = Roof::all();
+
+        return response()->json($roofs);
+    }
 }

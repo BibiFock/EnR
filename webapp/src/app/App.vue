@@ -46,7 +46,8 @@ export default {
         },
         loadMarkers: function () {
             this.$http.get(
-                'https://raw.githubusercontent.com/BibiFock/EnR/master/data.json'
+                // 'http://raw.githubusercontent.com/BibiFock/EnR/master/data.json'
+                'http://localhost:8080/api/roofs'
             ).then(
                 response => {
                     this.markers = response.body.map((el, index) => {

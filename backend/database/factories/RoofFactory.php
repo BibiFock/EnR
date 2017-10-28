@@ -11,9 +11,33 @@
 |
 */
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(App\Roof::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->email,
+        'propability' => array_rand(App\Roof::PROBABILITIES) ,
+        'structure_id' => function() {
+            return App\Structure::find(['name' => 'structure initiatrice']);
+        },
+        'square_area' => $faker->randomDigitNotNull,
+        'power_max' => $faker->randomNumber(2),
+        'power_min' => $faker->randomNumber(2),
+        'purchase_category_id' => rand(1, 5),
+        'type_id' => rand(1, 10),
+        'tilt_id' => rand(1, 5),
+        'south_orientation_id' => rand(1, 5),
+        'erp' => $faker->boolean,
+        'building_size' => $faker->randomNumber(3),
+        'perimeter_abf' => $faker->boolean ,
+        'remarks' => $faker->sentence() ,
+        'inverter_location' => $faker->word() ,
+        'inverter_distance' => $faker->randomNumber(4),
+        'street' => $faker->streetAddress,
+        'zip' => $faker->postcode,
+        'city' => $faker->city,
+        'department_id' => rand(1,75),
+        'latitude' => $faker->randomFloat(4, 48,49),
+        'longitude' => $faker->randomFloat(4, 2, 3),
+        'owner_id' => function () {
+            return factory(App\Structure::class)->create()->id;
+        }
     ];
 });

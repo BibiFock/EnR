@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Roof extends Model
 {
 
+    const PROBABILITIES = array('acquise', 'forte', 'moyenne', 'faible');
+
     /**
      * The attributes that are mass assignable.
      *

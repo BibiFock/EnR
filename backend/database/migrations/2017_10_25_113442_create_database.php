@@ -13,13 +13,13 @@ class CreateDatabase extends Migration
      */
     public function up()
     {
-        Schema::create('tilt', function (Blueprint $table) {
+        Schema::create('tilts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 100);
             $table->timestamps();
         });
 
-        DB::table('tilt')->insert(
+        DB::table('tilts')->insert(
             array('name' => '35° optimale'),
             array('name' => '> 25°/40°<'),
             array('name' => '0° (à plat) à 10°'),
@@ -27,13 +27,13 @@ class CreateDatabase extends Migration
             array('name' => '> 10°/25°<')
         );
 
-        Schema::create('south_orientation', function (Blueprint $table) {
+        Schema::create('south_orientations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 100);
             $table->timestamps();
         });
 
-        DB::table('south_orientation')->insert(
+        DB::table('south_orientations')->insert(
             array('name' => '180° Sud'),
             array('name' => '+/-5°'),
             array('name' => '+/- 10°'),
@@ -41,14 +41,14 @@ class CreateDatabase extends Migration
             array('name' => '> 20°')
         );
 
-        Schema::create('department', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->increments('id');
             $table->string('zip', 3);
             $table->string('name', 150);
             $table->timestamps();
         });
 
-        DB::table('department')->insert(
+        DB::table('departments')->insert(
             array('zip' => '01', 'name' => 'Ain'),
             array('zip' => '02', 'name' => 'Aisne'),
             array('zip' => '03', 'name' => 'Allier'),
@@ -152,7 +152,7 @@ class CreateDatabase extends Migration
             array('zip' => '974', 'name' => 'Réunion')
         );
 
-        Schema::create('contact', function (Blueprint $table) {
+        Schema::create('contacts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('first_name', 200);
             $table->string('last_name', 200);
@@ -161,13 +161,13 @@ class CreateDatabase extends Migration
             $table->timestamps();
         });
 
-        Schema::create('structure_type', function (Blueprint $table) {
+        Schema::create('structure_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 250);
             $table->timestamps();
         });
 
-        DB::table('structure_type')->insert(array(
+        DB::table('structure_types')->insert(array(
             array('name' => 'structure initiatrice'),
             array('name' => 'autre'),
             array('name' => 'bailleur social'),
@@ -177,7 +177,7 @@ class CreateDatabase extends Migration
             array('name' => 'particulier'),
         ));
 
-        Schema::create('structure', function (Blueprint $table) {
+        Schema::create('structures', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 250);
             $table->integer('type_id');
@@ -185,19 +185,30 @@ class CreateDatabase extends Migration
             $table->timestamps();
         });
 
-        Schema::create('purchase_category', function (Blueprint $table) {
+        Schema::create('purchase_categories', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 300);
             $table->timestamps();
         });
 
-        Schema::create('roof_type', function (Blueprint $table) {
+        DB::table('purchase_categories')->insert(array(
+            array('name' => '0 - 2,9kWc'),
+            array('name' => '3 - 5,9kWc'),
+            array('name' => '6 - 8,9kWc'),
+            array('name' => '9 - 35,9kWc'),
+            array('name' => '36 - 99,9kWc'),
+            array('name' => '100 - 249,9kWc (AO CRE)'),
+            array('name' => '250 - 499,9kWc (AO CRE)'),
+            array('name' => '> 500kWc (AO CRE)'),
+        ));
+
+        Schema::create('roof_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 100);
             $table->timestamps();
         });
 
-        DB::table('roof_type')->insert(array(
+        DB::table('roof_types')->insert(array(
             array('name' => 'ardoise'),
             array('name' => 'autre (pécisions ds commentaires)'),
             array('name' => 'bac acier'),
@@ -212,7 +223,7 @@ class CreateDatabase extends Migration
             array('name' => 'zinc')
         ));
 
-        Schema::create('quote', function (Blueprint $table) {
+        Schema::create('quotes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('roof_id');
             $table->float('total_off')->nullable();
@@ -227,7 +238,7 @@ class CreateDatabase extends Migration
             $table->timestamps();
         });
 
-        Schema::create('roof', function (Blueprint $table) {
+        Schema::create('roofs', function (Blueprint $table) {
             $table->increments('id');
             $table->enum('propability', array('acquise', 'forte', 'moyenne', 'faible'))->nullable();
             $table->integer('structure_id')->nullable();
@@ -251,7 +262,6 @@ class CreateDatabase extends Migration
             $table->float('latitude')->nullable();
             $table->float('longitude')->nullable();
             $table->integer('owner_id')->nullable(); // --> structureId
-            $table->integer('quote_id')->nullable();
             $table->timestamps();
         });
     }
@@ -263,15 +273,15 @@ class CreateDatabase extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tilt');
-        Schema::dropIfExists('south_orientation');
-        Schema::dropIfExists('department');
-        Schema::dropIfExists('contact');
-        Schema::dropIfExists('structure_type');
-        Schema::dropIfExists('structure');
-        Schema::dropIfExists('purchase_category');
-        Schema::dropIfExists('roof_type');
-        Schema::dropIfExists('quote');
-        Schema::dropIfExists('roof');
+        Schema::dropIfExists('tilts');
+        Schema::dropIfExists('south_orientations');
+        Schema::dropIfExists('departments');
+        Schema::dropIfExists('contacts');
+        Schema::dropIfExists('structure_types');
+        Schema::dropIfExists('structures');
+        Schema::dropIfExists('purchase_categories');
+        Schema::dropIfExists('roof_types');
+        Schema::dropIfExists('quotes');
+        Schema::dropIfExists('roofs');
     }
 }

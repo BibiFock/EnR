@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Type extends Model
 {
 
-    protected $table = 'roof_type';
-
     /**
      * The attributes that are mass assignable.
      *
