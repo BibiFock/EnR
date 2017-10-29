@@ -1,2 +1,5 @@
-html/
-webapp/node_modules/
+/vendor
+/.idea
+Homestead.json
+Homestead.yaml
+.env

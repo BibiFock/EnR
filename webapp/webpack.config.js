@@ -2,7 +2,7 @@ const path = require('path');
 
 const PATHS = {
     app: path.resolve(__dirname,'src/app'),
-    build: path.resolve(__dirname,'../html'),
+    build: path.resolve(__dirname,'../public'),
     // assets: path.resolve(__dirname,'assets')
 };
 
