@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="roof">
         <v-list :roof="roof" v-if="type == 'list'"></v-list>
     </div>
 </template>

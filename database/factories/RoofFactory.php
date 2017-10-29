@@ -15,7 +15,9 @@ $factory->define(App\Roof::class, function (Faker\Generator $faker) {
     return [
         'propability' => array_rand(App\Roof::PROBABILITIES) ,
         'structure_id' => function() {
-            return App\Structure::find(['name' => 'structure initiatrice']);
+            return factory(App\Structure::class)->create([
+                'type_id' => 1 // structure initiatrice
+            ])->id;
         },
         'square_area' => $faker->randomDigitNotNull,
         'power_max' => $faker->randomNumber(2),
@@ -37,7 +39,9 @@ $factory->define(App\Roof::class, function (Faker\Generator $faker) {
         'latitude' => $faker->randomFloat(4, 48,49),
         'longitude' => $faker->randomFloat(4, 2, 3),
         'owner_id' => function () {
-            return factory(App\Structure::class)->create()->id;
+            return factory(App\Structure::class)->create([
+                'type_id' => rand(2, 7)
+            ])->id;
         }
     ];
 });

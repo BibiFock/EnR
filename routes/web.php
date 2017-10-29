@@ -20,5 +20,6 @@ $router->group(
     ['prefix' => 'api', 'middleware' => 'cors'],
     function () use ($router) {
         $router->get('roofs', 'RoofController@index');
+        $router->get('roofs/{id:[0-9]+}', 'RoofController@getRoof');
     }
 );

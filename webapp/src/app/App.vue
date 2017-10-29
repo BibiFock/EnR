@@ -6,8 +6,10 @@
                 <small class="form-text text-muted">Voir la carte</small>
             </a>
         </div>
-        <div class="row">
-            <Roof v-for="roof in roofs" :key="roof.id" :roof="roof" type="list"></Roof>
+        <div>
+            <Roof v-for="roof in roofs"
+                  class="mb-3"
+                :key="roof.id" :roof="roof" type="list"></Roof>
         </div>
         <Map :lat="lat" :lng="lng" :markers="roofs" v-show="showMap"></Map>
     </div>
@@ -73,6 +75,3 @@ export default {
     }
 }
 </script>
-
-<style>
-</style>

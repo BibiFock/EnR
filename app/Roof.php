@@ -26,42 +26,42 @@ class Roof extends Model
 
     public function owner()
     {
-        return $this->hasOne('\App\Contact', 'owner_id');
+        return $this->belongsTo('\App\Contact');
     }
 
     public function quotes()
     {
-        return $this->hasMany('\App\Roof\Quote', 'roof_id');
+        return $this->hasMany('\App\Roof\Quote');
     }
 
     public function structure()
     {
-        return $this->belongsTo('\App\Structure', 'structure_id');
+        return $this->belongsTo('\App\Structure');
     }
 
     public function southOrientation()
     {
-        return $this->belongsTo('\App\Roof\SouthOrientation', 'south_orientation_id');
+        return $this->belongsTo('\App\Roof\SouthOrientation');
     }
 
     public function purchaseCategory()
     {
-        return $this->belongsTo('\App\Roof\PurchaseCategory', 'purchase_category_id');
+        return $this->belongsTo('\App\Roof\PurchaseCategory');
     }
 
     public function type()
     {
-        return $this->belongsTo('\App\Roof\Type', 'type_id');
+        return $this->belongsTo('\App\Roof\Type');
     }
 
     public function tilt()
     {
-        return $this->belongsTo('\App\Roof\Tilt', 'tilt_id');
+        return $this->belongsTo('\App\Roof\Tilt');
     }
 
     public function department()
     {
-        return $this->belongsTo('\App\Department', 'department_id');
+        return $this->belongsTo('\App\Department');
     }
 
 }
