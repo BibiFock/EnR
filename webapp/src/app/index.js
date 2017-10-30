@@ -6,16 +6,15 @@ import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 
 import App from './App';
+import Map from './Map';
 import RoofResume from './roof/Resume';
-
-
 
 Vue.use(VueResource);
 Vue.use(VueRouter);
 
 const routes = [
-    { path: '/', component: App, name:'home' },
-    { path: '/map', component: App, name:'home-map' },
+    { name: 'home', path: '/', component: App },
+    { name: 'map', path: '/map', component: App },
     { name: 'roof', path: '/roofs/:roofId', component: RoofResume },
 ];
 

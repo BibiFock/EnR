@@ -1,14 +1,33 @@
 <template>
     <form class="container">
+        <div class="form-group row mt-3">
+            <label class="col-2">Structure</label>
+            <input class="col-10 form-control" type="text" :value="roof.structure.name">
+        </div>
+
+        <div class="form-group row">
+            <label class="col-2">Probabilité</label>
+            <input class="col-10 form-control" type="text" :value="roof.probability">
+        </div>
+        <div class="form-group row">
+            <label class="col-2">Catégorie tarif</label>
+            <input class="col-10 form-control" type="text" :value="roof.purchase_category.name">
+        </div>
+
+        <div class="form-group row">
+            <label class="col-2">Remarques</label>
+            <textarea class="col-10 form-control" type="text">{{ roof.remarks }}</textarea>
+        </div>
+
+        <button type="button" class="btn btn-link"
+            onclick="history.back()">Retour</button>
+
+
         <div class="form-group" v-for="key in getKeys()">
             <label for="id">{{ key }}</label>
             <input id="id" class="form-control" type="text" :value="roof[key]">
         </div>
 
-        <button type="button" class="close" aria-label="Close"
-            v-on:click="close()">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </form>
 </template>
 
@@ -29,7 +48,7 @@ export default {
         loadRoof: function(roofId) {
             this.$http.get(
                 // 'http://raw.githubusercontent.com/BibiFock/EnR/master/data.json'
-                'http://localhost:8080/api/roofs/' + roofId
+                process.env.API_URL + 'roofs/' + roofId
             ).then(
                 response => {
                     this.roof = response.body;

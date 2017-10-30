@@ -9,39 +9,17 @@
             </button>
         </div>
         <div>
-            <Roof v-for="roof in roofs"
-                  class="mb-3"
+            <Roof v-for="roof in roofs" class="mb-3"
                 :key="roof.id" :roof="roof" type="list"></Roof>
         </div>
-        <Map :lat="lat" :lng="lng" :markers="roofs" v-show="showMap"></Map>
+        <Map :lat="lat" :lng="lng" :roofs="roofs"
+            v-if="showMap" v-on:close="closeMap"></Map>
     </div>
-    <!-- <div class="container"> -->
-        <!-- <Map :lat="lat" :lng="lng" :markers="markers" v-on:showDetail="showDetail"></Map> -->
-        <!-- <div class="search"> -->
-            <!-- <autocomplete -->
-                <!-- url="http://nominatim.openstreetmap.org/search" -->
-                <!-- anchor="display_name" -->
-                <!-- name="autocomplete" -->
-                <!-- label="" -->
-                <!-- placeholder="search" -->
-                <!-- debounce="500" -->
-                <!-- :customParams="{ format: 'json' }" -->
-                <!-- :classes="{ input: 'form-control', wrapper: 'input-wrapper'}" -->
-                <!-- :onSelect="handleSelect" > </autocomplete> -->
-        <!-- </div> -->
-        <!-- <Detail class="details" -->
-            <!-- v-if="selectedMarker" -->
-            <!-- :marker="selectedMarker" -->
-            <!-- v-on:close="closeDetail"></Detail> -->
-    <!-- </div> -->
 </template>
 
 <script>
 import Map from './Map';
 import Roof from './Roof';
-
-//import Autocomplete from 'vue2-autocomplete-js'
-//require("../../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete.css")
 
 export default {
     name: 'app',
@@ -64,10 +42,16 @@ export default {
         },
         toggleMap: function() {
             this.showMap = !this.showMap;
+        },
+        closeMap: function() {
+            this.showMap = false;
         }
     },
     mounted() {
         this.loadRoofs();
+        if (this.$route.name == "map") {
+            this.showMap = true;
+        }
     },
     data () {
         return {

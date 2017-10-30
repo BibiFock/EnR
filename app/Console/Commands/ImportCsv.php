@@ -61,6 +61,44 @@ class ImportCsv extends Command
                 'contact_id' => (!empty($contact) ? $contact->id : null),
                 'type_id' => (!empty($structType) ? $structType->id : null)
             ]);
+
+            //TODO finish it
+
+            Roof::firstOrCreate([
+                'probability' => $row['probability'],
+                'structure_id' => $struct->id,
+                'square_area' => $row['potential_m2'],
+                'power_max' => $row['estimate_hight'],
+                'power_min' => $row['estimate_low'],
+                'purchase_category_id' => $row[''],
+                'type_id' => Type::firstOrCreate([
+                    'name' => $row['roof_type'],
+                ])->id,
+                'tilt_id' => Tilt::firstOrCreate([
+                    'name' => $row['inclinaison'],
+                ])->id,
+                'south_orientation_id' => SouthOrientation::firstOrCreate([
+                    'name' => $row['south_orientation'],
+                ])->id,
+                'erp' => $row['erp'],
+                'building_size' => $row['building_hight'],
+                'perimeter_abf' => $row['ABF_primeter'],
+                'remarks' => $row['description'],
+                'inverter_location' => $row['inverter_position'],
+                'inverter_distance' => $row['inverter_distance'],
+                'street' => $row['street'],
+                'zip' => $row['zip'],
+                'city' => $row['city'],
+                'department_id' => Department::firstOrCreate([
+                    'name' => 'department'
+                ])->id,
+                'latitude' => $row['latitude'],
+                'longitude' => $row['longitute'],
+                'owner_id' => Contact::firstOrCreate([
+                    'name' => $row['structure_name']
+                ])->id,
+            ]);
+
         }
         $this->info('is finished');
     }

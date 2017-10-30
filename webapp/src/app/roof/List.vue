@@ -17,7 +17,7 @@
             <div class="form-group row">
                 <label class="col-3 col-form-label">Puissance max: </label>
                 <div class="col-9">
-                    <input type="text" readonly class="form-control-plaintext" :value="roof.power_min">
+                    <input type="text" readonly class="form-control-plaintext" :value="roof.power_max">
                 </div>
             </div>
         </div>
