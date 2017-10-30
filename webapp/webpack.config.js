@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 const PATHS = {
     app: path.resolve(__dirname,'src/app'),
@@ -62,9 +63,16 @@ module.exports = {
         }],
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        template: 'underscore-template-loader!./src/public/index.html',
-        chunksSortMode: 'dependency'
-      }),
+        new HtmlWebpackPlugin({
+            template: 'underscore-template-loader!./src/public/index.html',
+            chunksSortMode: 'dependency'
+        }),
+        new webpack.DefinePlugin({
+            // Environment helpers
+            'process.env': {
+                'ENV': (isProd ? 'production' : '"dev"'),
+                'API_URL': (isProd ? '#TODO#' : '"http://localhost:6869/api/"')
+            }
+        }),
     ]
 };

@@ -8,6 +8,11 @@
                 <!-- <v-popup :content="marker.name"></v-popup> -->
             </v-marker>
         </v-map>
+
+        <button type="button" class="m-2 py-1 px-2 close border rounded border-white bg-white" aria-label="Close"
+            v-on:click="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
 </template>
 
@@ -30,6 +35,9 @@ export default {
         showDetail: function(marker) {
             this.$emit('showDetail', marker);
         },
+        close: function() {
+            this.$emit('close');
+        }
     },
     data () {
         return {

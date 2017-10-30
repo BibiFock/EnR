@@ -6,7 +6,9 @@ import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 
 import App from './App';
-import RoofResume from './Roof/Resume';
+import RoofResume from './roof/Resume';
+
+
 
 Vue.use(VueResource);
 Vue.use(VueRouter);

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import RoofList from './Roof/List';
+import RoofList from './roof/List';
 
 export default {
     components: {

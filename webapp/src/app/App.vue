@@ -1,10 +1,12 @@
 <template>
     <div class="container">
-        <div class="row form-group">
+        <div class="row">
             <input type="search" class="form-control" placeholder="recherche" >
-            <a href="#" v-on:click="toggleMap()">
-                <small class="form-text text-muted">Voir la carte</small>
-            </a>
+        </div>
+        <div class="d-flex align-items-end justify-content-end">
+            <button type="button" class="btn btn-link btn-sm" v-on:click="toggleMap()">
+                Voir la carte
+            </button>
         </div>
         <div>
             <Roof v-for="roof in roofs"
@@ -36,7 +38,8 @@
 
 <script>
 import Map from './Map';
-import Roof from './Roof'
+import Roof from './Roof';
+
 //import Autocomplete from 'vue2-autocomplete-js'
 //require("../../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete.css")
 
@@ -48,18 +51,19 @@ export default {
     methods: {
         loadRoofs: function () {
             this.$http.get(
-                // 'http://raw.githubusercontent.com/BibiFock/EnR/master/data.json'
-                'http://localhost:8080/api/roofs'
+                process.env.API_URL + 'roofs'
             ).then(
                 response => {
                     this.roofs = response.body;
-                    console.log(this.roofs);
                 },
                 response => {
                     console.log(response)
                     alert('todo make nofication error');
                 }
             );
+        },
+        toggleMap: function() {
+            this.showMap = !this.showMap;
         }
     },
     mounted() {
@@ -70,7 +74,8 @@ export default {
             lat:undefined,
             lng:undefined,
             selectedRoof: undefined,
-            roofs:[]
+            roofs:[],
+            showMap: false
         }
     }
 }
