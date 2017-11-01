@@ -71,7 +71,7 @@ module.exports = {
             // Environment helpers
             'process.env': {
                 'ENV': (isProd ? 'production' : '"dev"'),
-                'API_URL': (isProd ? '#TODO#' : '"http://localhost:6869/api/"')
+                'API_URL': (isProd ? 'api.photovolt.poulpy.org' : '"http://localhost:6869/api/"')
             }
         }),
     ]
