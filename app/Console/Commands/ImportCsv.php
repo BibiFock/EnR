@@ -7,6 +7,12 @@ use Illuminate\Console\Command;
 use App\Contact;
 use App\StructureType;
 use App\Structure;
+use App\Roof;
+use App\Roof\PurchaseCategory;
+use App\Roof\Type;
+use App\Roof\Tilt;
+use App\Roof\SouthOrientation;
+use App\Department;
 
 class ImportCsv extends Command
 {
@@ -62,15 +68,17 @@ class ImportCsv extends Command
                 'type_id' => (!empty($structType) ? $structType->id : null)
             ]);
 
-            //TODO finish it
+            $purchaseCategory = PurchaseCategory::firstOrCreate([
+                'name' => $row['sold_cat']
+            ]);
 
-            Roof::firstOrCreate([
+            Roof::create([
                 'probability' => $row['probability'],
                 'structure_id' => $struct->id,
                 'square_area' => $row['potential_m2'],
                 'power_max' => $row['estimate_hight'],
                 'power_min' => $row['estimate_low'],
-                'purchase_category_id' => $row[''],
+                'purchase_category_id' => $purchaseCategory->id,
                 'type_id' => Type::firstOrCreate([
                     'name' => $row['roof_type'],
                 ])->id,
@@ -93,9 +101,18 @@ class ImportCsv extends Command
                     'name' => 'department'
                 ])->id,
                 'latitude' => $row['latitude'],
-                'longitude' => $row['longitute'],
-                'owner_id' => Contact::firstOrCreate([
-                    'name' => $row['structure_name']
+                'longitude' => $row['longitude'],
+                'owner_id' => Structure::firstOrCreate([
+                    'name' => $row['structure_name'],
+                    'type_id' => StructureType::firstOrCreate([
+                        'name' => 'structure_type'
+                    ])->id,
+                    'contact_id' => Contact::firstOrCreate([
+                        'first_name' => $row['contact_firstname'],
+                        'last_name' => $row['contact_lastname'],
+                        'email' => $row['contact_email'],
+                        'phone' => $row['contact_phone'],
+                    ])->id
                 ])->id,
             ]);
 
@@ -111,53 +128,63 @@ class ImportCsv extends Command
         $rows = explode(PHP_EOL, $content);
         $title = explode(';', array_shift($rows));
 
-        $realTitle = array(
-            'id' => 'id',
-            'Probabilité de réalisation' => 'probability',
-            'Département' => 'department',
-            'Nom structure' => 'structure',
-            'Nom responsable' => 'responsable_lastname',
-            'Prénom responsable' => 'responsable_firstname',
-            'm2 potentiels pour le PV' => 'potential_m2',
-            'estimation basse' => 'estimate_low',
-            'estimation haute' => 'estimate_hight',
-            'catégorie tarif achat' => 'sold_cat',
-            'type de toiture' => 'roof_type',
-            'inclinaison' => 'inclinaison',
-            'orientation par rapport au Sud' => 'south_orientation',
-            'ERP ?' => 'erp',
-            'Hauteur du bâtiment' => 'building_hight',
-            'Périmètre ABF' => 'ABF_primeter',
-            'Commentaire sur la toiture' => 'description',
-            'Emplacement Onduleurs' => 'inverter_position',
-            'Distance onduleur / centrale' => 'inverter_distance',
-            'adresse : n° et rue' => 'street',
-            'code postal' => 'zip',
-            'commune' => 'city',
-            'lien recherche google maps' => 'link',
-            'coordonnées GPS latitude' => 'latitude',
-            'coordonnées GPS longitute' => 'longitude',
-            'Type' => 'structure_type',
-            // 'Nom structure' => 'structure_name',
-            'Nom contact' => 'contact_lastname',
-            'Prénom contact' => 'contact_firstname',
-            'mail contact' => 'contact_email',
-            'tél contact' => 'contact_phone',
+        $keys = array(
+            // 'id',
+            'probability',
+            'department',
+            'structure',
+            'responsable_lastname',
+            'responsable_firstname',
+            'potential_m2',
+            'estimate_low',
+            'estimate_hight',
+            'sold_cat',
+            'roof_type',
+            'inclinaison',
+            'south_orientation',
+            'erp',
+            'building_hight',
+            'ABF_primeter',
+            'description',
+            'inverter_position',
+            'inverter_distance',
+            'street',
+            'zip',
+            'city',
+            'link',
+            'latitude',
+            'longitude',
+            'structure_type',
+            'structure_name',
+            'contact_lastname',
+            'contact_firstname',
+            'contact_email',
+            'contact_phone',
+            'quote_total_off',
+            'quote_roi_off',
+            'quote_total',
+            'quote_roi',
+            'quote_panel_type',
+            'quote_inverter_type',
+            'quote_guarantee',
+            'quote_certifications',
+            'quote_remarks',
         );
 
         $data = array();
+        $i= 0;
         foreach ($rows as $row) {
             $row = explode(';', $row);
             $tmp = array();
             foreach ($row as $k => $v) {
-                if (empty($title[$k])
-                    || empty($realTitle[$title[$k]])
-                ) {
-                    continue;
+                if (!empty($keys[$k])) {
+                    $tmp[$keys[$k]] = $v;
                 }
-                $tmp[$realTitle[$title[$k]]] = $v;
             }
+
             if (empty($tmp['link'])) {
+                print_r($tmp);
+                echo 'no link here' . PHP_EOL;
                 continue;
             }
             if (preg_match('/google.fr.*@(?P<latitude>[0-9.]+),(?P<longitude>[0-9.]+)/i', $tmp['link'], $results)) {

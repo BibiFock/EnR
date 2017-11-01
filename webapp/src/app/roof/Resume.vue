@@ -103,7 +103,7 @@
         </div>
 
         <div class="row clearfix" v-if="roof.latitude">
-            <v-map class="offset-2 col-5 map-container" :zoom="zoom" :center="[roof.latitude, roof.longitude]">
+            <v-map class="offset-2 col-5 map-preview" :zoom="zoom" :center="[roof.latitude, roof.longitude]">
                 <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
                 <v-marker :lat-lng="[roof.latitude, roof.longitude]" >
                 </v-marker>
@@ -172,7 +172,7 @@ export default {
   background-image: url(../../../node_modules/leaflet/dist/images/marker-shadow.png);
 }
 
-.map-container {
+.map-preview {
     width:200px;
     height:200px;
 }
