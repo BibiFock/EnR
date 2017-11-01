@@ -15,7 +15,7 @@ class Roof extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'propability', 'square_area', 'power_max', 'power_min', 'erp',
+        'id', 'probability', 'square_area', 'power_max', 'power_min', 'erp',
         'building_size', 'perimeter_abf', 'remarks',
         'inverter_location', 'inverter_distance', 'street',
         'zip', 'city', 'latitude', 'longitude',

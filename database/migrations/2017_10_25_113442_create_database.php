@@ -240,7 +240,10 @@ class CreateDatabase extends Migration
 
         Schema::create('roofs', function (Blueprint $table) {
             $table->increments('id');
-            $table->enum('propability', array('acquise', 'forte', 'moyenne', 'faible'))->nullable();
+            $table->enum(
+                'probability',
+                array('acquise', 'forte', 'moyenne', 'faible')
+            )->nullable();
             $table->integer('structure_id')->nullable();
             $table->integer('square_area')->nullable();
             $table->integer('power_max')->nullable();

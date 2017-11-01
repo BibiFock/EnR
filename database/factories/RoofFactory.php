@@ -13,7 +13,7 @@
 
 $factory->define(App\Roof::class, function (Faker\Generator $faker) {
     return [
-        'propability' => array_rand(App\Roof::PROBABILITIES) ,
+        'probability' => array_rand(App\Roof::PROBABILITIES) ,
         'structure_id' => function() {
             return factory(App\Structure::class)->create([
                 'type_id' => 1 // structure initiatrice

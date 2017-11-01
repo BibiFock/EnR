@@ -18,25 +18,17 @@ class RoofController extends Controller
 
     public function index()
     {
-        $roofs = Roof::all();
-        foreach ($roofs as &$roof) {
-            $roof->structure;
-            $roof->owner;
-        }
+        $roofs = Roof::with(['structure', 'owner'])->get();
 
         return response()->json($roofs);
     }
 
     public function getRoof($id)
     {
-        $roof = Roof::find($id);
-        $extraInfos = array(
+        $roof = Roof::with([
             'owner', 'structure', 'southOrientation',
             'purchaseCategory', 'type', 'tilt', 'department'
-        );
-        foreach ($extraInfos as $info) {
-            $roof->{$info};
-        }
+        ])->find($id);
 
         return response()->json($roof);
     }

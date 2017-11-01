@@ -1,11 +1,11 @@
 <template>
     <div class="border border-secondary rounded row roof-list"
         v-on:click="showDetail()">
-        <div class="col-11">
+        <div class="col-11" v-if="roof.structure">
             <h3>{{ roof.structure.name }}</h3>
         </div>
         <div class="col-1">
-            <small>{{ roof.propability }}</small>
+            <small>{{ roof.probability }}</small>
         </div>
         <div class="col-12">
             <div class="form-group row">
