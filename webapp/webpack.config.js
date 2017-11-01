@@ -70,8 +70,8 @@ module.exports = {
         new webpack.DefinePlugin({
             // Environment helpers
             'process.env': {
-                'ENV': (isProd ? 'production' : '"dev"'),
-                'API_URL': (isProd ? 'api.photovolt.poulpy.org' : '"http://localhost:6869/api/"')
+                'ENV': (isProd ? '"production"' : '"dev"'),
+                'API_URL': (isProd ? '"http://api.photovolt.poulpy.org/"' : '"http://localhost:6869/api/"')
             }
         }),
     ]
