@@ -5,6 +5,7 @@
             <v-marker v-for="roof in roofs"  :key="roof.id"
                 :lat-lng="[roof.latitude, roof.longitude]"
                 v-on:l-click="showDetail(roof)" >
+                <v-tooltip :content="getToolTip(roof)"></v-tooltip>
                 <!-- <v-popup :content="roof.name"></v-popup> -->
             </v-marker>
         </v-map>
@@ -47,12 +48,18 @@ export default {
         'v-map': Vue2Leaflet.Map,
         'v-tilelayer': Vue2Leaflet.TileLayer,
         'v-marker': Vue2Leaflet.Marker,
-        'v-popup': Vue2Leaflet.Popup
+        // 'v-popup': Vue2Leaflet.Popup,
+        'v-tooltip': Vue2Leaflet.Tooltip
     },
     methods: {
         handleSelect: function(obj) {
             this.lat = obj.lat;
             this.lng = obj.lon;
+        },
+        getToolTip: function(roof) {
+            return '<div>' + roof.structure.name + '</div>'
+                + '<div class="text-right">' + roof.power_max + ' kWc</div>';
+
         },
         showDetail: function(roof) {
             this.$router.push({
