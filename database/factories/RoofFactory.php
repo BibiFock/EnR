@@ -12,7 +12,9 @@
 */
 
 $factory->define(App\Roof::class, function (Faker\Generator $faker) {
+
     return [
+        'name' => $faker->name,
         'probability' => array_rand(App\Roof::PROBABILITIES) ,
         'structure_id' => function() {
             return factory(App\Structure::class)->create([

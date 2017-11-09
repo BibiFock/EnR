@@ -73,6 +73,7 @@ class ImportCsv extends Command
             ]);
 
             Roof::create([
+                'name' => $row['street'] . ', ' . $row['city'],
                 'probability' => $row['probability'],
                 'structure_id' => $struct->id,
                 'square_area' => $row['potential_m2'],
