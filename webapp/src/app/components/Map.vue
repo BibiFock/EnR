@@ -10,10 +10,12 @@
             </v-marker>
         </v-map>
         <div class="extra-content">
+            <!-- temporary hide this ->
             <button type="button" v-on:click="close()" aria-label="Close"
                 class="btn-close m-3 py-1 px-2 close border rounded border-white bg-white">
                 <span aria-hidden="true">&times;</span>
             </button>
+            <!- /temporary hide this -->
 
             <autocomplete
                 url="http://nominatim.openstreetmap.org/search"
@@ -35,7 +37,7 @@ import Vue2Leaflet from 'vue2-leaflet';
 // import RoofMini from 'roof/Mini';
 
 import Autocomplete from 'vue2-autocomplete-js'
-require('../../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete.css')
+require('../../../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete.css')
 
 export default {
     props: {
@@ -57,7 +59,8 @@ export default {
             this.lng = obj.lon;
         },
         getToolTip: function(roof) {
-            return '<div>' + roof.structure.name + '</div>'
+            return '<div><strong>' + roof.name + '</strong></div>'
+                + '<div>' + roof.structure.name + '</div>'
                 + '<div class="text-right">' + roof.power_max + ' kWc</div>';
 
         },
@@ -72,12 +75,26 @@ export default {
                 name: 'home'
             });
             this.$emit('close');
-        }
+        },
+        loadRoofs: function () {
+            this.$http.get(
+                process.env.API_URL + 'roofs'
+            ).then(
+                response => {
+                    this.roofs = response.body;
+                },
+                response => {
+                    console.log(response)
+                    alert('todo make nofication error');
+                }
+            );
+        },
     },
     mounted() {
         this.$router.push({
             name: 'map'
         });
+        this.loadRoofs();
     },
     data () {
         return {
@@ -90,13 +107,13 @@ export default {
 </script>
 
 <style>
-@import "../../node_modules/leaflet/dist/leaflet.css";
+@import "../../../node_modules/leaflet/dist/leaflet.css";
 
 .leaflet-fake-icon-image-2x {
-  background-image: url(../../node_modules/leaflet/dist/images/marker-icon.png);
+  background-image: url(../../../node_modules/leaflet/dist/images/marker-icon.png);
 }
 .leaflet-fake-icon-shadow {
-  background-image: url(../../node_modules/leaflet/dist/images/marker-shadow.png);
+  background-image: url(../../../node_modules/leaflet/dist/images/marker-shadow.png);
 }
 
 .map-container {

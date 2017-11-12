@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <!-- temporary hide this ->
         <div class="row">
             <input type="search" class="form-control" placeholder="recherche" >
         </div>
@@ -12,8 +13,10 @@
             <Roof v-for="roof in roofs" class="mb-3"
                 :key="roof.id" :roof="roof" type="list"></Roof>
         </div>
-        <Map :lat="lat" :lng="lng" :roofs="roofs"
-            v-if="showMap" v-on:close="closeMap"></Map>
+        <- /temporary hide this -->
+        <!-- <Map :lat="lat" :lng="lng" :roofs="roofs"
+            v-if="showMap" v-on:close="closeMap"></Map> -->
+        <router-view></router-view>
     </div>
 </template>
 
@@ -48,10 +51,10 @@ export default {
         }
     },
     mounted() {
-        this.loadRoofs();
-        if (this.$route.name == "map") {
-            this.showMap = true;
-        }
+        // this.loadRoofs();
+        // if (this.$route.name == "map") {
+        //     this.showMap = true;
+        // }
     },
     data () {
         return {
@@ -59,7 +62,7 @@ export default {
             lng:undefined,
             selectedRoof: undefined,
             roofs:[],
-            showMap: false
+            showMap: true
         }
     }
 }

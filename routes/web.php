@@ -11,15 +11,22 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
-
+// $router->get('/', function () use ($router) {
+    // return $router->app->version();
+// });
 
 $router->group(
-    ['prefix' => 'api', 'middleware' => 'cors'],
+    ['prefix' => 'api'],
     function () use ($router) {
-        $router->get('roofs', 'RoofController@index');
-        $router->get('roofs/{id:[0-9]+}', 'RoofController@getRoof');
+
+        $router->post('/auth/login', 'AuthController@loginPost');
+
+        $router->group(
+            ['middleware' => 'auth'],
+            function() use ($router) {
+                $router->get('roofs', 'RoofController@index');
+                $router->get('roofs/{id:[0-9]+}', 'RoofController@getRoof');
+            }
+        );
     }
 );

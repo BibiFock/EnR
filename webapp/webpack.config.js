@@ -29,9 +29,12 @@ module.exports = {
         }
     },
     devServer: {
+        publicPath: '/',
         host: '127.0.0.1',
         port: 6868,
+        historyApiFallback: true,
     },
+    devtool: 'inline-source-map',
     module: {
         loaders: [{
             test: /\.vue$/,
