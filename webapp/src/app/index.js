@@ -4,20 +4,20 @@ require('../style/main.scss');
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
+import Notifications from 'vue-notification';
 
 import App from './components/App';
 import Map from './components/Map';
 import RoofResume from './components/roof/Resume';
 import Login from './components/auth/Login';
 import Auth from './service/auth.js';
+import Http from './service/http.js';
 
 Vue.use(VueResource);
 Vue.use(VueRouter);
+Vue.use(Notifications);
 
-export default Vue;
-// Vue.http.headers.common['X-CSRF-TOKEN'] = document.getElementsByName('csrf-token')[0].getAttribute('content');
-Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
-// Vue.http.options.root = 'http://laravel.dev:8080';
+Vue.http.interceptors.push(Http.interceptor);
 
 const routes = [
     { path: '', component: App,
@@ -31,7 +31,7 @@ const routes = [
     }
 ];
 
-export var router = new VueRouter({
+var router = new VueRouter({
     mode: 'history',
     routes: routes
 });
@@ -44,7 +44,7 @@ router.beforeEach((to, from, next) => {
     }
 })
 
-new Vue({
+export default new Vue({
     router,
 }).$mount('#app');
 

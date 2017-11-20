@@ -33,6 +33,9 @@
         ],
         "post-root-package-install": [
             "php -r \"copy('.env.example', '.env');\""
+        ],
+        "serve": [
+            "php -S localhost:6869 -t public"
         ]
     },
     "minimum-stability": "dev",

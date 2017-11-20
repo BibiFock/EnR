@@ -1,22 +1,7 @@
 <template>
     <div class="container">
-        <!-- temporary hide this ->
-        <div class="row">
-            <input type="search" class="form-control" placeholder="recherche" >
-        </div>
-        <div class="d-flex align-items-end justify-content-end">
-            <button type="button" class="btn btn-link btn-sm" v-on:click="toggleMap()">
-                Voir la carte
-            </button>
-        </div>
-        <div>
-            <Roof v-for="roof in roofs" class="mb-3"
-                :key="roof.id" :roof="roof" type="list"></Roof>
-        </div>
-        <- /temporary hide this -->
-        <!-- <Map :lat="lat" :lng="lng" :roofs="roofs"
-            v-if="showMap" v-on:close="closeMap"></Map> -->
         <router-view></router-view>
+        <notifications position="bottom right"/>
     </div>
 </template>
 
@@ -49,12 +34,6 @@ export default {
         closeMap: function() {
             this.showMap = false;
         }
-    },
-    mounted() {
-        // this.loadRoofs();
-        // if (this.$route.name == "map") {
-        //     this.showMap = true;
-        // }
     },
     data () {
         return {

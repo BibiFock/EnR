@@ -82,10 +82,6 @@ export default {
             ).then(
                 response => {
                     this.roofs = response.body;
-                },
-                response => {
-                    console.log(response)
-                    alert('todo make nofication error');
                 }
             );
         },
