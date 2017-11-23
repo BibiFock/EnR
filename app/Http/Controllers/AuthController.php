@@ -8,6 +8,8 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\JWTAuth;
 
+use App\User;
+
 class AuthController extends Controller
 {
     /**
@@ -23,12 +25,21 @@ class AuthController extends Controller
     public function loginPost(Request $request)
     {
         $this->validate($request, [
-            'name'    => 'required|string|max:255',
+            'id'    => 'required|numeric',
             'password' => 'required',
         ]);
 
+        $user = User::find($request->get('id'));
+        if (empty($user)) {
+            return response()->json(['user_not_exist'], 404);
+        }
+
         try {
-            if (! $token = $this->jwt->attempt($request->only('name', 'password'))) {
+            $params = [
+                'name' => $user->name,
+                'password' => $request->get('password'),
+            ];
+            if (! $token = $this->jwt->attempt($params)) {
                 return response()->json(['user_not_found'], 404);
             }
         } catch (TokenExpiredException $e) {

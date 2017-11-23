@@ -21,6 +21,8 @@ $router->group(
 
         $router->post('/auth/login', 'AuthController@loginPost');
 
+        $router->get('/users', 'UserController@index');
+
         $router->group(
             ['middleware' => 'auth'],
             function() use ($router) {

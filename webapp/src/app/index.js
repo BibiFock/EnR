@@ -37,7 +37,7 @@ var router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(m => m.meta.needGuard) && Auth.user.authenticated) {
+    if (to.matched.some(m => m.meta.needGuard) && !Auth.user.authenticated) {
         next('/auth/login')
     } else {
         next()

@@ -45,6 +45,25 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        // if (App::runningUnitTests()) {
+         // if ($request->isXmlHttpRequest()) {
+            // return response()->json(
+                // class_basename( $e ) . ' in ' .
+                // basename( $e->getFile() ) . ' line ' . $e->getLine()
+                // . ': ' . $e->getMessage(),
+                // 500
+            // );
+            // return response()->json([
+                    // 'message' => $e->getMessage(),
+                    // 'file' => $e->getFile(),
+                    // 'line' => $e->getLine(),
+                    // // 'trace' => $e->getTrace()
+                // ],
+                // 500
+            // );
+
+        // }
+        $request->format('json');
         return parent::render($request, $e);
     }
 }

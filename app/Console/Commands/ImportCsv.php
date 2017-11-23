@@ -13,6 +13,7 @@ use App\Roof\Type;
 use App\Roof\Tilt;
 use App\Roof\SouthOrientation;
 use App\Department;
+use App\User;
 
 class ImportCsv extends Command
 {
@@ -51,6 +52,11 @@ class ImportCsv extends Command
         $this->info('start parse');
         $rows = $this->parseCsv();
         $this->info('parse finish start insert');
+
+        $structType = StructureType::firstOrCreate([
+            'name' => 'structure initiatrice'
+        ]);
+
         foreach ($rows as $row) {
             $contact = null;
             if (!empty($row['responsable_lastname'])) {
@@ -59,9 +65,6 @@ class ImportCsv extends Command
                     'last_name' => $row['responsable_lastname'],
                 ]);
             }
-            $structType = StructureType::firstOrCreate([
-                'name' => 'structure initiatrice'
-            ]);
             $struct = Structure::firstOrCreate([
                 'name' => $row['structure'],
                 'contact_id' => (!empty($contact) ? $contact->id : null),
@@ -116,8 +119,17 @@ class ImportCsv extends Command
                     ])->id
                 ])->id,
             ]);
-
         }
+
+        $this->info('created users from structure initiatrice');
+        $rows = Structure::where('type_id', $structType->id)->get();
+        foreach ($rows as $row) {
+            User::firstOrCreate(
+                ['name' => $row->name],
+                ['password' => app('hash')->make('123photo')]
+            );
+        }
+
         $this->info('is finished');
     }
 

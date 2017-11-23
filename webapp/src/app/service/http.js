@@ -4,7 +4,7 @@ import Auth from './auth.js';
 var Http = {
     interceptor: (request, next)  => {
         if (Auth.user.authenticated) {
-            request.headers['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
+            request.headers.append('Authorization', 'Bearer ' + localStorage.getItem('id_token'));
         }
 
         next((response) => {
@@ -14,7 +14,7 @@ var Http = {
                     title: response.status + '. ' + response.statusText,
                     text: response.body,
                 });
-                Auth.signout();
+                Auth.signout(Vue);
             }
         });
     }

@@ -3,7 +3,7 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class AuthTest extends TestCase
+class AuthControllerTest extends TestCase
 {
     protected $user = null;
     protected $password = '123';
@@ -33,7 +33,7 @@ class AuthTest extends TestCase
             'POST',
             '/api/auth/login',
             [
-                'name' => $this->user->name,
+                'id' => $this->user->id,
                 'password' => $this->password
             ]
         );
@@ -47,7 +47,7 @@ class AuthTest extends TestCase
             'POST',
             '/api/auth/login',
             [
-                'name' => $this->user->name,
+                'id' => $this->user->id,
                 'password' => $this->password . '23'
             ]
         );
