@@ -33,16 +33,6 @@ class ImportCsv extends Command
     protected $description = 'import data from shared csv';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -51,6 +41,7 @@ class ImportCsv extends Command
     {
         $this->info('start parse');
         $rows = $this->parseCsv();
+
         $this->info('parse finish start insert');
 
         $structType = StructureType::firstOrCreate([
@@ -67,6 +58,7 @@ class ImportCsv extends Command
             }
             $struct = Structure::firstOrCreate([
                 'name' => $row['structure'],
+            ], [
                 'contact_id' => (!empty($contact) ? $contact->id : null),
                 'type_id' => (!empty($structType) ? $structType->id : null)
             ]);
@@ -101,9 +93,9 @@ class ImportCsv extends Command
                 'street' => $row['street'],
                 'zip' => $row['zip'],
                 'city' => $row['city'],
-                'department_id' => Department::firstOrCreate([
-                    'name' => 'department'
-                ])->id,
+                // 'department_id' => Department::first([
+                    // 'name' => $row['department']
+                // ])->id,
                 'latitude' => $row['latitude'],
                 'longitude' => $row['longitude'],
                 'owner_id' => Structure::firstOrCreate([
@@ -191,7 +183,7 @@ class ImportCsv extends Command
             $tmp = array();
             foreach ($row as $k => $v) {
                 if (!empty($keys[$k])) {
-                    $tmp[$keys[$k]] = $v;
+                    $tmp[$keys[$k]] = trim($v);
                 }
             }
 

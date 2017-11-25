@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Structure extends Model
 {
 
+    const INIT_STRUCTURE_ID = 1;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -17,6 +19,11 @@ class Structure extends Model
         // relations
         'contact_id', 'type_id'
     ];
+
+    public static function getAllInitStructure()
+    {
+        return static::where('type_id', static::INIT_STRUCTURE_ID)->get();
+    }
 
     public function contact()
     {

@@ -48,7 +48,6 @@ export default {
                 this.users = response.body;
             }
         );
-
     }
 }
 </script>

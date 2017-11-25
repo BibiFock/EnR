@@ -16,8 +16,13 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <!- /temporary hide this -->
+            <button type="button" class="btn btn-primary d-inline-block"
+                v-on:click="addRoof()">
+                add
+            </button>
 
             <autocomplete
+                class="d-inline-block"
                 url="http://nominatim.openstreetmap.org/search"
                 anchor="display_name"
                 name="autocomplete"
@@ -27,6 +32,7 @@
                 :customParams="{ format: 'json' }"
                 :classes="{ input: 'form-control', wrapper: 'input-wrapper'}"
                 :onSelect="handleSelect" > </autocomplete>
+
         </div>
 
     </div>
@@ -63,6 +69,12 @@ export default {
                 + '<div>' + roof.structure.name + '</div>'
                 + '<div class="text-right">' + roof.power_max + ' kWc</div>';
 
+        },
+        addRoof: function() {
+            this.$router.push({
+                name:'roof',
+                params: { roofId: 0 }
+            });
         },
         showDetail: function(roof) {
             this.$router.push({

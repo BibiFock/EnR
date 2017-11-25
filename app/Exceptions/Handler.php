@@ -45,25 +45,32 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        // if (App::runningUnitTests()) {
-         // if ($request->isXmlHttpRequest()) {
-            // return response()->json(
-                // class_basename( $e ) . ' in ' .
-                // basename( $e->getFile() ) . ' line ' . $e->getLine()
-                // . ': ' . $e->getMessage(),
-                // 500
-            // );
-            // return response()->json([
-                    // 'message' => $e->getMessage(),
-                    // 'file' => $e->getFile(),
-                    // 'line' => $e->getLine(),
-                    // // 'trace' => $e->getTrace()
-                // ],
-                // 500
-            // );
+        if (app()->environment('testing')
+            || $request->ajax()
+        ) {
+            $trace = array_map( function($row) {
+                    if (empty($row['file'])) {
+                        return $row['class'] . '->' . $row['function'];
+                    }
+                    return $row['file'] . ':' . $row['line'];
+                },
+                $e->getTrace()
+            );
 
-        // }
-        $request->format('json');
+            if (method_exists($e, 'getStatusCode')) {
+                $status = $e->getStatusCode();
+            }
+
+            return response()->json([
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => (!app()->environment('testing') ? implode(PHP_EOL, $trace) : true)
+                ],
+                (!empty($status) ? $status : 500)
+            );
+
+        }
         return parent::render($request, $e);
     }
 }

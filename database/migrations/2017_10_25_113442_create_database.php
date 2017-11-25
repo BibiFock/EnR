@@ -242,7 +242,7 @@ class CreateDatabase extends Migration
             $table->increments('id');
             $table->enum(
                 'probability',
-                array('acquise', 'forte', 'moyenne', 'faible')
+                \App\Roof::PROBABILITIES
             )->nullable();
             $table->integer('structure_id')->nullable();
             $table->integer('square_area')->nullable();

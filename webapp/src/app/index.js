@@ -8,7 +8,7 @@ import Notifications from 'vue-notification';
 
 import App from './components/App';
 import Map from './components/Map';
-import RoofResume from './components/roof/Resume';
+import RoofForm from './components/roof/Form';
 import Login from './components/auth/Login';
 import Auth from './service/auth.js';
 import Http from './service/http.js';
@@ -22,9 +22,8 @@ Vue.http.interceptors.push(Http.interceptor);
 const routes = [
     { path: '', component: App,
         children: [
-            // { name: 'map', path: 'map', component: Map },
             { name: 'map', path: '', component: Map, meta: { needGuard: true } },
-            { name: 'roof', path: 'roofs/:roofId', component: RoofResume, meta: { needGuard: true }},
+            { name: 'roof', path: 'roofs/:roofId', component: RoofForm, meta: { needGuard: true }},
             { name: 'login', path: 'auth/login', component: Login },
             { path: '*', redirect: 'map' }
         ]

@@ -1,0 +1,2 @@
+- revoir la migration 1
+    elle doit juste créer la structure de la base pas la compléter, bouger les completions dans le seeder

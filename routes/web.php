@@ -26,8 +26,24 @@ $router->group(
         $router->group(
             ['middleware' => 'auth'],
             function() use ($router) {
+                $roofId = '{id:[0-9]+}';
+
+                // getters
+                $router->get('structures', 'StructureController@index');
+                $router->get('departments', 'DepartmentController@index');
+
+                $router->get('roof/purchase_categories', 'RoofPurchaseCategoryController@index');
+                $router->get('roof/south_orientations', 'RoofSouthOrientationController@index');
+                $router->get('roof/tilts', 'RoofTiltController@index');
+                $router->get('roof/types', 'RoofTypeController@index');
+                $router->get('roof/probabilities', 'RoofController@getProbabilities');
+
                 $router->get('roofs', 'RoofController@index');
-                $router->get('roofs/{id:[0-9]+}', 'RoofController@getRoof');
+                $router->get('roofs/' . $roofId, 'RoofController@getRoof');
+
+                // modifier
+                $router->post('roofs', 'RoofController@addRoof');
+                $router->put('roofs/' . $roofId, 'RoofController@updateRoof');
             }
         );
     }
