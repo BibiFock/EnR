@@ -25,13 +25,38 @@ class Roof extends Model
         // , 'department_id'
     ];
 
+    protected $casts = [
+        'erp' => 'boolean',
+    ];
+
     protected $hidden = [
         'department_id'
     ];
 
+    public function __construct($params = [])
+    {
+        parent::__construct($params);
+        $this->initExtrasDatas($params);
+    }
+
+    public function fill(array $params)
+    {
+        parent::fill($params);
+        $this->initExtrasDatas($params);
+    }
+
+    public function save(array $options = [])
+    {
+        if ($this->owner) {
+            $this->owner->push();
+        }
+
+        return parent::save($options);
+    }
+
     public function owner()
     {
-        return $this->belongsTo('\App\Contact');
+        return $this->belongsTo('\App\Structure');
     }
 
     public function quotes()
@@ -69,4 +94,33 @@ class Roof extends Model
         return $this->belongsTo('\App\Department');
     }
 
+    protected function initExtrasDatas($params = [])
+    {
+        if (!empty($params['owner'])) {
+            $this->loadOwner($params['owner']);
+        }
+    }
+
+    protected function loadOwner($params)
+    {
+        if (!empty($this->owner)) {
+            if (!empty($params['contact'])) {
+                $this->owner->contact->fill($params['contact']);
+            }
+            $this->owner->type_id = $params['type_id'];
+        } else {
+            $owner = $this->owner()->create([
+                'name' => '',
+                'type_id' => $params['type_id'],
+            ]);
+
+            $this->owner()->associate($owner);
+
+            $contact = $this->owner->contact()->create($params['contact']);
+
+            $this->owner->contact()->associate($contact);
+        }
+        $this->owner->name = $this->owner->contact->first_name . ' '
+            . $this->owner->contact->last_name;
+    }
 }

@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Roof;
+use App\Contact;
 
 class RoofController extends Controller
 {
@@ -19,12 +20,12 @@ class RoofController extends Controller
 
     public function getRoof($id)
     {
-        $roof = Roof::with([
-            'owner', 'structure', 'southOrientation',
-            'purchaseCategory', 'type', 'tilt', 'department'
-        ])->find($id);
+        $roof = Roof::find($id);
+        if (empty($roof)) {
+            return response()->json(['roof_not_found'], 404);
+        }
 
-        return response()->json($roof);
+        return $this->renderRoof($roof);
     }
 
     public function getProbabilities()
@@ -34,16 +35,17 @@ class RoofController extends Controller
 
     public function addRoof(Request $request)
     {
-        $validator = $this->getValidator($request);
+       $validator = $this->getValidator($request);
 
         if ($validator->fails()) {
             return $this->reportBadRequest($validator);
         }
 
-        $roof = new Roof($request->all());
+        $params = $validator->attributes();
+        $roof = new Roof($params);
         $roof->save();
 
-        return response()->json($roof);
+        return $this->renderRoof($roof);
     }
 
     public function updateRoof(Request $request, $id)
@@ -53,16 +55,16 @@ class RoofController extends Controller
         if ($validator->fails()) {
             return $this->reportBadRequest($validator);
         }
-
+        $params = $validator->attributes();
         try {
             $roof = Roof::findOrFail($id);
-            $roof->fill($request->all());
+            $roof->fill($params);
             $roof->save();
         } catch (ModelNotFoundException $e) {
             return response()->json(['roof_not_found'], 404);
         }
 
-        return response()->json($roof);
+        return $this->renderRoof($roof);
     }
 
     protected function getValidator(Request $request)
@@ -98,8 +100,23 @@ class RoofController extends Controller
                 'purchase_category_id' => 'numeric',
                 'type_id' => 'numeric',
                 'tilt_id' => 'numeric',
-                'department_id' => 'numeric'
+                'department_id' => 'numeric',
+
+                // other
+                'owner.contact.first_name' => 'string|max:200',
+                'owner.contact.last_name' => 'string|max:200',
+                'owner.type_id' => 'numeric',
+                'owner.contact.phone' => 'string|max:50',
+                'owner.contact.email' => 'sometimes|string|max:250',
             ]
         );
+    }
+
+    protected function renderRoof($roof)
+    {
+        return response()->json($roof->loadMissing([
+            'owner', 'structure', 'southOrientation',
+            'purchaseCategory', 'type', 'tilt', 'department'
+        ]));
     }
 }

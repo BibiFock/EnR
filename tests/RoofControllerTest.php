@@ -9,25 +9,16 @@ class RoofControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected $roofStructure = [
-        'id', 'name', 'probability', 'square_area',
-        'power_max', 'power_min', 'erp',
-        'building_size', 'perimeter_abf', 'remarks',
-        'inverter_location', 'inverter_distance', 'street',
-        'zip', 'city', 'latitude', 'longitude',
-        // relations
-        'owner_id', 'structure_id', 'south_orientation_id',
-        'purchase_category_id', 'type_id', 'tilt_id',/* 'department_id',*/
-        // other infos
-        // structure
-        'structure' => [ 'id', 'name', 'contact_id', 'type_id' ],
-        'owner' => [ 'id', 'first_name', 'last_name', 'phone', 'email' ]
-    ];
+    protected $roofStructure = [];
 
     public function setUp()
     {
         parent::setUp();
         $this->user = factory('App\User')->create();
+
+        $this->roofStructure = ( new Roof() )->getFillable();
+        $this->roofStructure['structure'] = ( new App\Structure() )->getFillable();
+        $this->roofStructure['owner'] = ( new App\Structure() )->getFillable();
     }
 
     public function tearDOWN()
@@ -50,30 +41,72 @@ class RoofControllerTest extends TestCase
             ->seeJsonStructure([$this->roofStructure]);
     }
 
+    public function testGetRoof()
+    {
+        $roof = factory('App\Roof')->make();
+
+        $roof->save();
+        $this->actingAs($this->user)->get(
+            '/api/roofs/' . $roof->id
+        )->seeJsonStructure($this->roofStructure);
+
+        $roof->forceDelete();
+
+        $response = $this->actingAs($this->user)->call(
+            'GET',
+            '/api/roofs/' . $roof->id
+        );
+        $this->assertEquals( 404, $response->status());
+    }
+
     public function testAddRoof()
     {
         $roof = factory('App\Roof')->make();
         $params = $roof->getAttributes();
         $struct = array_merge(array_keys($params), ['id']);
 
+        $roof->owner->name = $roof->owner->contact->first_name . ' '
+            . $roof->owner->contact->last_name;
+        $resultRoof = $params;
+
+        $resultOwner = $params['owner'] = $roof->owner->getAttributes();
+        $struc = array_keys($params['owner']);
+
+        $params['owner']['contact'] = $roof->owner->contact->getAttributes();
+
         $response = $this->actingAs($this->user)
-            ->post(
-                '/api/roofs',
-                $params
-            )->seeJson($roof->getAttributes())
-            ->seeJsonStructure($struct);
+            ->post('/api/roofs', $params)
+            ->seeJsonStructure($struct)
+            ->seeJson($resultRoof)
+            ->seeJson($resultOwner);
     }
 
     public function testUpdateRoof()
     {
+        // toit de référence
         $roof = factory('App\Roof')->create();
+        // on regénère un jeu de données complet
         $params = factory('App\Roof')->make()->getAttributes();
+        // on utilise les mêmes ids histoires de voir si les datas sont bien modifiée
+        $params['owner_id'] = $roof->owner_id;
+
+        $owner = factory('App\Structure')->make([
+            'contact_id' => $roof->owner->contact_id
+        ])->getAttributes();
+
+        $contact = factory('App\Contact')->make()->getAttributes();
+
+        $datas = $params;
+        $datas['owner'] = $owner;
+        $datas['owner']['contact'] = $contact;
+
+        $owner['name'] = $contact['first_name'] . ' ' . $contact['last_name'];
 
         // Test 404
         $response = $this->actingAs($this->user)->call(
             'PUT',
-            '/api/roofs/' . ($roof->id + 1),
-            $params
+            '/api/roofs/' . ($roof->id . '1111111'),
+            $datas
         );
 
         $this->assertEquals(
@@ -84,8 +117,9 @@ class RoofControllerTest extends TestCase
         $this->actingAs($this->user)
             ->put(
                 '/api/roofs/' . $roof->id,
-                $params
-            )->seeJson($params);
+                $datas
+            )->seeJson($params)
+            ->seeJson($owner);
 
         $roof->forceDelete();
     }

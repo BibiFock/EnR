@@ -38,7 +38,7 @@ $factory->define(App\Roof::class, function (Faker\Generator $faker) {
         'street' => $faker->streetAddress,
         'zip' => $faker->postcode,
         'city' => $faker->city,
-        'department_id' => rand(1,75),
+        // 'department_id' => rand(1,75),
         'latitude' => $faker->randomFloat(4, 48,49),
         'longitude' => $faker->randomFloat(4, 2, 3),
         'owner_id' => function () {

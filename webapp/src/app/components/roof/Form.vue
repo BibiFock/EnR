@@ -87,7 +87,6 @@
             </select>
         </div>
 
-
         <div class="form-check offset-2 pm-2">
             <label class="form-check-label col-2">
                 <input class="form-check-input" type="checkbox"
@@ -121,38 +120,98 @@
             <textarea class="col-10 pt-0 form-control" type="text" v-model="roof.remarks"></textarea>
         </div>
 
-        <div class="form-group row">
-            <label class="col-2 text-right" >adresse</label>
-            <input type="text" class="col-10 form-control" v-model="roof.street" >
-        </div>
+        <fieldset>
+            <legend class="offset-2">
+                <small>propriétaire</small>
+            </legend>
 
-        <div class="form-group row">
-            <label class="col-2 text-right">ville</label>
-            <div class="col-10 pt-0 row">
-                <input type="text" class="pt-0 form-control col-3" v-model="roof.city" >
-                <!-- <label class="col-2">département</label> -->
-                <!-- <select class="form-control col-2" -->
-                    <!-- v-model="roof.department_id"> -->
-                    <!-- <option v-for="dep in infos.departments" :key="dep.id" -->
-                        <!-- :value="dep.id" > -->
-                        <!-- {{ dep.zip }}. {{ dep.name }} -->
-                    <!-- </option> -->
-                <!-- </select> -->
+            <div v-if="editingOwner">
+                <div class="form-group row">
+                    <label class="col-2 text-right">prénom</label>
+                    <input class="col-10 pt-0 form-control" type="text"
+                                                            v-model="owner.contact.first_name" />
+                </div>
 
-                <label class="col-2">code postal</label>
-                <input type="text" class="pt-0 col-1 form-control" v-model="roof.zip">
+                <div class="form-group row">
+                    <label class="col-2 text-right">nom</label>
+                    <input class="col-10 pt-0 form-control" type="text"
+                                                            v-model="owner.contact.last_name" />
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 text-right">type</label>
+                    <select class="col-10 pt-0 form-control"
+                            v-model="owner.type_id">
+                        <option v-for="so in infos.structure_types" :key="so.id"
+                                :value="so.id" >
+                                {{ so.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-2 text-right">téléphone</label>
+                    <input class="col-10 pt-0 form-control" type="text"
+                                                            v-model="owner.contact.phone" />
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-2 text-right">email</label>
+                    <input class="col-10 pt-0 form-control" type="email"
+                                                            v-model="owner.contact.email" />
+                </div>
             </div>
-        </div>
+            <div v-else>
+                <div class="form-group row">
+                    <!-- TODO make a card of contact infos -->
+                    <label class="col-2 text-right">nom</label>
+                    <input class="col-7 pt-0 form-control-plaintext" type="text"
+                        v-model="roof.owner.name" />
+                    <button type="button" class="btn btn-secondary"
+                        v-on:click="loadOwner()">edit</button>
+                </div>
+            </div>
 
-        <div class="row clearfix">
-            <v-map class="offset-2 col-5 map-preview" :zoom="zoom"
-                v-on:l-moveend="updateGeo"
-                :center="center">
-                <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
-                <v-marker :lat-lng="[roof.latitude, roof.longitude]" >
-                </v-marker>
-            </v-map>
-        </div>
+        </fieldset>
+
+        <fieldset>
+            <legend class="offset-2">
+                <small>localisation</small>
+            </legend>
+
+            <div class="form-group row">
+                <label class="col-2 text-right" >adresse</label>
+                <input type="text" class="col-10 form-control" v-model="roof.street" >
+            </div>
+
+            <div class="form-group row">
+                <label class="col-2 text-right">ville</label>
+                <div class="col-10 pt-0 row">
+                    <input type="text" class="pt-0 form-control col-3" v-model="roof.city" >
+                    <!-- <label class="col-2">département</label> -->
+                    <!-- <select class="form-control col-2" -->
+                        <!-- v-model="roof.department_id"> -->
+                        <!-- <option v-for="dep in infos.departments" :key="dep.id" -->
+                            <!-- :value="dep.id" > -->
+                            <!-- {{ dep.zip }}. {{ dep.name }} -->
+                        <!-- </option> -->
+                    <!-- </select> -->
+
+                    <label class="col-2">code postal</label>
+                    <input type="text" class="pt-0 col-1 form-control" v-model="roof.zip">
+                </div>
+            </div>
+
+            <div class="row clearfix">
+                <v-map class="offset-2 col-5 map-preview" :zoom="zoom"
+                    v-on:l-moveend="updateGeo"
+                    :center="center">
+                    <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
+                    <v-marker :lat-lng="[roof.latitude, roof.longitude]" >
+                    </v-marker>
+                </v-map>
+            </div>
+
+        </fieldset>
 
         <div class="row">
             <div class="col-6">
@@ -181,8 +240,24 @@ export default {
                 purchase_categories: null,
                 tilts: null,
                 south_orientations: null,
+                structure_types: null,
                 // departments: null
             },
+        },
+        owner: {
+            type:Object,
+            default: {
+                id: 0,
+                name: '',
+                contact_id: 0,
+                contact: {
+                    id: 0,
+                    first_name: '',
+                    last_name: '',
+                    phone: '',
+                    email: ''
+                }
+            }
         },
         roof: {
             type: Object,
@@ -202,17 +277,17 @@ export default {
                 street: '',
                 zip: '',
                 city: '',
-                latitude: 0,
-                longitude: 0,
+                latitude: process.env.COORD.LATITUDE,
+                longitude: process.env.COORD.LONGITUDE,
                 // relations
                 owner_id: 0,
+                owner: { name:'' },
                 structure_id: 0,
                 south_orientation_id: 0,
                 purchase_category_id: 0,
                 type_id: 0,
                 tilt_id: 0,
                 department_id: 0
-
             }
         }
     },
@@ -231,6 +306,14 @@ export default {
         backToMap:  function() {
             this.$router.push({ name: 'map' });
         },
+        loadOwner: function() {
+            this.$http.get(process.env.API_URL + 'structures/' + this.roof.owner_id).then(
+                response => {
+                    this.owner = response.body;
+                    this.editingOwner = true;
+                }
+            );
+        },
         save: function() {
             let method = 'post',
                 url = process.env.API_URL + 'roofs/';
@@ -239,8 +322,13 @@ export default {
                 method = 'put';
                 url += this.roof.id;
             }
-            this.$http[method](url, this.roof).then(
+            let params = this.roof;
+            if (this.editingOwner) {
+                params.owner = this.owner;
+            }
+            this.$http[method]( url, params).then(
                 response => {
+                    this.editingOwner = false;
                     if (this.roof.id == false) {
                         this.$router.replace({
                             name:'roof',
@@ -258,9 +346,6 @@ export default {
                 }
             );
         },
-        close: function() {
-            this.$emit('close');
-        },
         loadRoof: function(roofId) {
             this.$http.get(
                 process.env.API_URL + 'roofs/' + roofId
@@ -268,12 +353,13 @@ export default {
                 response => {
                     this.roof = response.body;
                     this.center = [this.roof.latitude, this.roof.longitude];
+                    this.editingOwner = (this.roof.owner_id === null);
                 }
             );
         },
         loadExtrasInfos: function(name) {
             let url = process.env.API_URL;
-            if (['structures', 'departments'].indexOf(name) == -1) {
+            if (['structures', 'structure_types', 'departments'].indexOf(name) == -1) {
                 url += 'roof/';
             }
             this.$http.get(
@@ -284,12 +370,16 @@ export default {
         }
     },
     mounted() {
+        console.log(this.editingOwner);
+        console.log(this.zoom);
         for (let key in this.infos) {
             this.loadExtrasInfos(key);
         }
 
         if (this.$route.params.roofId != false) {
             this.loadRoof(this.$route.params.roofId);
+        } else {
+            this.editingOwner = true;
         }
     },
     data() {
@@ -297,6 +387,8 @@ export default {
             zoom:13,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            center: [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ],
+            editingOwner: false
         }
     }
 

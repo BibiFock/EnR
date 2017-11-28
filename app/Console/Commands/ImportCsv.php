@@ -67,6 +67,13 @@ class ImportCsv extends Command
                 'name' => $row['sold_cat']
             ]);
 
+            try {
+                $typeId = Type::findOrFail(['name' => $row['roof_type']])->id;
+            } catch (\Exception $e) {
+                $typeId = 2; // other one
+                $row['description'] .= ' | type de toit:' . $row['roof_type'];
+            }
+
             Roof::create([
                 'name' => $row['street'] . ', ' . $row['city'],
                 'probability' => $row['probability'],
@@ -75,9 +82,7 @@ class ImportCsv extends Command
                 'power_max' => $row['estimate_hight'],
                 'power_min' => $row['estimate_low'],
                 'purchase_category_id' => $purchaseCategory->id,
-                'type_id' => Type::firstOrCreate([
-                    'name' => $row['roof_type'],
-                ])->id,
+                'type_id' => $typeId,
                 'tilt_id' => Tilt::firstOrCreate([
                     'name' => $row['inclinaison'],
                 ])->id,
@@ -101,7 +106,7 @@ class ImportCsv extends Command
                 'owner_id' => Structure::firstOrCreate([
                     'name' => $row['structure_name'],
                     'type_id' => StructureType::firstOrCreate([
-                        'name' => 'structure_type'
+                        'name' => $row['structure_type']
                     ])->id,
                     'contact_id' => Contact::firstOrCreate([
                         'first_name' => $row['contact_firstname'],

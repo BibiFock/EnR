@@ -47,8 +47,8 @@ require('../../../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete
 
 export default {
     props: {
-        lat:{ type:Number, default:48.8566 },
-        lng: { type:Number, default: 2.3522 },
+        lat:{ type:Number, default: process.env.COORD.LATITUDE },
+        lng: { type:Number, default: process.env.COORD.LONGITUDE },
         roofs: { type: Array, default: [] }
     },
     components: {
@@ -66,7 +66,7 @@ export default {
         },
         getToolTip: function(roof) {
             return '<div><strong>' + roof.name + '</strong></div>'
-                + '<div>' + roof.structure.name + '</div>'
+                + '<div>' + (roof.structure ? roof.structure.name : '-') + '</div>'
                 + '<div class="text-right">' + roof.power_max + ' kWc</div>';
 
         },

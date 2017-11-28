@@ -26,10 +26,12 @@ $router->group(
         $router->group(
             ['middleware' => 'auth'],
             function() use ($router) {
-                $roofId = '{id:[0-9]+}';
+                $genericId = '{id:[0-9]+}';
 
                 // getters
                 $router->get('structures', 'StructureController@index');
+                $router->get('structures/' . $genericId, 'StructureController@get');
+                $router->get('structure_types', 'StructureTypeController@index');
                 $router->get('departments', 'DepartmentController@index');
 
                 $router->get('roof/purchase_categories', 'RoofPurchaseCategoryController@index');
@@ -39,11 +41,11 @@ $router->group(
                 $router->get('roof/probabilities', 'RoofController@getProbabilities');
 
                 $router->get('roofs', 'RoofController@index');
-                $router->get('roofs/' . $roofId, 'RoofController@getRoof');
+                $router->get('roofs/' . $genericId, 'RoofController@getRoof');
 
                 // modifier
                 $router->post('roofs', 'RoofController@addRoof');
-                $router->put('roofs/' . $roofId, 'RoofController@updateRoof');
+                $router->put('roofs/' . $genericId, 'RoofController@updateRoof');
             }
         );
     }

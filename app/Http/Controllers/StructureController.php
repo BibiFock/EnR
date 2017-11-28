@@ -14,4 +14,10 @@ class StructureController extends Controller
         return response()->json($structures);
     }
 
+    public function get($id)
+    {
+        $s = Structure::with('contact')->find($id);
+
+        return response()->json($s);
+    }
 }

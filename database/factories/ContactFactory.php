@@ -15,7 +15,7 @@ $factory->define(App\Contact::class, function (Faker\Generator $faker) {
     return [
         'first_name' => $faker->firstName(),
         'last_name' => $faker->lastName,
-        'phone' => $faker->phoneNumber,
+        'phone' => '0' . $faker->randomNumber(9),
         'email' => $faker->email,
     ];
 });

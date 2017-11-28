@@ -262,8 +262,8 @@ class CreateDatabase extends Migration
             $table->string('zip', 250)->nullable();
             $table->string('city', 250)->nullable();
             $table->integer('department_id')->nullable();
-            $table->float('latitude')->nullable();
-            $table->float('longitude')->nullable();
+            $table->float('latitude', 12, 10)->nullable();
+            $table->float('longitude', 12, 10)->nullable();
             $table->integer('owner_id')->nullable(); // --> structureId
             $table->timestamps();
         });
