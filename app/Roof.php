@@ -21,7 +21,12 @@ class Roof extends Model
         'zip', 'city', 'latitude', 'longitude',
         // relations
         'owner_id', 'structure_id', 'south_orientation_id',
-        'purchase_category_id', 'type_id', 'tilt_id', 'department_id'
+        'purchase_category_id', 'type_id', 'tilt_id'
+        // , 'department_id'
+    ];
+
+    protected $hidden = [
+        'department_id'
     ];
 
     public function owner()

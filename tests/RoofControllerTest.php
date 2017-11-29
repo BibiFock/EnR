@@ -17,7 +17,7 @@ class RoofControllerTest extends TestCase
         'zip', 'city', 'latitude', 'longitude',
         // relations
         'owner_id', 'structure_id', 'south_orientation_id',
-        'purchase_category_id', 'type_id', 'tilt_id', 'department_id',
+        'purchase_category_id', 'type_id', 'tilt_id',/* 'department_id',*/
         // other infos
         // structure
         'structure' => [ 'id', 'name', 'contact_id', 'type_id' ],
