@@ -69,46 +69,48 @@ class RoofController extends Controller
 
     protected function getValidator(Request $request)
     {
+        $rules = [
+            'name' => 'string|required|filled',
+            'probability' => ['required', Rule::in(Roof::PROBABILITIES)],
+            'square_area' => 'numeric',
+            'power_max' => 'numeric',
+            'power_min' => 'numeric',
+
+            'erp' => 'boolean',
+            'building_size' => 'numeric',
+            'perimeter_abf' => 'boolean',
+            'remarks' => 'string',
+
+            'inverter_location' => 'string',
+            'inverter_distance' => 'numeric',
+            'street' => 'string|max:250',
+
+            'zip' => 'string|max:250',
+            'city' => 'string|max:250',
+            'latitude' => 'numeric',
+            'longitude' => 'numeric',
+
+            // relations
+            'owner_id' => 'numeric',
+            'structure_id' => 'numeric',
+            'south_orientation_id' => 'numeric',
+
+            'purchase_category_id' => 'numeric',
+            'type_id' => 'numeric',
+            'tilt_id' => 'numeric',
+            'department_id' => 'numeric',
+
+            // other
+            'owner.contact.first_name' => 'string|max:200|filled',
+            'owner.contact.last_name' => 'string|max:200|filled',
+            'owner.type_id' => 'numeric|filled',
+            'owner.contact.phone' => 'string|max:50',
+            'owner.contact.email' => 'string|max:250',
+        ];
+
         return \Validator::make(
-            $request->all(),
-            [
-                'name' => 'string|required',
-                'probability' => ['required', Rule::in(Roof::PROBABILITIES)],
-                'square_area' => 'numeric',
-                'power_max' => 'numeric',
-                'power_min' => 'numeric',
-
-                'erp' => 'boolean',
-                'building_size' => 'numeric',
-                'perimeter_abf' => 'boolean',
-                'remarks' => 'string',
-
-                'inverter_location' => 'string',
-                'inverter_distance' => 'numeric',
-                'street' => 'string|max:250',
-
-                'zip' => 'string|max:250',
-                'city' => 'string|max:250',
-                'latitude' => 'numeric',
-                'longitude' => 'numeric',
-
-                // relations
-                'owner_id' => 'numeric',
-                'structure_id' => 'numeric',
-                'south_orientation_id' => 'numeric',
-
-                'purchase_category_id' => 'numeric',
-                'type_id' => 'numeric',
-                'tilt_id' => 'numeric',
-                'department_id' => 'numeric',
-
-                // other
-                'owner.contact.first_name' => 'string|max:200',
-                'owner.contact.last_name' => 'string|max:200',
-                'owner.type_id' => 'numeric',
-                'owner.contact.phone' => 'string|max:50',
-                'owner.contact.email' => 'sometimes|string|max:250',
-            ]
+            $request->only(array_keys($rules)),
+            $rules
         );
     }
 

@@ -244,52 +244,6 @@ export default {
                 // departments: null
             },
         },
-        owner: {
-            type:Object,
-            default: {
-                id: 0,
-                name: '',
-                contact_id: 0,
-                contact: {
-                    id: 0,
-                    first_name: '',
-                    last_name: '',
-                    phone: '',
-                    email: ''
-                }
-            }
-        },
-        roof: {
-            type: Object,
-            default:{
-                id: 0,
-                name: '',
-                probability: '',
-                square_area: 0,
-                power_max: 0,
-                power_min: 0,
-                erp: false,
-                building_size: 0,
-                perimeter_abf: false,
-                remarks: '',
-                inverter_location: '',
-                inverter_distance: 0,
-                street: '',
-                zip: '',
-                city: '',
-                latitude: process.env.COORD.LATITUDE,
-                longitude: process.env.COORD.LONGITUDE,
-                // relations
-                owner_id: 0,
-                owner: { name:'' },
-                structure_id: 0,
-                south_orientation_id: 0,
-                purchase_category_id: 0,
-                type_id: 0,
-                tilt_id: 0,
-                department_id: 0
-            }
-        }
     },
     components: {
         'v-map': Vue2Leaflet.Map,
@@ -353,7 +307,7 @@ export default {
                 response => {
                     this.roof = response.body;
                     this.center = [this.roof.latitude, this.roof.longitude];
-                    this.editingOwner = (this.roof.owner_id === null);
+                    this.editingOwner = (this.roof.owner_id === 0);
                 }
             );
         },
@@ -370,8 +324,6 @@ export default {
         }
     },
     mounted() {
-        console.log(this.editingOwner);
-        console.log(this.zoom);
         for (let key in this.infos) {
             this.loadExtrasInfos(key);
         }
@@ -388,7 +340,47 @@ export default {
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             center: [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ],
-            editingOwner: false
+            editingOwner: false,
+            owner: {
+                id: 0,
+                name: '',
+                contact_id: 0,
+                contact: {
+                    // id: 0,
+                    // first_name: '',
+                    // last_name: '',
+                    // phone: '',
+                    // email: ''
+                }
+            },
+            roof: {
+                id: 0,
+                name: '',
+                probability: '',
+                square_area: 0,
+                power_max: 0,
+                power_min: 0,
+                erp: false,
+                building_size: 0,
+                perimeter_abf: false,
+                remarks: '',
+                inverter_location: '',
+                inverter_distance: 0,
+                street: '',
+                zip: '',
+                city: '',
+                latitude: process.env.COORD.LATITUDE,
+                longitude: process.env.COORD.LONGITUDE,
+                // relations
+                owner_id: 0,
+                owner: { name:'' },
+                structure_id: 0,
+                south_orientation_id: 0,
+                purchase_category_id: 0,
+                type_id: 0,
+                tilt_id: 0,
+                department_id: 0
+            }
         }
     }
 

@@ -103,6 +103,17 @@ class Roof extends Model
 
     protected function loadOwner($params)
     {
+        if (empty($params['contact']) && empty($params['type_id'])) {
+            return true;
+        }
+
+        if (
+            empty($params['contact']['first_name'])
+            && empty($params['contact']['last_name'])
+        ) {
+            return true;
+        }
+
         if (!empty($this->owner)) {
             if (!empty($params['contact'])) {
                 $this->owner->contact->fill($params['contact']);

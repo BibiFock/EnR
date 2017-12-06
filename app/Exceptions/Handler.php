@@ -45,9 +45,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if (app()->environment('testing')
-            || $request->ajax()
-        ) {
+        // if (app()->environment('testing')
+            // || $request->ajax()
+        // ) {
             $trace = array_map( function($row) {
                     if (empty($row['file'])) {
                         return $row['class'] . '->' . $row['function'];
@@ -65,12 +65,12 @@ class Handler extends ExceptionHandler
                     'message' => $e->getMessage(),
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => (!app()->environment('testing') ? implode(PHP_EOL, $trace) : true)
+                    'trace' => (!app()->environment('testing') ? $trace : true)
                 ],
                 (!empty($status) ? $status : 500)
             );
 
-        }
-        return parent::render($request, $e);
+        // }
+        // return parent::render($request, $e);
     }
 }
