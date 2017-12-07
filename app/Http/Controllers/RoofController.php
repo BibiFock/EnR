@@ -11,66 +11,11 @@ use App\Contact;
 
 class RoofController extends Controller
 {
-    public function index()
+
+    public function __construct()
     {
-        $roofs = Roof::with(['structure', 'owner'])->get();
-
-        return response()->json($roofs);
-    }
-
-    public function getRoof($id)
-    {
-        $roof = Roof::find($id);
-        if (empty($roof)) {
-            return response()->json(['roof_not_found'], 404);
-        }
-
-        return $this->renderRoof($roof);
-    }
-
-    public function getProbabilities()
-    {
-        return response()->json(Roof::PROBABILITIES);
-    }
-
-    public function addRoof(Request $request)
-    {
-       $validator = $this->getValidator($request);
-
-        if ($validator->fails()) {
-            return $this->reportBadRequest($validator);
-        }
-
-        $params = $validator->attributes();
-        $roof = new Roof($params);
-        $roof->save();
-
-        return $this->renderRoof($roof);
-    }
-
-    public function updateRoof(Request $request, $id)
-    {
-        $validator = $this->getValidator($request);
-
-        if ($validator->fails()) {
-            return $this->reportBadRequest($validator);
-        }
-        $params = $validator->attributes();
-        try {
-            $roof = Roof::findOrFail($id);
-            $roof->fill($params);
-            $roof->save();
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['roof_not_found'], 404);
-        }
-
-        return $this->renderRoof($roof);
-    }
-
-    protected function getValidator(Request $request)
-    {
-        $rules = [
-            'name' => 'string|required|filled',
+        $this->rules = [
+            'name' => 'string|required',
             'probability' => ['required', Rule::in(Roof::PROBABILITIES)],
             'square_area' => 'numeric',
             'power_max' => 'numeric',
@@ -101,17 +46,61 @@ class RoofController extends Controller
             'department_id' => 'numeric',
 
             // other
-            'owner.contact.first_name' => 'string|max:200|filled',
-            'owner.contact.last_name' => 'string|max:200|filled',
-            'owner.type_id' => 'numeric|filled',
-            'owner.contact.phone' => 'string|max:50',
-            'owner.contact.email' => 'string|max:250',
+            'owner.contact.first_name' => 'string|max:200',
+            'owner.contact.last_name' => 'string|max:200',
+            'owner.type_id' => 'numeric',
+            'owner.contact.phone' => 'string|max:50|nullable',
+            'owner.contact.email' => 'string|max:250|nullable',
         ];
+    }
 
-        return \Validator::make(
-            $request->only(array_keys($rules)),
-            $rules
-        );
+    public function index()
+    {
+        $roofs = Roof::with(['structure', 'owner'])->get();
+
+        return response()->json($roofs);
+    }
+
+    public function getRoof($id)
+    {
+        $roof = Roof::find($id);
+        if (empty($roof)) {
+            return response()->json(['roof_not_found'], 404);
+        }
+
+        return $this->renderRoof($roof);
+    }
+
+    public function getProbabilities()
+    {
+        return response()->json(Roof::PROBABILITIES);
+    }
+
+    public function addRoof(Request $request)
+    {
+        $this->validateRequest($request);
+
+        $params = $this->validator->attributes();
+        $roof = new Roof($params);
+        $roof->save();
+
+        return $this->renderRoof($roof);
+    }
+
+    public function updateRoof(Request $request, $id)
+    {
+        $this->validateRequest($request);
+
+        $params = $this->validator->attributes();
+        try {
+            $roof = Roof::findOrFail($id);
+            $roof->fill($params);
+            $roof->save();
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['roof_not_found'], 404);
+        }
+
+        return $this->renderRoof($roof);
     }
 
     protected function renderRoof($roof)
@@ -120,5 +109,30 @@ class RoofController extends Controller
             'owner', 'structure', 'southOrientation',
             'purchaseCategory', 'type', 'tilt', 'department'
         ]));
+    }
+
+    protected function validateRequest(Request $request)
+    {
+        parent::validateRequest($request);
+
+        $roof = $this->validator->attributes();
+        if (empty($roof['owner']['contact'])) {
+            return true;
+        }
+
+        if (empty($roof['owner']['type_id'])) {
+            $this->validator->errors()->add('owner.type_id', 'missing owner.type_id');
+
+            $this->reportBadRequest();
+        }
+
+        $contact = $roof['owner']['contact'];
+        if (empty($contact['first_name']) && empty($contact['last_name'])) {
+            $this->validator->errors()->add('owner.*_name', 'missing first or last name');
+
+            $this->reportBadRequest();
+        }
+
+        return true;
     }
 }

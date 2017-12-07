@@ -59,21 +59,90 @@ class RoofControllerTest extends TestCase
         $this->assertEquals( 404, $response->status());
     }
 
+    public function testValidatorRoof()
+    {
+        $roof = factory('App\Roof')->make();
+        $params = $roof->getAttributes();
+
+        unset($params['name']);
+
+        $response = $this->actingAs($this->user)
+            ->call('POST', '/api/roofs', $params);
+        $this->assertEquals( 400, $response->status());
+    }
+
+    public function testValidatorOwner()
+    {
+        $roof = factory('App\Roof')->make();
+        $params = $roof->getAttributes();
+
+        // missing owner.type_id
+        $params['owner'] = [
+            'contact' => $roof->owner->contact->getAttributes()
+        ];
+
+        $response = $this->actingAs($this->user)
+            ->call('POST', '/api/roofs', $params);
+        $this->assertEquals( 400, $response->status());
+        $this->seeJsonStructure(['owner.type_id'], $response->getData(true));
+
+        // without contact
+        $params['owner'] = $roof->owner->getAttributes();
+        $params['owner'] = $roof->owner->getAttributes();
+        $response = $this->actingAs($this->user)
+            ->call('POST', '/api/roofs', $params);
+        $this->assertEquals( 200, $response->status());
+        $this->seeJsonStructure($this->roofStructure, $response->getData(true));
+
+        // structure full -> should be fine
+        $params['owner']['contact'] = $roof->owner->contact->getAttributes();
+        $response = $this->actingAs($this->user)
+            ->call('POST', '/api/roofs', $params);
+        $this->assertEquals( 200, $response->status());
+        $this->seeJsonStructure($this->roofStructure, $response->getData(true));
+
+        unset($params['owner']['contact']['first_name']);
+
+         // structur full withtout contact first name
+        $response = $this->actingAs($this->user)
+            ->call('POST', '/api/roofs', $params);
+        $this->assertEquals( 200, $response->status());
+        $this->seeJsonStructure($this->roofStructure, $response->getData(true));
+        $this->seeJson(['name' => $roof->owner->contact->last_name], $response->getData(true));
+
+         // structur full withtout contact last name
+        $params['owner']['contact']['first_name'] = $roof->owner->contact->first_name;
+        unset($params['owner']['contact']['last_name']);
+        $response = $this->actingAs($this->user)
+            ->call('POST', '/api/roofs', $params);
+        $this->assertEquals( 200, $response->status());
+        $this->seeJson(['name' => $roof->owner->contact->first_name], $response->getData(true));
+
+        // without first and last name
+        unset($params['owner']['contact']['first_name']);
+        unset($params['owner']['contact']['last_name']);
+
+        $response = $this->actingAs($this->user)
+            ->call('POST', '/api/roofs', $params);
+        $this->assertEquals( 400, $response->status());
+        $this->seeJsonStructure(['owner.*_name'], $response->getData(true));
+
+    }
+
     public function testAddRoof()
     {
         $roof = factory('App\Roof')->make();
         $params = $roof->getAttributes();
         $struct = array_merge(array_keys($params), ['id']);
 
+        $resultRoof = $params;
         $roof->owner->name = $roof->owner->contact->first_name . ' '
             . $roof->owner->contact->last_name;
-        $resultRoof = $params;
-
         $resultOwner = $params['owner'] = $roof->owner->getAttributes();
-        $struc = array_keys($params['owner']);
 
         $params['owner']['contact'] = $roof->owner->contact->getAttributes();
 
+        // test creation
         $response = $this->actingAs($this->user)
             ->post('/api/roofs', $params)
             ->seeJsonStructure($struct)
@@ -130,6 +199,6 @@ class RoofControllerTest extends TestCase
             ->call('GET', '/api/roof/probabilities');
 
         $this->assertEquals(200, $response->status());
-     }
+    }
 
 }
