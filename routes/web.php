@@ -22,6 +22,8 @@ $router->group(
         $router->post('/auth/login', 'AuthController@loginPost');
 
         $router->get('/users', 'UserController@index');
+        // autocomplete
+        $router->get('map/search', 'MapSearchController@index');
 
         $router->group(
             ['middleware' => 'auth'],

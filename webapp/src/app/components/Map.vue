@@ -24,7 +24,7 @@
 
             <autocomplete
                 class="d-inline-block"
-                url="http://nominatim.openstreetmap.org/search"
+                :url="urlAutocomplete"
                 anchor="display_name"
                 name="autocomplete"
                 label=""
@@ -120,7 +120,8 @@ export default {
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             lat: center[0],
-            lng: center[1]
+            lng: center[1],
+            urlAutocomplete: process.env.API_URL + 'map/search'
         }
     }
 }
