@@ -5,6 +5,7 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 import Notifications from 'vue-notification';
+import VueCookie from 'vue-cookie';
 
 import App from './components/App';
 import Map from './components/Map';
@@ -16,6 +17,7 @@ import Http from './service/http.js';
 Vue.use(VueResource);
 Vue.use(VueRouter);
 Vue.use(Notifications);
+Vue.use(VueCookie);
 
 Vue.http.interceptors.push(Http.interceptor);
 

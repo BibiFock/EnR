@@ -253,9 +253,13 @@ export default {
     methods: {
         updateGeo: function(e) {
             let center = e.target.getCenter();
+            if (center == null) {
+                return true;
+            }
             this.roof.latitude = center.lat;
             this.roof.longitude = center.lng;
 
+            this.$cookie.set('map-center', [center.lat, center.lng], 30);
         },
         backToMap:  function() {
             this.$router.push({ name: 'map' });
@@ -335,11 +339,16 @@ export default {
         }
     },
     data() {
+        let center = [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ];
+        if (this.$cookie.get('map-center')) {
+            let cookieCenter = this.$cookie.get('map-center').split(',');
+            center = cookieCenter;
+        }
         return {
             zoom:13,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            center: [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ],
+            center: center,
             editingOwner: false,
             owner: {
                 id: 0,
@@ -369,8 +378,8 @@ export default {
                 street: '',
                 zip: '',
                 city: '',
-                latitude: process.env.COORD.LATITUDE,
-                longitude: process.env.COORD.LONGITUDE,
+                latitude: center[0],
+                longitude: center[1],
                 // relations
                 owner_id: 0,
                 owner: { name:'' },

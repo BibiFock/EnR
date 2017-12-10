@@ -1,6 +1,7 @@
 <template>
     <div class="map-container">
-        <v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]">
+        <v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]"
+            v-on:l-moveend="updateGeo">
             <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
             <v-marker v-for="roof in roofs"  :key="roof.id"
                 :lat-lng="[roof.latitude, roof.longitude]"
@@ -47,8 +48,6 @@ require('../../../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete
 
 export default {
     props: {
-        lat:{ type:Number, default: process.env.COORD.LATITUDE },
-        lng: { type:Number, default: process.env.COORD.LONGITUDE },
         roofs: { type: Array, default: [] }
     },
     components: {
@@ -60,6 +59,11 @@ export default {
         'v-tooltip': Vue2Leaflet.Tooltip
     },
     methods: {
+        updateGeo: function(e) {
+            let center = e.target.getCenter();
+
+            this.$cookie.set('map-center', [center.lat, center.lng], 30);
+        },
         handleSelect: function(obj) {
             this.lat = obj.lat;
             this.lng = obj.lon;
@@ -105,10 +109,18 @@ export default {
         this.loadRoofs();
     },
     data () {
+        let center = [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ];
+        if (this.$cookie.get('map-center')) {
+            let cookieCenter = this.$cookie.get('map-center').split(',');
+            center = cookieCenter;
+        }
+
         return {
             zoom:13,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            lat: center[0],
+            lng: center[1]
         }
     }
 }
