@@ -61,6 +61,9 @@ export default {
     methods: {
         updateGeo: function(e) {
             let center = e.target.getCenter();
+            if (center == null) {
+                return true;
+            }
 
             this.$cookie.set('map-center', [center.lat, center.lng], 30);
         },
