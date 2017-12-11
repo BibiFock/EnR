@@ -203,11 +203,14 @@
 
             <div class="row clearfix">
                 <v-map class="offset-2 col-5 map-preview" :zoom="zoom"
-                    v-on:l-moveend="updateGeo"
-                    :center="center">
+                    v-on:l-moveend="updateGeo" :center="center">
                     <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
                     <v-marker :lat-lng="[roof.latitude, roof.longitude]" >
                     </v-marker>
+                    <div class="extra-content">
+                        <button type="button" class="btn btn-primary d-inline-block btn-sm"
+                            v-on:click="updateCenter()">centrer le marqueur</button>
+                    </div>
                 </v-map>
             </div>
 
@@ -256,10 +259,15 @@ export default {
             if (center == null) {
                 return true;
             }
-            this.roof.latitude = center.lat;
-            this.roof.longitude = center.lng;
+            // this.roof.latitude = center.lat;
+            // this.roof.longitude = center.lng;
 
             this.$cookie.set('map-center', [center.lat, center.lng], 30);
+        },
+        updateCenter: function() {
+            let center = this.$cookie.get('map-center').split(',');
+            this.roof.latitude = center[0];
+            this.roof.longitude = center[1];
         },
         backToMap:  function() {
             this.$router.push({ name: 'map' });
@@ -345,7 +353,7 @@ export default {
             center = cookieCenter;
         }
         return {
-            zoom:13,
+            zoom:18,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             center: center,
@@ -409,5 +417,11 @@ export default {
 .map-preview {
     width:200px;
     height:200px;
+}
+
+.extra-content {
+    z-index:500;
+    position:absolute;
+    right:0;
 }
 </style>
