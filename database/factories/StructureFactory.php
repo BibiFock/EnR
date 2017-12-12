@@ -11,10 +11,12 @@
 |
 */
 
+use App\Structure;
+
 $factory->define(App\Structure::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
-        'type_id' => rand(1,4),
+        'type_id' => Structure::INIT_STRUCTURE_ID,
         'contact_id' => function() {
             return factory(App\Contact::class)->create()->id;
         }

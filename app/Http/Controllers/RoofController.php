@@ -11,7 +11,6 @@ use App\Contact;
 
 class RoofController extends Controller
 {
-
     public function __construct()
     {
         $this->rules = [
@@ -82,7 +81,7 @@ class RoofController extends Controller
 
         $params = $this->validator->attributes();
         $roof = new Roof($params);
-        $roof->save();
+        $this->saveRoof($roof, $request->user());
 
         return $this->renderRoof($roof);
     }
@@ -95,7 +94,7 @@ class RoofController extends Controller
         try {
             $roof = Roof::findOrFail($id);
             $roof->fill($params);
-            $roof->save();
+            $this->saveRoof($roof, $request->user());
         } catch (ModelNotFoundException $e) {
             return response()->json(['roof_not_found'], 404);
         }
@@ -103,12 +102,15 @@ class RoofController extends Controller
         return $this->renderRoof($roof);
     }
 
+    protected function saveRoof($roof, $user)
+    {
+        $roof->save();
+        $roof->saveState($user->id);
+    }
+
     protected function renderRoof($roof)
     {
-        return response()->json($roof->loadMissing([
-            'owner', 'structure', 'southOrientation',
-            'purchaseCategory', 'type', 'tilt', 'department'
-        ]));
+        return response()->json($roof->getCurrentState());
     }
 
     protected function validateRequest(Request $request)

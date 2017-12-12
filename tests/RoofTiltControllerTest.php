@@ -4,13 +4,18 @@ use App\Roof\Tilt;
 
 class RoofTiltControllerTest extends ApiCase
 {
-    public function getUrl()
+    protected function getUrl()
     {
         return '/api/roof/tilts';
     }
 
-    public function getBaseStructure()
+    protected function getBaseStructure()
     {
         return ( new Tilt() )->getFillable();
+    }
+
+    protected function  getFactoryClass()
+    {
+        return false;
     }
 }

@@ -4,13 +4,18 @@ use App\Department;
 
 class DepartmentControllerTest extends ApiCase
 {
-    public function getUrl()
+    protected function getUrl()
     {
         return '/api/departments';
     }
 
-    public function getBaseStructure()
+    protected function getBaseStructure()
     {
         return ( new Department() )->getFillable();
+    }
+
+    protected function getFactoryClass()
+    {
+        return false;
     }
 }

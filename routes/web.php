@@ -44,6 +44,10 @@ $router->group(
 
                 $router->get('roofs', 'RoofController@index');
                 $router->get('roofs/' . $genericId, 'RoofController@getRoof');
+                $router->get(
+                    'roofs/' . $genericId . '/historical',
+                    'RoofHistoricalController@index'
+                );
 
                 // modifier
                 $router->post('roofs', 'RoofController@addRoof');

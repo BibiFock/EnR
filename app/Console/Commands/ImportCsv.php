@@ -74,7 +74,7 @@ class ImportCsv extends Command
                 $row['description'] .= ' | type de toit:' . $row['roof_type'];
             }
 
-            Roof::create([
+            $roof = Roof::create([
                 'name' => $row['street'] . ', ' . $row['city'],
                 'probability' => $row['probability'],
                 'structure_id' => $struct->id,
@@ -116,6 +116,8 @@ class ImportCsv extends Command
                     ])->id
                 ])->id,
             ]);
+            // on met le userId à 0 pour la console
+            $roof->saveState(0);
         }
 
         $this->info('created users from structure initiatrice');

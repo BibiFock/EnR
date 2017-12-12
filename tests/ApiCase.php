@@ -28,13 +28,27 @@ abstract class ApiCase extends TestCase
 
     public function testList()
     {
+        $factory = $this->getFactoryClass();
+        if (!empty($factory)) {
+            $object = factory($factory)->create();
+        }
+
+        $response = $this->actingAs($this->user)
+            ->call('GET', $this->getUrl());
+        $this->assertEquals(200, $response->status());
+
         $this->actingAs($this->user)
             ->get($this->getUrl())
             ->seeJsonStructure([
                 $this->getBaseStructure()
             ]);
+
+        if (!empty($object)) {
+            $object->forceDelete();
+        }
     }
 
-    abstract public function getUrl();
-    abstract public function getBaseStructure();
+    abstract protected function getUrl();
+    abstract protected function getBaseStructure();
+    abstract protected function getFactoryClass();
 }

@@ -5,19 +5,9 @@ use App\Contact;
 
 class StructureControllerTest extends ApiCase
 {
-    public function getUrl()
-    {
-        return '/api/structures';
-    }
-
-    public function getBaseStructure()
-    {
-        return ( new Structure() )->getFillable();
-    }
-
     public function testStructureDetails()
     {
-        $struct = factory('App\Structure')->create();
+        $struct = factory($this->getFactoryClass())->create();
         $result = $struct->getAttributes();
         $result['contact'] = $struct->contact->getAttributes();
 
@@ -26,5 +16,20 @@ class StructureControllerTest extends ApiCase
             ->seeJson($result);
 
         $struct->forceDelete();
+    }
+
+    protected function getUrl()
+    {
+        return '/api/structures';
+    }
+
+    protected function getBaseStructure()
+    {
+        return ( new Structure() )->getFillable();
+    }
+
+    protected function getFactoryClass()
+    {
+        return Structure::class;
     }
 }

@@ -6,14 +6,9 @@
 </template>
 
 <script>
-import Map from './Map';
-import Roof from './Roof';
 
 export default {
     name: 'app',
-    components: {
-        Map, Roof
-    },
     methods: {
         loadRoofs: function () {
             this.$http.get(

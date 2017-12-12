@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Roof\Historical;
+
 class Roof extends Model
 {
 
@@ -54,6 +56,17 @@ class Roof extends Model
         return parent::save($options);
     }
 
+    public function saveState($userId)
+    {
+        $hist = new Historical([
+            'roof_id' => $this->id,
+            'state' => $this->getCurrentState(),
+            'user_id' => $userId
+        ]);
+
+        $hist->save();
+    }
+
     public function owner()
     {
         return $this->belongsTo('\App\Structure');
@@ -92,6 +105,19 @@ class Roof extends Model
     public function department()
     {
         return $this->belongsTo('\App\Department');
+    }
+
+    public function states()
+    {
+        return $this->hasMany('\App\Roof\Historical');
+    }
+
+    public function getCurrentState()
+    {
+        return $this->loadMissing([
+            'owner', 'structure', 'southOrientation',
+            'purchaseCategory', 'type', 'tilt', 'department'
+        ]);
     }
 
     protected function initExtrasDatas($params = [])

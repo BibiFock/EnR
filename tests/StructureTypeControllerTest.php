@@ -4,13 +4,18 @@ use App\StructureType;
 
 class StructureTypeControllerTest extends ApiCase
 {
-    public function getUrl()
+    protected function getUrl()
     {
         return '/api/structure_types';
     }
 
-    public function getBaseStructure()
+    protected function getBaseStructure()
     {
         return ( new StructureType() )->getFillable();
+    }
+
+    protected function getFactoryClass()
+    {
+        return false;
     }
 }

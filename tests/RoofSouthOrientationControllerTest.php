@@ -4,13 +4,18 @@ use App\Roof\SouthOrientation;
 
 class RoofSouthOrientationControllerTest extends ApiCase
 {
-    public function getUrl()
+    protected function getUrl()
     {
         return '/api/roof/south_orientations';
     }
 
-    public function getBaseStructure()
+    protected function getBaseStructure()
     {
         return ( new SouthOrientation() )->getFillable();
+    }
+
+    protected function getFactoryClass()
+    {
+        return false;
     }
 }

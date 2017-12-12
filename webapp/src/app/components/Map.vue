@@ -3,7 +3,7 @@
         <v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]"
             v-on:l-moveend="updateGeo">
             <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
-            <v-marker v-for="roof in roofs"  :key="roof.id"
+            <v-marker v-for="roof in roofs" :key="roof.id"
                 :lat-lng="[roof.latitude, roof.longitude]"
                 v-on:l-click="showDetail(roof)" >
                 <v-tooltip :content="getToolTip(roof)"></v-tooltip>
@@ -79,13 +79,13 @@ export default {
         },
         addRoof: function() {
             this.$router.push({
-                name:'roof',
+                name:'roof-edit',
                 params: { roofId: 0 }
             });
         },
         showDetail: function(roof) {
             this.$router.push({
-                name: 'roof',
+                name: 'roof-edit',
                 params: { roofId: roof.id }
             });
         },

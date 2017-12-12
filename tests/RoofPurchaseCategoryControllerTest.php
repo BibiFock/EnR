@@ -4,13 +4,18 @@ use App\Roof\PurchaseCategory;
 
 class RoofPurchaseCategoryControllerTest extends ApiCase
 {
-    public function getUrl()
+    protected function getUrl()
     {
         return '/api/roof/purchase_categories';
     }
 
-    public function getBaseStructure()
+    protected function getBaseStructure()
     {
         return ( new PurchaseCategory() )->getFillable();
+    }
+
+    protected function getFactoryClass()
+    {
+        return false;
     }
 }

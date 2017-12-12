@@ -219,7 +219,7 @@
 
             <div class="form-group row col-12">
                 <label class="col-2 text-right">ville</label>
-                <div class="col-10 pt-0 row">
+                <div class="col-10 pt-0">
                     <input type="text" class="form-control" v-model="roof.city" >
                 </div>
                     <!-- <label class="col-2">département</label> -->
@@ -443,13 +443,13 @@ export default {
 </script>
 
 <style>
-@import "../../../../node_modules/leaflet/dist/leaflet.css";
+@import "../../../../../node_modules/leaflet/dist/leaflet.css";
 
 .leaflet-fake-icon-image-2x {
-  background-image: url(../../../../node_modules/leaflet/dist/images/marker-icon.png);
+  background-image: url(../../../../../node_modules/leaflet/dist/images/marker-icon.png);
 }
 .leaflet-fake-icon-shadow {
-  background-image: url(../../../../node_modules/leaflet/dist/images/marker-shadow.png);
+  background-image: url(../../../../../node_modules/leaflet/dist/images/marker-shadow.png);
 }
 
 .map-preview {

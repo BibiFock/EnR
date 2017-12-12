@@ -1,4 +1,5 @@
 require('bootstrap/dist/css/bootstrap.min.css');
+require('bootstrap-vue/dist/bootstrap-vue.css');
 require('../style/main.scss');
 
 import Vue from 'vue';
@@ -6,10 +7,13 @@ import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 import Notifications from 'vue-notification';
 import VueCookie from 'vue-cookie';
+import BootstrapVue from 'bootstrap-vue';
 
 import App from './components/App';
 import Map from './components/Map';
-import RoofForm from './components/roof/Form';
+import RoofEdit from './components/roof/Edit';
+import RoofEditForm from './components/roof/edit/Form';
+import RoofEditHistorical from './components/roof/edit/Historical';
 import Login from './components/auth/Login';
 import Auth from './service/auth.js';
 import Http from './service/http.js';
@@ -18,6 +22,7 @@ Vue.use(VueResource);
 Vue.use(VueRouter);
 Vue.use(Notifications);
 Vue.use(VueCookie);
+Vue.use(BootstrapVue);
 
 Vue.http.interceptors.push(Http.interceptor);
 
@@ -25,7 +30,14 @@ const routes = [
     { path: '', component: App,
         children: [
             { name: 'map', path: '', component: Map, meta: { needGuard: true } },
-            { name: 'roof', path: 'roofs/:roofId', component: RoofForm, meta: { needGuard: true }},
+            {
+                path: 'roofs/:roofId',
+                component: RoofEdit, meta: { needGuard: true },
+                children: [
+                    { name: 'roof-edit', path: '', component: RoofEditForm },
+                    { name: 'roof-historical', path: 'historical', component: RoofEditHistorical }
+                ]
+            },
             { name: 'login', path: 'auth/login', component: Login },
             { path: '*', redirect: 'map' }
         ]
