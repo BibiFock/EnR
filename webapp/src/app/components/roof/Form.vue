@@ -1,35 +1,42 @@
 <template>
-    <form class="container">
-        <div class="form-group row mt-3">
+    <form>
+        <div class="form-group row col-12 mt-3">
             <label class="col-2 text-right">nom</label>
-            <input class="col-10 pt-0 form-control" type="text"
-                v-model="roof.name" >
+            <div class="col-10">
+                <input class="pt-0 form-control" type="text"
+                    v-model="roof.name" >
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">probabilité</label>
-            <select class="col-10 pt-0 form-control"
-                v-model="roof.probability">
-                <option v-for="probability in infos.probabilities" :key="index" >
-                    {{ probability }}
-                </option>
-            </select>
+            <div class="col-10">
+                <select class="form-control" v-model="roof.probability">
+                    <option v-for="probability in infos.probabilities" :key="index" >
+                        {{ probability }}
+                    </option>
+                </select>
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">structure initiatrice</label>
-            <select class="col-10 pt-0 form-control"
-                v-model="roof.structure_id">
-                <option v-for="structure in infos.structures" :key="structure.id"
-                    :value="structure.id" >
-                    {{ structure.name }}
-                </option>
-            </select>
+            <div class="col-10 pt-0">
+                <select class="form-control"
+                    v-model="roof.structure_id">
+                    <option v-for="structure in infos.structures" :key="structure.id"
+                        :value="structure.id" >
+                        {{ structure.name }}
+                    </option>
+                </select>
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">surface</label>
-            <input class="col-10 pt-0 form-control" type="text" v-model="roof.square_area">
+            <div class="col-10 pt-0">
+                <input class="form-control" type="text" v-model="roof.square_area">
+            </div>
         </div>
 
         <div class="form-row">
@@ -43,48 +50,53 @@
             </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">Catégorie de tarif</label>
-            <select class="col-10 pt-0 form-control"
-                v-model="roof.purchase_category_id">
-                <option v-for="pc in infos.purchase_categories" :key="pc.id"
-                    :value="pc.id" >
-                    {{ pc.name }}
-                </option>
-            </select>
+            <div class="col-10 pt-0">
+                <select class="form-control" v-model="roof.purchase_category_id">
+                    <option v-for="pc in infos.purchase_categories" :key="pc.id"
+                        :value="pc.id" >
+                        {{ pc.name }}
+                    </option>
+                </select>
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">type</label>
-            <select class="col-10 pt-0 form-control"
-                v-model="roof.type_id">
-                <option v-for="type in infos.types" :key="type.id"
-                    :value="type.id" >
-                    {{ type.name }}
-                </option>
-            </select>
+            <div class="col-10 pt-0">
+                <select class="form-control" v-model="roof.type_id">
+                    <option v-for="type in infos.types" :key="type.id"
+                        :value="type.id" >
+                        {{ type.name }}
+                    </option>
+                </select>
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">toiture</label>
-            <select class="col-10 pt-0 form-control"
-                v-model="roof.tilt_id">
-                <option v-for="tilt in infos.tilts" :key="tilt.id"
-                    :value="tilt.id" >
-                    {{ tilt.name }}
-                </option>
-            </select>
+            <div class="col-10 pt-0">
+                <select class="form-control" v-model="roof.tilt_id">
+                    <option v-for="tilt in infos.tilts" :key="tilt.id"
+                        :value="tilt.id" >
+                        {{ tilt.name }}
+                    </option>
+                </select>
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">orientation sud</label>
-            <select class="col-10 pt-0 form-control"
-                v-model="roof.south_orientation_id">
-                <option v-for="so in infos.south_orientations" :key="so.id"
-                    :value="so.id" >
-                    {{ so.name }}
-                </option>
-            </select>
+            <div class="col-10 pt-0">
+                <select class="form-control"
+                    v-model="roof.south_orientation_id">
+                    <option v-for="so in infos.south_orientations" :key="so.id"
+                        :value="so.id" >
+                        {{ so.name }}
+                    </option>
+                </select>
+            </div>
         </div>
 
         <div class="form-check offset-2 pm-2">
@@ -100,72 +112,92 @@
             </label>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">taille du bâtiment</label>
-            <input class="col-10 pt-0 form-control" type="text" v-model="roof.building_size " />
+            <div class="col-10 pt-0">
+                <input class="form-control" type="text" v-model="roof.building_size " />
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">position onduleur</label>
-            <input class="col-10 pt-0 form-control" type="text" v-model="roof.inverter_location " />
+            <div class="col-10 pt-0">
+                <input class="col-10 pt-0 form-control" type="text" v-model="roof.inverter_location " />
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">distance onduleur</label>
-            <input class="col-10 pt-0 form-control" type="text" v-model="roof.inverter_distance " />
+            <div class="col-10 pt-0">
+                <input class="form-control" type="text" v-model="roof.inverter_distance " />
+            </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row col-12">
             <label class="col-2 text-right">remarques</label>
-            <textarea class="col-10 pt-0 form-control" type="text" v-model="roof.remarks"></textarea>
+            <div class="col-10 pt-0">
+                <textarea class="form-control" type="text" v-model="roof.remarks"></textarea>
+            </div>
         </div>
 
         <fieldset>
-            <legend class="offset-2">
+            <legend class="offset-2 col-10">
                 <small>propriétaire</small>
             </legend>
 
             <div v-if="editingOwner">
-                <div class="form-group row">
+                <div class="form-group row col-12">
                     <label class="col-2 text-right">prénom</label>
-                    <input class="col-10 pt-0 form-control" type="text"
-                                                            v-model="owner.contact.first_name" />
+                    <div class="col-10 pt-0">
+                        <input class="form-control" type="text"
+                            v-model="owner.contact.first_name" />
+                    </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row col-12">
                     <label class="col-2 text-right">nom</label>
-                    <input class="col-10 pt-0 form-control" type="text"
-                                                            v-model="owner.contact.last_name" />
+                    <div class="col-10 pt-0">
+                        <input class="form-control" type="text"
+                            v-model="owner.contact.last_name" />
+                    </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row col-12">
                     <label class="col-2 text-right">type</label>
-                    <select class="col-10 pt-0 form-control"
-                            v-model="owner.type_id">
-                        <option v-for="so in infos.structure_types" :key="so.id"
-                                :value="so.id" >
-                                {{ so.name }}
-                        </option>
-                    </select>
+                    <div class="col-10 pt-0">
+                        <select class="form-control"
+                                v-model="owner.type_id">
+                            <option v-for="so in infos.structure_types" :key="so.id"
+                                    :value="so.id" >
+                                    {{ so.name }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row col-12">
                     <label class="col-2 text-right">téléphone</label>
-                    <input class="col-10 pt-0 form-control" type="text"
-                                                            v-model="owner.contact.phone" />
+                    <div class="col-10 pt-0">
+                        <input class="form-control" type="text"
+                            v-model="owner.contact.phone" />
+                    </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row col-12">
                     <label class="col-2 text-right">email</label>
-                    <input class="col-10 pt-0 form-control" type="email"
-                                                            v-model="owner.contact.email" />
+                    <div class="col-10 pt-0">
+                        <input class="form-control" type="email"
+                            v-model="owner.contact.email" />
+                    </div>
                 </div>
             </div>
             <div v-else>
-                <div class="form-group row">
+                <div class="form-group row col-12">
                     <!-- TODO make a card of contact infos -->
                     <label class="col-2 text-right">nom</label>
-                    <input class="col-7 pt-0 form-control-plaintext" type="text"
-                        v-model="roof.owner.name" />
+                    <div class="col-7 pt-0">
+                        <input class="form-control-plaintext" type="text"
+                            v-model="roof.owner.name" />
+                    </div>
                     <button type="button" class="btn btn-secondary"
                         v-on:click="loadOwner()">edit</button>
                 </div>
@@ -174,19 +206,22 @@
         </fieldset>
 
         <fieldset>
-            <legend class="offset-2">
+            <legend class="offset-2 col-10">
                 <small>localisation</small>
             </legend>
 
-            <div class="form-group row">
+            <div class="form-group row col-12">
                 <label class="col-2 text-right" >adresse</label>
-                <input type="text" class="col-10 form-control" v-model="roof.street" >
+                <div class="col-10 ">
+                    <input type="text" class="form-control" v-model="roof.street" >
+                </div>
             </div>
 
-            <div class="form-group row">
+            <div class="form-group row col-12">
                 <label class="col-2 text-right">ville</label>
                 <div class="col-10 pt-0 row">
-                    <input type="text" class="pt-0 form-control col-3" v-model="roof.city" >
+                    <input type="text" class="form-control" v-model="roof.city" >
+                </div>
                     <!-- <label class="col-2">département</label> -->
                     <!-- <select class="form-control col-2" -->
                         <!-- v-model="roof.department_id"> -->
@@ -195,9 +230,12 @@
                             <!-- {{ dep.zip }}. {{ dep.name }} -->
                         <!-- </option> -->
                     <!-- </select> -->
-
-                    <label class="col-2">code postal</label>
-                    <input type="text" class="pt-0 col-1 form-control" v-model="roof.zip">
+             </div>
+             <div class="form-group row col-12">
+                    <label class="col-2 text-right">code postal</label>
+                    <div class="pt-0 col-10">
+                        <input type="text" class="form-control" v-model="roof.zip">
+                    </div>
                 </div>
             </div>
 
