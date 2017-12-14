@@ -1,42 +1,50 @@
 <template>
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="col-2 text-center">utilisateur</th>
-                <th class="col-2 text-center">date</th>
-                <th class="col-6 text-center">modifications</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(hist, index) in historicals" :key="hist.id">
-                <td class="col-2">
-                    <span >{{ hist.user.name }}</span>
-                </td>
-                <td class="col-2">{{ hist.created_at }}</td>
-                <td class="col-6">
-                    <ul>
-                        <li v-for="(changes, num) in hist.state" key="num"
-                            v-if="changes.isChanged">
-                            <span>{{ changes.key }}</span> :
-                            <ul v-if="changes.diff">
-                                <li v-for="(row, i) in changes.diff" key="i"
-                                    v-if="row.isChanged">
-                                    <span>{{ row.key }}</span>: 
-                                    <strong>{{ row.old }}</strong> ->
-                                    <strong>{{ row.new }}</strong>
-                                </li>
-                            </ul>
-                            <span v-else>
-                                <!-- <span>{{ changes.key }}</span>:  -->
-                                <strong>{{ changes.old }}</strong> ->
-                                <strong>{{ changes.new }}</strong>
-                            </span>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-2 text-center">utilisateur</th>
+                    <th class="col-2 text-center">date</th>
+                    <th class="col-6 text-center">modifications</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(hist, index) in historicals" :key="hist.id">
+                    <td class="col-2">
+                        <span >{{ hist.user.name }}</span>
+                    </td>
+                    <td class="col-2">{{ hist.created_at }}</td>
+                    <td class="col-6">
+                        <ul>
+                            <li v-for="(changes, num) in hist.state" key="num"
+                                v-if="changes.isChanged">
+                                <span>{{ changes.key }}</span> :
+                                <ul v-if="changes.diff">
+                                    <li v-for="(row, i) in changes.diff" key="i"
+                                        v-if="row.isChanged">
+                                        <span>{{ row.key }}</span>: 
+                                        <strong>{{ row.old }}</strong> ->
+                                        <strong>{{ row.new }}</strong>
+                                    </li>
+                                </ul>
+                                <span v-else>
+                                    <!-- <span>{{ changes.key }}</span>:  -->
+                                    <strong>{{ changes.old }}</strong> ->
+                                    <strong>{{ changes.new }}</strong>
+                                </span>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-6">
+                <button type="button" class="btn btn-link"
+                    v-on:click="backToMap()">retour</button>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
 export default {
@@ -44,6 +52,9 @@ export default {
         roofId: 0,
     },
     methods: {
+        backToMap:  function() {
+            this.$router.push({ name: 'map' });
+        },
         searchDiff: function (oldState, newState) {
             let key = null,
                 hiddenKey = ['id', 'created_at', 'updated_at'],

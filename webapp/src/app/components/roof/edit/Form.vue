@@ -297,8 +297,6 @@ export default {
             if (center == null) {
                 return true;
             }
-            // this.roof.latitude = center.lat;
-            // this.roof.longitude = center.lng;
 
             this.$cookie.set('map-center', [center.lat, center.lng], 30);
         },
@@ -335,7 +333,7 @@ export default {
                     this.editingOwner = false;
                     if (this.roof.id == false) {
                         this.$router.replace({
-                            name:'roof',
+                            name:'roof-edit',
                             params: { roofId: response.body.id }
                         });
                     }
