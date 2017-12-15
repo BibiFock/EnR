@@ -36,6 +36,8 @@ $router->group(
                 $router->get('structure_types', 'StructureTypeController@index');
                 $router->get('departments', 'DepartmentController@index');
 
+                $router->get('export', 'ExportController@index');
+
                 $router->get('roof/purchase_categories', 'RoofPurchaseCategoryController@index');
                 $router->get('roof/south_orientations', 'RoofSouthOrientationController@index');
                 $router->get('roof/tilts', 'RoofTiltController@index');

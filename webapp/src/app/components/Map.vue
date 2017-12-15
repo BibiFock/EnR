@@ -34,6 +34,13 @@
                 :classes="{ input: 'form-control', wrapper: 'input-wrapper'}"
                 :onSelect="handleSelect" > </autocomplete>
 
+            <b-dropdown variant="link" size="lg" right no-caret>
+                <template slot="button-content">
+                    <i class="fa fa-cog" aria-hidden="true"></i>
+                </template>
+                <b-dropdown-item v-on:click="exportData()">exporter</b-dropdown-item>
+            </b-dropdown>
+
         </div>
 
     </div>
@@ -59,6 +66,13 @@ export default {
         'v-tooltip': Vue2Leaflet.Tooltip
     },
     methods: {
+        exportData: function () {
+            this.$cookie.set('token', localStorage.getItem('id_token'), 30);
+            window.open(
+                process.env.API_URL + 'export?token=' + localStorage.getItem('id_token'),
+                '_blank'
+            );
+        },
         updateGeo: function(e) {
             let center = e.target.getCenter();
             if (center == null) {

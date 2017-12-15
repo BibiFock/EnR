@@ -1,5 +1,6 @@
 require('bootstrap/dist/css/bootstrap.min.css');
 require('bootstrap-vue/dist/bootstrap-vue.css');
+require('font-awesome/css/font-awesome.css');
 require('../style/main.scss');
 
 import Vue from 'vue';

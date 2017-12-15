@@ -9,7 +9,7 @@ var Auth = {
             process.env.API_URL +  'auth/login',
             { id, password }
         ).then(response => {
-            localStorage.setItem('id_token', response.data.token)
+            localStorage.setItem('id_token', response.data.token);
 
             this.user.authenticated = true
 

@@ -6,4 +6,9 @@ Homestead.yaml
 /webapp/node_modules
 /public/**/
 /public/index.html
+/public/*.eot
+/public/*.svg
+/public/*.ttf
+/public/*.woff
+/public/*.woff2
 
