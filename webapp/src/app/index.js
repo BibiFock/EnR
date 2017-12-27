@@ -9,6 +9,7 @@ import VueRouter from 'vue-router';
 import Notifications from 'vue-notification';
 import VueCookie from 'vue-cookie';
 import BootstrapVue from 'bootstrap-vue';
+import * as VueGoogleMaps from 'vue2-google-maps';
 
 import App from './components/App';
 import Map from './components/Map';
@@ -24,6 +25,15 @@ Vue.use(VueRouter);
 Vue.use(Notifications);
 Vue.use(VueCookie);
 Vue.use(BootstrapVue);
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyAtBdbbDY8RT5P5T4r2ATknGrxGUbJuIVI',
+    libraries: 'places', // This is required if you use the Autocomplete plugin
+    // OR: libraries: 'places,drawing'
+    // OR: libraries: 'places,drawing,visualization'
+    // (as you require)
+  }
+})
 
 Vue.http.interceptors.push(Http.interceptor);
 

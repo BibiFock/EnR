@@ -1,15 +1,37 @@
 <template>
     <div class="map-container">
-        <v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]"
+        <!--v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]"
             v-on:l-moveend="updateGeo">
             <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
             <v-marker v-for="roof in roofs" :key="roof.id"
                 :lat-lng="[roof.latitude, roof.longitude]"
                 v-on:l-click="showDetail(roof)" >
                 <v-tooltip :content="getToolTip(roof)"></v-tooltip>
-                <!-- <v-popup :content="roof.name"></v-popup> -->
             </v-marker>
-        </v-map>
+        </v-map-->
+        <gmap-map
+            :center="center"
+            :zoom="zoom"
+            map-type-id="hybrid"
+            @center_changed="updateCenter"
+            class="map-container" >
+            <gmap-info-window
+                :options="infoOptions"
+                :position="infoWindowPos"
+                :opened="infoWinOpen"
+                @closeclick="infoWinOpen=false">
+                {{infoContent}}
+            </gmap-info-window>
+            <gmap-marker
+                v-for="(roof, index) in roofs"
+                :key="index"
+                :position="roof.position"
+                :clickable="true"
+                :draggable="false"
+                @mouseover="overOfRoof(roof)"
+                @mouseout="outOfRoof(roof)"
+                @click="showDetail(roof)" ></gmap-marker>
+        </gmap-map>
         <div class="extra-content">
             <!-- temporary hide this ->
             <button type="button" v-on:click="close()" aria-label="Close"
@@ -21,6 +43,8 @@
                 v-on:click="addRoof()">
                 add
             </button>
+            <!--GmapAutocomplete @place_changed="setPlace">
+            </GmapAutocomplete-->
 
             <autocomplete
                 class="d-inline-block"
@@ -47,23 +71,14 @@
 </template>
 
 <script>
-import Vue2Leaflet from 'vue2-leaflet';
-// import RoofMini from 'roof/Mini';
-
-import Autocomplete from 'vue2-autocomplete-js'
-require('../../../node_modules/vue2-autocomplete-js/dist/style/vue2-autocomplete.css')
+import Autocomplete from 'vue2-autocomplete-js';
 
 export default {
     props: {
         roofs: { type: Array, default: [] }
     },
     components: {
-        Autocomplete,
-        'v-map': Vue2Leaflet.Map,
-        'v-tilelayer': Vue2Leaflet.TileLayer,
-        'v-marker': Vue2Leaflet.Marker,
-        // 'v-popup': Vue2Leaflet.Popup,
-        'v-tooltip': Vue2Leaflet.Tooltip
+        Autocomplete
     },
     methods: {
         exportData: function () {
@@ -82,13 +97,24 @@ export default {
             this.$cookie.set('map-center', [center.lat, center.lng], 30);
         },
         handleSelect: function(obj) {
-            this.lat = obj.lat;
-            this.lng = obj.lon;
+            this.center.lat = parseFloat(obj.lat);
+            this.center.lng = parseFloat(obj.lon);
+        },
+        overOfRoof: function(roof) {
+            this.infoWinOpen = true;
+            this.infoWindowPos = roof.position;
+            this.infoContent = this.getToolTip(roof);
+        },
+        outOfRoof: function(roof) {
+            if (!this.infoWinOpen || this.infoWindowPos != roof.position) {
+                return;
+            }
+            this.infoWinOpen = false;
         },
         getToolTip: function(roof) {
-            return '<div><strong>' + roof.name + '</strong></div>'
-                + '<div>' + (roof.structure ? roof.structure.name : '-') + '</div>'
-                + '<div class="text-right">' + roof.power_max + ' kWc</div>';
+            return roof.name + ', '
+                + (roof.structure ? roof.structure.name : '-') + ', '
+                + roof.power_max + ' kWc';
 
         },
         addRoof: function() {
@@ -114,7 +140,13 @@ export default {
                 process.env.API_URL + 'roofs'
             ).then(
                 response => {
-                    this.roofs = response.body;
+                    this.roofs = response.body.map(roof => {
+                        roof.position = {
+                            lat: parseFloat(roof.latitude),
+                            lng: parseFloat(roof.longitude)
+                        };
+                        return roof;
+                    });
                 }
             );
         },
@@ -136,38 +168,50 @@ export default {
             zoom:13,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            lat: center[0],
-            lng: center[1],
-            urlAutocomplete: process.env.API_URL + 'map/search'
+            center: {
+                lat: parseFloat(center[0]),
+                lng: parseFloat(center[1])
+            },
+            urlAutocomplete: process.env.API_URL + 'map/search',
+            infoOptions: {
+                pixelOffset: {
+                    width: 0,
+                    height: -35
+                }
+            },
+            infoWinOpen: false,
+            infoWindowPos: null,
+            infoContent: ''
         }
     }
 }
 </script>
 
 <style>
-@import "../../../node_modules/leaflet/dist/leaflet.css";
-
-.leaflet-fake-icon-image-2x {
-  background-image: url(../../../node_modules/leaflet/dist/images/marker-icon.png);
-}
-.leaflet-fake-icon-shadow {
-  background-image: url(../../../node_modules/leaflet/dist/images/marker-shadow.png);
-}
-
 .map-container {
-    position:absolute;
+    position:absolute !important;
     top:0;
     left:0;
     right:0;
     bottom:0;
 }
+
 .extra-content {
     z-index:500;
     position:absolute;
-    right:0;
+    right:30px;
 }
+
 .close {
     opacity:1;
 }
 
+.autocomplete-list {
+    background-color:white;
+    position: absolute;
+}
+.autocomplete-list ul {
+    list-style-type: none;
+    padding: .5em 1em;
+}
 </style>

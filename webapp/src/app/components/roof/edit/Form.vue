@@ -239,8 +239,20 @@
                 </div>
             </div>
 
-            <div class="row clearfix">
-                <v-map class="offset-2 col-5 map-preview" :zoom="zoom"
+            <div class="row clearfix position-relative map-edit">
+                <gmap-map
+                    :center="center"
+                    :zoom="zoom"
+                    map-type-id="hybrid"
+                    @center_changed="updateGeo"
+                    class="offset-2 col-5 map-preview pl-2" >
+                    <gmap-marker :position.sync="roof.position" ></gmap-marker>
+                </gmap-map>
+                <div class="extra-content">
+                    <button type="button" class="btn btn-primary d-inline-block btn-sm"
+                        v-on:click="updateCenter()">centrer le marqueur</button>
+                </div>
+                <!--v-map class="offset-2 col-5 map-preview" :zoom="zoom"
                     v-on:l-moveend="updateGeo" :center="center">
                     <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
                     <v-marker :lat-lng="[roof.latitude, roof.longitude]" >
@@ -249,7 +261,7 @@
                         <button type="button" class="btn btn-primary d-inline-block btn-sm"
                             v-on:click="updateCenter()">centrer le marqueur</button>
                     </div>
-                </v-map>
+                </v-map-->
             </div>
 
         </fieldset>
@@ -268,8 +280,6 @@
 </template>
 
 <script>
-import Vue2Leaflet from 'vue2-leaflet';
-
 export default {
     props: {
         infos: {
@@ -287,23 +297,18 @@ export default {
         },
     },
     components: {
-        'v-map': Vue2Leaflet.Map,
-        'v-tilelayer': Vue2Leaflet.TileLayer,
-        'v-marker': Vue2Leaflet.Marker,
     },
     methods: {
-        updateGeo: function(e) {
-            let center = e.target.getCenter();
-            if (center == null) {
-                return true;
-            }
-
-            this.$cookie.set('map-center', [center.lat, center.lng], 30);
+        updateGeo: function(center) {
+            this.$cookie.set('map-center', [center.lat(), center.lng()], 30);
         },
         updateCenter: function() {
-            let center = this.$cookie.get('map-center').split(',');
+            let center = this.$cookie.get('map-center').split(',')
+                .map(el => parseFloat(el));
             this.roof.latitude = center[0];
             this.roof.longitude = center[1];
+            this.roof.position.lat = center[0];
+            this.roof.position.lng = center[1];
         },
         backToMap:  function() {
             this.$router.push({ name: 'map' });
@@ -354,7 +359,12 @@ export default {
             ).then(
                 response => {
                     this.roof = response.body;
-                    this.center = [this.roof.latitude, this.roof.longitude];
+                    let center = {
+                        lat: parseFloat(this.roof.latitude),
+                        lng: parseFloat(this.roof.longitude)
+                    };
+                    this.roof.position = center;
+                    this.center = center;
                     this.editingOwner = (this.roof.owner_id === 0);
                 }
             );
@@ -383,11 +393,13 @@ export default {
         }
     },
     data() {
-        let center = [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ];
+        let coord = [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ];
         if (this.$cookie.get('map-center')) {
             let cookieCenter = this.$cookie.get('map-center').split(',');
-            center = cookieCenter;
+            coord = cookieCenter;
         }
+        coord = coord.map(coord => parseFloat(coord));
+        let center = { lat: coord[0], lng: coord[1] };
         return {
             zoom:18,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
@@ -422,8 +434,9 @@ export default {
                 street: '',
                 zip: '',
                 city: '',
-                latitude: center[0],
-                longitude: center[1],
+                latitude: center.lat,
+                longitude: center.lng,
+                position: center,
                 // relations
                 owner_id: 0,
                 owner: { name:'' },
@@ -441,23 +454,15 @@ export default {
 </script>
 
 <style>
-@import "../../../../../node_modules/leaflet/dist/leaflet.css";
-
-.leaflet-fake-icon-image-2x {
-  background-image: url(../../../../../node_modules/leaflet/dist/images/marker-icon.png);
-}
-.leaflet-fake-icon-shadow {
-  background-image: url(../../../../../node_modules/leaflet/dist/images/marker-shadow.png);
+.map-edit .map-preview {
+    width:300px;
+    height:300px;
 }
 
-.map-preview {
-    width:200px;
-    height:200px;
-}
-
-.extra-content {
+.map-edit .extra-content {
     z-index:500;
     position:absolute;
-    right:0;
+    left:0;
+    bottom:0;
 }
 </style>
