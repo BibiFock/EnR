@@ -11,4 +11,4 @@ Homestead.yaml
 /public/*.ttf
 /public/*.woff
 /public/*.woff2
-
+/npm-debug.log
