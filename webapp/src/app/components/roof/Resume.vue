@@ -36,9 +36,24 @@
             <input class="col-10 pt-0 form-control-plaintext" type="text" :value="roof.type.name">
         </div>
 
-         <div class="form-group row" v-if="roof.tilt">
-            <label class="col-2 text-right">tilt</label>
-            <input class="col-10 pt-0 form-control-plaintext" type="text" :value="roof.tilt.name">
+         <div class="form-group row" v-if="roof.slope">
+            <label class="col-2 text-right">pente de toit</label>
+            <input class="col-10 pt-0 form-control-plaintext" type="text" :value="roof.slope">
+        </div>
+
+         <div class="form-group row" v-if="roof.ground_square_area">
+            <label class="col-2 text-right">surface au sol du toit</label>
+            <input class="col-10 pt-0 form-control-plaintext" type="text" :value="roof.ground_square_area">
+        </div>
+
+         <div class="form-group row" v-if="roof.occupancy_rate">
+            <label class="col-2 text-right">taux d'occupation</label>
+            <input class="col-10 pt-0 form-control-plaintext" type="text" :value="roof.occupancy_rate">
+        </div>
+
+         <div class="form-group row" v-if="roof.slope">
+            <label class="col-2 text-right">pente de toit</label>
+            <input class="col-10 pt-0 form-control-plaintext" type="text" :value="roof.slope">
         </div>
 
          <div class="form-group row" v-if="roof.south_orientation">

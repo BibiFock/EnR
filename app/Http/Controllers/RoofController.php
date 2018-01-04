@@ -34,6 +34,10 @@ class RoofController extends Controller
             'latitude' => 'numeric',
             'longitude' => 'numeric',
 
+            'slope' => 'numeric',
+            'ground_square_area' => 'numeric',
+            'occupancy_rate' => 'numeric',
+
             // relations
             'owner_id' => 'numeric',
             'structure_id' => 'numeric',
@@ -41,7 +45,6 @@ class RoofController extends Controller
 
             'purchase_category_id' => 'numeric',
             'type_id' => 'numeric',
-            'tilt_id' => 'numeric',
             'department_id' => 'numeric',
 
             // other

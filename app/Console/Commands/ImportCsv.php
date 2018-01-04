@@ -10,7 +10,6 @@ use App\Structure;
 use App\Roof;
 use App\Roof\PurchaseCategory;
 use App\Roof\Type;
-use App\Roof\Tilt;
 use App\Roof\SouthOrientation;
 use App\Department;
 use App\User;
@@ -39,10 +38,10 @@ class ImportCsv extends Command
      */
     public function handle()
     {
-        $this->info('start parse');
-        $rows = $this->parseCsv();
+        $this->line('start parse');
 
-        $this->info('parse finish start insert');
+        $rows = $this->parseCsv();
+        $this->info('parse finish start insert for ' . count($rows) . ' roofs');
 
         $structType = StructureType::firstOrCreate([
             'name' => 'structure initiatrice'
@@ -74,8 +73,44 @@ class ImportCsv extends Command
                 $row['description'] .= ' | type de toit:' . $row['roof_type'];
             }
 
+            $slope = null;
+            switch ($row['inclinaison']) {
+                case '35° optimale' :
+                    $slope = 35;
+                    break;
+                case '> 25°/40°<' :
+                    $slope = 32;
+                    break;
+                case '0° (à plat) à 10°' :
+                    $slope = 5;
+                    break;
+                case '90° verticale (déconseillée)' :
+                    $slope = 90;
+                    break;
+                case '> 10°/25°<' :
+                    $slope = 17;
+                    break;
+            }
+
+            if (empty($row['name'])) {
+                $row['name'] = $row['street'] . ', ' . $row['city'];
+            }
+
+            if (empty($row['structure_name'])) {
+                $row['structure_name'] = $row['contact_firstname'] . ' ' .
+                    $row['contact_lastname'];
+            }
+
+            $cleanInts = [
+                'potential_m2', 'estimate_hight', 'estimate_low',
+                'building_hight', 'inverter_distance'
+            ];
+            foreach ($cleanInts as $field) {
+                $row[$field] = preg_replace('/[\s ]+/', '', $row[$field]);
+            }
+
             $roof = Roof::create([
-                'name' => $row['street'] . ', ' . $row['city'],
+                'name' => $row['name'],
                 'probability' => $row['probability'],
                 'structure_id' => $struct->id,
                 'square_area' => $row['potential_m2'],
@@ -83,15 +118,15 @@ class ImportCsv extends Command
                 'power_min' => $row['estimate_low'],
                 'purchase_category_id' => $purchaseCategory->id,
                 'type_id' => $typeId,
-                'tilt_id' => Tilt::firstOrCreate([
-                    'name' => $row['inclinaison'],
-                ])->id,
+                'slope' => $slope,
+                'occupancy_rate' => 0,
+                'ground_square_area' => 0,
                 'south_orientation_id' => SouthOrientation::firstOrCreate([
                     'name' => $row['south_orientation'],
                 ])->id,
-                'erp' => $row['erp'],
+                'erp' => ($row['erp'] == 'Oui'),
                 'building_size' => $row['building_hight'],
-                'perimeter_abf' => $row['ABF_primeter'],
+                'perimeter_abf' => ($row['ABF_primeter'] == 'Oui'),
                 'remarks' => $row['description'],
                 'inverter_location' => $row['inverter_position'],
                 'inverter_distance' => $row['inverter_distance'],
@@ -120,7 +155,7 @@ class ImportCsv extends Command
             $roof->saveState(0);
         }
 
-        $this->info('created users from structure initiatrice');
+        $this->line('created users from structure initiatrice');
         $rows = Structure::where('type_id', $structType->id)->get();
         foreach ($rows as $row) {
             User::firstOrCreate(
@@ -141,8 +176,10 @@ class ImportCsv extends Command
         $title = explode(';', array_shift($rows));
 
         $keys = array(
-            // 'id',
+            'id',
+            'name',
             'probability',
+            'year_real',
             'department',
             'structure',
             'responsable_lastname',
@@ -186,6 +223,9 @@ class ImportCsv extends Command
         $data = array();
         $i= 0;
         foreach ($rows as $row) {
+            if (empty($row)) {
+                continue;
+            }
             $row = explode(';', $row);
             $tmp = array();
             foreach ($row as $k => $v) {
@@ -195,11 +235,18 @@ class ImportCsv extends Command
             }
 
             if (empty($tmp['link'])) {
-                print_r($tmp);
-                echo 'no link here' . PHP_EOL;
-                continue;
-            }
-            if (preg_match('/google.fr.*@(?P<latitude>[0-9.]+),(?P<longitude>[0-9.]+)/i', $tmp['link'], $results)) {
+                $this->line('no link here');
+                if (!($gps = $this->getGPSCoord($tmp))) {
+                    $this->error(
+                        'GPS not found for ' . $tmp['street'] . ' ' . $tmp['city'] . ' ' . $tmp['zip']
+                    );
+                    continue;
+                }
+                $tmp['latitude'] = $gps['lat'];
+                $tmp['longitude'] = $gps['lon'];
+            } elseif (
+                preg_match('/google.fr.*@(?P<latitude>[0-9.]+),(?P<longitude>[0-9.]+)/i', $tmp['link'], $results)
+            ) {
                 // $tmp['google_link'] = $tmp['latitude'];
                 $tmp['latitude'] = $results['latitude'];
                 $tmp['longitude'] = $results['longitude'];
@@ -208,6 +255,27 @@ class ImportCsv extends Command
         }
 
         return $data;
+    }
+
+    protected function getGPSCoord($row)
+    {
+        $query = (!empty($row['street']) ? $row['street'] . ' ' : '')
+            . (!empty($row['zip']) ? $row['zip'] . ' ' : '')
+            . (!empty($row['city']) ? $row['city'] . ' ' : '')
+            . ' France';
+
+        $url = 'http://nominatim.openstreetmap.org/search?' . http_build_query(array(
+            'format' => 'json',
+            'q' => $query
+        ));
+
+        $searchContent = file_get_contents($url);
+        $json = json_decode($searchContent, true);
+        if (empty($json)) {
+            return false;
+        }
+
+        return $json[0];
     }
 
 }

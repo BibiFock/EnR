@@ -21,9 +21,10 @@ class Roof extends Model
         'erp', 'building_size', 'perimeter_abf', 'remarks',
         'inverter_location', 'inverter_distance', 'street',
         'zip', 'city', 'latitude', 'longitude',
+        'slope', 'ground_square_area', 'occupancy_rate',
         // relations
         'owner_id', 'structure_id', 'south_orientation_id',
-        'purchase_category_id', 'type_id', 'tilt_id'
+        'purchase_category_id', 'type_id'
         // , 'department_id'
     ];
 
@@ -97,11 +98,6 @@ class Roof extends Model
         return $this->belongsTo('\App\Roof\Type');
     }
 
-    public function tilt()
-    {
-        return $this->belongsTo('\App\Roof\Tilt');
-    }
-
     public function department()
     {
         return $this->belongsTo('\App\Department');
@@ -116,7 +112,7 @@ class Roof extends Model
     {
         return $this->loadMissing([
             'owner', 'structure', 'southOrientation',
-            'purchaseCategory', 'type', 'tilt', 'department'
+            'purchaseCategory', 'type', 'department'
         ]);
     }
 

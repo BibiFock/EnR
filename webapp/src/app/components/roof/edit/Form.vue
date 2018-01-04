@@ -62,43 +62,6 @@
             </div>
         </div>
 
-        <div class="form-group row col-12">
-            <label class="col-2 text-right">type</label>
-            <div class="col-10 pt-0">
-                <select class="form-control" v-model="roof.type_id">
-                    <option v-for="type in infos.types" :key="type.id"
-                        :value="type.id" >
-                        {{ type.name }}
-                    </option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group row col-12">
-            <label class="col-2 text-right">toiture</label>
-            <div class="col-10 pt-0">
-                <select class="form-control" v-model="roof.tilt_id">
-                    <option v-for="tilt in infos.tilts" :key="tilt.id"
-                        :value="tilt.id" >
-                        {{ tilt.name }}
-                    </option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group row col-12">
-            <label class="col-2 text-right">orientation sud</label>
-            <div class="col-10 pt-0">
-                <select class="form-control"
-                    v-model="roof.south_orientation_id">
-                    <option v-for="so in infos.south_orientations" :key="so.id"
-                        :value="so.id" >
-                        {{ so.name }}
-                    </option>
-                </select>
-            </div>
-        </div>
-
         <div class="form-check offset-2 pm-2">
             <label class="form-check-label col-2">
                 <input class="form-check-input" type="checkbox"
@@ -119,19 +82,71 @@
             </div>
         </div>
 
-        <div class="form-group row col-12">
-            <label class="col-2 text-right">position onduleur</label>
-            <div class="col-10 pt-0">
-                <input class="col-10 pt-0 form-control" type="text" v-model="roof.inverter_location " />
-            </div>
-        </div>
+        <fieldset class="form-group">
+            <legend class="offset-2 col-10">
+                <small>toiture</small>
+            </legend>
 
-        <div class="form-group row col-12">
-            <label class="col-2 text-right">distance onduleur</label>
-            <div class="col-10 pt-0">
-                <input class="form-control" type="text" v-model="roof.inverter_distance " />
+            <div class="form-group row col-12">
+                <label class="col-2 text-right">type</label>
+                <div class="col-10 pt-0">
+                    <select class="form-control" v-model="roof.type_id">
+                        <option v-for="type in infos.types" :key="type.id"
+                            :value="type.id" >
+                            {{ type.name }}
+                        </option>
+                    </select>
+                </div>
             </div>
-        </div>
+
+            <div class="form-group row col-12">
+                <label class="col-2 text-right">pente de toit</label>
+                <div class="col-10 pt-0">
+                    <input class="form-control" type="text" v-model="roof.slope" />
+                </div>
+            </div>
+
+            <div class="form-group row col-12">
+                <label class="col-2 text-right">surface au sol du toit</label>
+                <div class="col-10 pt-0">
+                    <input class="form-control" type="text" v-model="roof.ground_square_area" />
+                </div>
+            </div>
+
+            <div class="form-group row col-12">
+                <label class="col-2 text-right">taux d'occupation</label>
+                <div class="col-10 pt-0">
+                    <input class="form-control" type="text" v-model="roof.occupancy_rate" />
+                </div>
+            </div>
+
+            <div class="form-group row col-12">
+                <label class="col-2 text-right">orientation sud</label>
+                <div class="col-10 pt-0">
+                    <select class="form-control"
+                        v-model="roof.south_orientation_id">
+                        <option v-for="so in infos.south_orientations" :key="so.id"
+                            :value="so.id" >
+                            {{ so.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row col-12">
+                <label class="col-2 text-right">position onduleur</label>
+                <div class="col-10 pt-0">
+                    <input class="col-10 pt-0 form-control" type="text" v-model="roof.inverter_location " />
+                </div>
+            </div>
+
+            <div class="form-group row col-12">
+                <label class="col-2 text-right">distance onduleur</label>
+                <div class="col-10 pt-0">
+                    <input class="form-control" type="text" v-model="roof.inverter_distance " />
+                </div>
+            </div>
+        </fieldset>
 
         <div class="form-group row col-12">
             <label class="col-2 text-right">remarques</label>
@@ -140,7 +155,7 @@
             </div>
         </div>
 
-        <fieldset>
+        <fieldset class="form-group">
             <legend class="offset-2 col-10">
                 <small>propriétaire</small>
             </legend>
@@ -205,7 +220,7 @@
 
         </fieldset>
 
-        <fieldset>
+        <fieldset class="form-group">
             <legend class="offset-2 col-10">
                 <small>localisation</small>
             </legend>
@@ -289,7 +304,6 @@ export default {
                 probabilities: null,
                 structures: null,
                 purchase_categories: null,
-                tilts: null,
                 south_orientations: null,
                 structure_types: null,
                 // departments: null
@@ -437,6 +451,9 @@ export default {
                 latitude: center.lat,
                 longitude: center.lng,
                 position: center,
+                slope: 0,
+                ground_square_area: 0,
+                occupancy_rate: 0,
                 // relations
                 owner_id: 0,
                 owner: { name:'' },
@@ -444,7 +461,6 @@ export default {
                 south_orientation_id: 0,
                 purchase_category_id: 0,
                 type_id: 0,
-                tilt_id: 0,
                 department_id: 0
             }
         }
