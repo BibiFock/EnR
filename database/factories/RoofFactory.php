@@ -30,7 +30,7 @@ $factory->define(App\Roof::class, function (Faker\Generator $faker) {
         'slope' => $faker->randomNumber(2),
         'ground_square_area' => $faker->randomNumber(3),
         'occupancy_rate' => $faker->randomNumber(2),
-        'south_orientation_id' => rand(1, 5),
+        'south_orientation' => $faker->randomNumber(2),
         'erp' => $faker->boolean,
         'building_size' => $faker->randomNumber(3),
         'perimeter_abf' => $faker->boolean ,

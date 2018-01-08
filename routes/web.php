@@ -39,7 +39,6 @@ $router->group(
                 $router->get('export', 'ExportController@index');
 
                 $router->get('roof/purchase_categories', 'RoofPurchaseCategoryController@index');
-                $router->get('roof/south_orientations', 'RoofSouthOrientationController@index');
                 $router->get('roof/types', 'RoofTypeController@index');
                 $router->get('roof/probabilities', 'RoofController@getProbabilities');
 

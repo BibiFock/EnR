@@ -37,11 +37,11 @@ class RoofController extends Controller
             'slope' => 'numeric',
             'ground_square_area' => 'numeric',
             'occupancy_rate' => 'numeric',
+            'south_orientation' => 'numeric',
 
             // relations
             'owner_id' => 'numeric',
             'structure_id' => 'numeric',
-            'south_orientation_id' => 'numeric',
 
             'purchase_category_id' => 'numeric',
             'type_id' => 'numeric',

@@ -123,13 +123,7 @@
             <div class="form-group row col-12">
                 <label class="col-2 text-right">orientation sud</label>
                 <div class="col-10 pt-0">
-                    <select class="form-control"
-                        v-model="roof.south_orientation_id">
-                        <option v-for="so in infos.south_orientations" :key="so.id"
-                            :value="so.id" >
-                            {{ so.name }}
-                        </option>
-                    </select>
+                    <input class="form-control" type="text" v-model="roof.south_orientation" />
                 </div>
             </div>
 
@@ -304,9 +298,7 @@ export default {
                 probabilities: null,
                 structures: null,
                 purchase_categories: null,
-                south_orientations: null,
                 structure_types: null,
-                // departments: null
             },
         },
     },
@@ -454,11 +446,11 @@ export default {
                 slope: 0,
                 ground_square_area: 0,
                 occupancy_rate: 0,
+                south_orientation: 0,
                 // relations
                 owner_id: 0,
                 owner: { name:'' },
                 structure_id: 0,
-                south_orientation_id: 0,
                 purchase_category_id: 0,
                 type_id: 0,
                 department_id: 0

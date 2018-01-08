@@ -10,7 +10,6 @@ use App\Structure;
 use App\Roof;
 use App\Roof\PurchaseCategory;
 use App\Roof\Type;
-use App\Roof\SouthOrientation;
 use App\Department;
 use App\User;
 
@@ -92,6 +91,25 @@ class ImportCsv extends Command
                     break;
             }
 
+            $southOrientation = null;
+            switch ($row['south_orientation']) {
+                case '180° Sud':
+                    $southOrientation = 0;
+                    break;
+                case '+/-5°':
+                    $southOrientation = 5;
+                    break;
+                case '+/- 10°':
+                    $southOrientation = 10;
+                    break;
+                case '+/- 15°':
+                    $southOrientation = 15;
+                    break;
+                case '> 20°':
+                    $southOrientation = 45;
+                    break;
+            }
+
             if (empty($row['name'])) {
                 $row['name'] = $row['street'] . ', ' . $row['city'];
             }
@@ -121,9 +139,7 @@ class ImportCsv extends Command
                 'slope' => $slope,
                 'occupancy_rate' => 0,
                 'ground_square_area' => 0,
-                'south_orientation_id' => SouthOrientation::firstOrCreate([
-                    'name' => $row['south_orientation'],
-                ])->id,
+                'south_orientation' => $southOrientation,
                 'erp' => ($row['erp'] == 'Oui'),
                 'building_size' => $row['building_hight'],
                 'perimeter_abf' => ($row['ABF_primeter'] == 'Oui'),

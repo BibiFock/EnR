@@ -2,14 +2,14 @@
     <div>
         <table class="table">
             <thead>
-                <tr>
+                <tr class="row">
                     <th class="col-2 text-center">utilisateur</th>
                     <th class="col-2 text-center">date</th>
                     <th class="col-6 text-center">modifications</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(hist, index) in historicals" :key="hist.id">
+                <tr v-for="(hist, index) in historicals" :key="hist.id" class="row">
                     <td class="col-2">
                         <span >{{ hist.user.name }}</span>
                     </td>

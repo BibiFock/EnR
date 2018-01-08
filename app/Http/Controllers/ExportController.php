@@ -34,6 +34,7 @@ class ExportController extends Controller
             'slope' => 'pente de toit',
             'ground_square_area' => 'surface au sol du toit',
             'occupancy_rate' => 'taux d\'occupation',
+            'south_orientation' => 'orientation sud',
             // relations
             'structure.name' => 'structure.nom',
             'structure.type.name' => 'structure.type',
@@ -42,7 +43,6 @@ class ExportController extends Controller
             'structure.contact.phone' => 'structure.contact.téléphone',
             'structure.contact.email' => 'structure.contact.email',
 
-            'southOrientation.name' => 'orientation sud',
             'purchaseCategory.name' => 'catégorie de tarif',
             'type.name' => 'type',
             'owner.name' => 'owner.nom',
@@ -75,6 +75,7 @@ class ExportController extends Controller
                 $roof->slope,
                 $roof->ground_square_area,
                 $roof->occupancy_rate,
+                $roof->south_orientation,
                 // relations
                 ( $roof->structure_id ? $roof->structure->name : '-' ),
                 ( $roof->structure_id ? $roof->structure->type->name : '-' ),
@@ -83,7 +84,6 @@ class ExportController extends Controller
                 ( $roof->structure_id && $roof->structure->contact_id ? $roof->structure->contact->phone : '-' ),
                 ( $roof->structure_id && $roof->structure->contact_id ? $roof->structure->contact->email : '-' ),
 
-                ($roof->south_orientation_id ? $roof->southOrientation->name : '-' ),
                 ($roof->purchase_category_id ? $roof->purchaseCategory->name : '-' ),
                 ($roof->type_id ? $roof->type->name : '-' ),
                 ($roof->owner_id ? $roof->owner->name : '-' ),

@@ -58,7 +58,7 @@
 
          <div class="form-group row" v-if="roof.south_orientation">
             <label class="col-2 text-right">south_orientation</label>
-            <input class="col-10 pt-0 form-control-plaintext" type="text" :value="roof.south_orientation.name">
+            <input class="col-10 pt-0 form-control-plaintext" type="text" :value="roof.south_orientation">
         </div>
 
         <div class="form-check offset-2">

@@ -22,8 +22,9 @@ class Roof extends Model
         'inverter_location', 'inverter_distance', 'street',
         'zip', 'city', 'latitude', 'longitude',
         'slope', 'ground_square_area', 'occupancy_rate',
+        'south_orientation',
         // relations
-        'owner_id', 'structure_id', 'south_orientation_id',
+        'owner_id', 'structure_id',
         'purchase_category_id', 'type_id'
         // , 'department_id'
     ];
@@ -34,6 +35,10 @@ class Roof extends Model
 
     protected $hidden = [
         'department_id'
+    ];
+
+    protected $toLoad = [
+        'owner', 'structure', 'purchaseCategory', 'type', 'department'
     ];
 
     public function __construct($params = [])
@@ -83,11 +88,6 @@ class Roof extends Model
         return $this->belongsTo('\App\Structure');
     }
 
-    public function southOrientation()
-    {
-        return $this->belongsTo('\App\Roof\SouthOrientation');
-    }
-
     public function purchaseCategory()
     {
         return $this->belongsTo('\App\Roof\PurchaseCategory');
@@ -110,10 +110,7 @@ class Roof extends Model
 
     public function getCurrentState()
     {
-        return $this->loadMissing([
-            'owner', 'structure', 'southOrientation',
-            'purchaseCategory', 'type', 'department'
-        ]);
+        return $this->loadMissing($this->toLoad);
     }
 
     protected function initExtrasDatas($params = [])
