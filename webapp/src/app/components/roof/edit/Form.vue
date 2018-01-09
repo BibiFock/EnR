@@ -55,21 +55,29 @@
         <div class="form-row col-12">
             <label class="col-md-2 col-12 text-md-right">puissance</label>
             <div class="col-md-10 col-12 pt-0 row mb-2">
-                <div class="col-6">
-                    <label class="col-2 text-md-right">min</label>
-                    <input type="text" class="col-4 pt-0 form-control"
-                        v-bind:class="{'is-invalid': errors.hasOwnProperty('power_min')}"
-                        v-model="roof.power_min">
-                    <div class="invalid-feedback"
-                        v-if="errors.hasOwnProperty('power_min')"> {{ errors['power_min'].join(',') }} </div>
+                <div class="col-6 row">
+                    <label class="col-4 text-md-right">min</label>
+                    <div class="col-8 pt-0">
+                        <input type="text" class="form-control"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('power_min')}"
+                            v-model="roof.power_min">
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('power_min')">
+                            {{ errors['power_min'].join(',') }}
+                        </div>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <label class="col-2 text-md-right">max</label>
-                    <input type="text" class="col-4 pt-0 form-control"
-                        v-bind:class="{'is-invalid': errors.hasOwnProperty('power_max')}"
-                        v-model="roof.power_max">
-                    <div class="invalid-feedback"
-                        v-if="errors.hasOwnProperty('power_max')"> {{ errors['power_max'].join(',') }} </div>
+                <div class="col-6 row">
+                    <label class="col-4 text-md-right">max</label>
+                    <div class="col-8 pt-0">
+                        <input type="text" class="form-control"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('power_max')}"
+                            v-model="roof.power_max">
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('power_max')">
+                            {{ errors['power_max'].join(',') }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
