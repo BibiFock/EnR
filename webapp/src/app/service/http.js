@@ -24,11 +24,11 @@ var Http = {
                     });
                     break;
                 case 401:
-                    Vue.$notify({
-                        type: 'error',
-                        title: response.status + '. ' + response.statustext,
-                        text: response.body,
-                    });
+                    // Vue.$notify({
+                        // type: 'error',
+                        // title: response.status + '. ' + response.statustext,
+                        // text: response.body,
+                    // });
                     Auth.signout(Vue);
                     break;
 
@@ -40,6 +40,8 @@ var Http = {
                         text: response.body.message
                     });
             }
+
+            return response;
         });
     }
 };

@@ -1,209 +1,308 @@
 <template>
     <form>
         <div class="form-group row col-12 mt-3">
-            <label class="col-2 text-right">nom</label>
-            <div class="col-10">
+            <label class="col-md-2 text-md-right">nom</label>
+            <div class="col-md-10">
                 <input class="pt-0 form-control" type="text"
-                    v-model="roof.name" >
+                    v-bind:class="{'is-invalid': errors.hasOwnProperty('name')}" v-model="roof.name" >
+                <div class="invalid-feedback"
+                    v-if="errors.hasOwnProperty('name')"> {{ errors['name'].join(',') }} </div>
             </div>
         </div>
 
         <div class="form-group row col-12">
-            <label class="col-2 text-right">probabilité</label>
-            <div class="col-10">
-                <select class="form-control" v-model="roof.probability">
+            <label class="col-md-2 text-md-right">probabilité</label>
+            <div class="col-md-10">
+                <select class="form-control"
+                    v-bind:class="{'is-invalid': errors.hasOwnProperty('probability')}"
+                    v-model="roof.probability">
                     <option v-for="probability in infos.probabilities" :key="index" >
                         {{ probability }}
                     </option>
                 </select>
+                <div class="invalid-feedback"
+                    v-if="errors.hasOwnProperty('probability')"> {{ errors['probability'].join(',') }} </div>
             </div>
         </div>
 
         <div class="form-group row col-12">
-            <label class="col-2 text-right">structure initiatrice</label>
-            <div class="col-10 pt-0">
+            <label class="col-md-2 text-md-right">structure initiatrice</label>
+            <div class="col-md-10 pt-0">
                 <select class="form-control"
+                    v-bind:class="{'is-invalid': errors.hasOwnProperty('structure_id')}"
                     v-model="roof.structure_id">
                     <option v-for="structure in infos.structures" :key="structure.id"
                         :value="structure.id" >
                         {{ structure.name }}
                     </option>
                 </select>
+                <div class="invalid-feedback"
+                    v-if="errors.hasOwnProperty('structure_id')"> {{ errors['structure_id'].join(',') }} </div>
             </div>
         </div>
 
         <div class="form-group row col-12">
-            <label class="col-2 text-right">surface</label>
-            <div class="col-10 pt-0">
-                <input class="form-control" type="text" v-model="roof.square_area">
+            <label class="col-md-2 text-md-right">surface</label>
+            <div class="col-md-10 pt-0">
+                <input class="form-control" type="text"
+                    v-bind:class="{'is-invalid': errors.hasOwnProperty('square_area')}"
+                    v-model="roof.square_area">
+                <div class="invalid-feedback"
+                    v-if="errors.hasOwnProperty('square_area')"> {{ errors['square_area'].join(',') }} </div>
             </div>
         </div>
 
-        <div class="form-row">
-            <label class="col-2 text-right">puissance</label>
-            <div class="col-10 pt-0 row mb-2">
-                <label class="col-2 text-right">min</label>
-                <input type="text" class="col-1 pt-0 form-control" v-model="roof.power_min">
-
-                <label class="col-2 text-right">max</label>
-                <input type="text" class="col-1 pt-0 form-control" v-model="roof.power_max">
+        <div class="form-row col-12">
+            <label class="col-md-2 col-12 text-md-right">puissance</label>
+            <div class="col-md-10 col-12 pt-0 row mb-2">
+                <div class="col-6">
+                    <label class="col-2 text-md-right">min</label>
+                    <input type="text" class="col-4 pt-0 form-control"
+                        v-bind:class="{'is-invalid': errors.hasOwnProperty('power_min')}"
+                        v-model="roof.power_min">
+                    <div class="invalid-feedback"
+                        v-if="errors.hasOwnProperty('power_min')"> {{ errors['power_min'].join(',') }} </div>
+                </div>
+                <div class="col-6">
+                    <label class="col-2 text-md-right">max</label>
+                    <input type="text" class="col-4 pt-0 form-control"
+                        v-bind:class="{'is-invalid': errors.hasOwnProperty('power_max')}"
+                        v-model="roof.power_max">
+                    <div class="invalid-feedback"
+                        v-if="errors.hasOwnProperty('power_max')"> {{ errors['power_max'].join(',') }} </div>
+                </div>
             </div>
         </div>
 
         <div class="form-group row col-12">
-            <label class="col-2 text-right">Catégorie de tarif</label>
-            <div class="col-10 pt-0">
-                <select class="form-control" v-model="roof.purchase_category_id">
+            <label class="col-md-2 text-md-right">Catégorie de tarif</label>
+            <div class="col-md-10 pt-0">
+                <select class="form-control"
+                    v-bind:class="{'is-invalid': errors.hasOwnProperty('purchase_category_id')}"
+                    v-model="roof.purchase_category_id">
                     <option v-for="pc in infos.purchase_categories" :key="pc.id"
                         :value="pc.id" >
                         {{ pc.name }}
                     </option>
                 </select>
+                <div class="invalid-feedback"
+                    v-if="errors.hasOwnProperty('purchase_category_id')"> {{ errors['purchase_category_id'].join(',') }} </div>
             </div>
         </div>
 
-        <div class="form-check offset-2 pm-2">
-            <label class="form-check-label col-2">
+        <div class="form-check offset-2">
+            <label class="form-check-label col-5">
                 <input class="form-check-input" type="checkbox"
-                    value="1" v-model="roof.erp">
+                    value="1" v-bind:class="{'is-invalid': errors.hasOwnProperty('erp')}"
+                    v-model="roof.erp">
                 ERP
             </label>
-            <label class="form-check-label col-2">
+            <label class="form-check-label col-5">
                 <input class="form-check-input" type="checkbox"
-                    value="1" v-model="roof.perimeter_abf">
+                    value="1" v-bind:class="{'is-invalid': errors.hasOwnProperty('perimeter_abf')}"
+                    v-model="roof.perimeter_abf">
                 périmètre ABF
             </label>
         </div>
 
         <div class="form-group row col-12">
-            <label class="col-2 text-right">taille du bâtiment</label>
-            <div class="col-10 pt-0">
-                <input class="form-control" type="text" v-model="roof.building_size " />
+            <label class="col-md-2 text-md-right">taille du bâtiment</label>
+            <div class="col-md-10 pt-0">
+                <input class="form-control" type="text"
+                    v-bind:class="{'is-invalid': errors.hasOwnProperty('building_size')}"
+                    v-model="roof.building_size " />
+                <div class="invalid-feedback"
+                    v-if="errors.hasOwnProperty('building_size')"> {{ errors['building_size'].join(',') }} </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <fieldset class="form-group col-md-6 col-12 mb-md-0">
+                <legend class="offset-4 col-md-7">
+                    <small>toiture</small>
+                </legend>
+
+                <div class="form-group row col-12">
+                    <label class="col-md-4 ml-2 text-md-right">type</label>
+                    <div class="col-md-7 pt-0">
+                        <select class="form-control"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('type_id')}"
+                            v-model="roof.type_id">
+                            <option v-for="type in infos.types" :key="type.id"
+                                :value="type.id" >
+                                {{ type.name }}
+                            </option>
+                        </select>
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('type_id')"> {{ errors['type_id'].join(',') }} </div>
+                    </div>
+                </div>
+
+                <div class="form-group row col-md-12">
+                    <label class="col-md-4 ml-2 text-md-right">pente de toit</label>
+                    <div class="col-md-7 pt-0">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('slope')}"
+                            v-model="roof.slope" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('slope')"> {{ errors['slope'].join(',') }} </div>
+                    </div>
+                </div>
+
+                <div class="form-group row col-md-12">
+                    <label class="col-md-4 ml-2 text-md-right">surface au sol du toit</label>
+                    <div class="col-md-7 pt-0">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('ground_square_area')}"
+                            v-model="roof.ground_square_area" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('ground_square_area')"> {{ errors['ground_square_area'].join(',') }} </div>
+                    </div>
+                </div>
+
+                <div class="form-group row col-md-12">
+                    <label class="col-md-4 ml-2 text-md-right">taux d'occupation</label>
+                    <div class="col-md-7 pt-0">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('occupancy_rate')}"
+                            v-model="roof.occupancy_rate" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('occupancy_rate')"> {{ errors['occupancy_rate'].join(',') }} </div>
+                    </div>
+                </div>
+
+                <div class="form-group row col-md-12">
+                    <label class="col-md-4 ml-2 text-md-right">orientation sud</label>
+                    <div class="col-md-7 pt-0">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('south_orientation')}"
+                            v-model="roof.south_orientation" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('south_orientation')"> {{ errors['south_orientation'].join(',') }} </div>
+                    </div>
+                </div>
+
+                <div class="form-group row col-md-12">
+                    <label class="col-md-4 ml-2 text-md-right">position onduleur</label>
+                    <div class="col-md-7 pt-0">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_location')}"
+                            v-model="roof.inverter_location" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('inverter_location')"> {{ errors['inverter_location'].join(',') }} </div>
+                    </div>
+                </div>
+
+                <div class="form-group row col-md-12">
+                    <label class="col-md-4 ml-2 text-md-right">distance onduleur</label>
+                    <div class="col-md-7 pt-0">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_distance')}"
+                            v-model="roof.inverter_distance" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('inverter_distance')"> {{ errors['inverter_distance'].join(',') }} </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="map-edit col-md-6 mt-md-5 col-12">
+                <gmap-map
+                    :center="center"
+                    :zoom="zoom"
+                    :map-type-id="mapType"
+                    @maptypeid_changed="updateMapType"
+                    @center_changed="updateGeo"
+                    class="col-md-12 map-preview" >
+                    <gmap-marker :position.sync="roof.position" ></gmap-marker>
+
+                    <div class="extra-content">
+                        <button type="button" class="btn btn-primary d-inline-block btn-sm"
+                            v-on:click="updateCenter()">centrer le marqueur</button>
+                    </div>
+                </gmap-map>
+            </div>
+        </div>
+
+        <div class="form-group row col-md-12">
+            <label class="col-md-2 text-md-right">remarques</label>
+            <div class="col-md-10 pt-0">
+                <textarea class="form-control" type="text"
+                    v-bind:class="{'is-invalid': errors.hasOwnProperty('remarks')}"
+                    v-model="roof.remarks"></textarea>
+                <div class="invalid-feedback"
+                    v-if="errors.hasOwnProperty('remarks')"> {{ errors['remarks'].join(',') }} </div>
             </div>
         </div>
 
         <fieldset class="form-group">
-            <legend class="offset-2 col-10">
-                <small>toiture</small>
-            </legend>
-
-            <div class="form-group row col-12">
-                <label class="col-2 text-right">type</label>
-                <div class="col-10 pt-0">
-                    <select class="form-control" v-model="roof.type_id">
-                        <option v-for="type in infos.types" :key="type.id"
-                            :value="type.id" >
-                            {{ type.name }}
-                        </option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group row col-12">
-                <label class="col-2 text-right">pente de toit</label>
-                <div class="col-10 pt-0">
-                    <input class="form-control" type="text" v-model="roof.slope" />
-                </div>
-            </div>
-
-            <div class="form-group row col-12">
-                <label class="col-2 text-right">surface au sol du toit</label>
-                <div class="col-10 pt-0">
-                    <input class="form-control" type="text" v-model="roof.ground_square_area" />
-                </div>
-            </div>
-
-            <div class="form-group row col-12">
-                <label class="col-2 text-right">taux d'occupation</label>
-                <div class="col-10 pt-0">
-                    <input class="form-control" type="text" v-model="roof.occupancy_rate" />
-                </div>
-            </div>
-
-            <div class="form-group row col-12">
-                <label class="col-2 text-right">orientation sud</label>
-                <div class="col-10 pt-0">
-                    <input class="form-control" type="text" v-model="roof.south_orientation" />
-                </div>
-            </div>
-
-            <div class="form-group row col-12">
-                <label class="col-2 text-right">position onduleur</label>
-                <div class="col-10 pt-0">
-                    <input class="col-10 pt-0 form-control" type="text" v-model="roof.inverter_location " />
-                </div>
-            </div>
-
-            <div class="form-group row col-12">
-                <label class="col-2 text-right">distance onduleur</label>
-                <div class="col-10 pt-0">
-                    <input class="form-control" type="text" v-model="roof.inverter_distance " />
-                </div>
-            </div>
-        </fieldset>
-
-        <div class="form-group row col-12">
-            <label class="col-2 text-right">remarques</label>
-            <div class="col-10 pt-0">
-                <textarea class="form-control" type="text" v-model="roof.remarks"></textarea>
-            </div>
-        </div>
-
-        <fieldset class="form-group">
-            <legend class="offset-2 col-10">
+            <legend class="offset-2 col-md-10">
                 <small>propriétaire</small>
             </legend>
 
             <div v-if="editingOwner">
-                <div class="form-group row col-12">
-                    <label class="col-2 text-right">prénom</label>
-                    <div class="col-10 pt-0">
+                <div class="form-group row col-md-12">
+                    <label class="col-md-2 text-md-right">prénom</label>
+                    <div class="col-md-10 pt-0">
                         <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('owner.name')}"
                             v-model="owner.contact.first_name" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('owner.name')"> {{ errors['owner.name'].join(',') }} </div>
                     </div>
                 </div>
 
-                <div class="form-group row col-12">
-                    <label class="col-2 text-right">nom</label>
-                    <div class="col-10 pt-0">
+                <div class="form-group row col-md-12">
+                    <label class="col-md-2 text-md-right">nom</label>
+                    <div class="col-md-10 pt-0">
                         <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('owner.name')}"
                             v-model="owner.contact.last_name" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('owner.name')"> {{ errors['owner.name'].join(',') }} </div>
                     </div>
                 </div>
-                <div class="form-group row col-12">
-                    <label class="col-2 text-right">type</label>
-                    <div class="col-10 pt-0">
+                <div class="form-group row col-md-12">
+                    <label class="col-md-2 text-md-right">type</label>
+                    <div class="col-md-10 pt-0">
                         <select class="form-control"
-                                v-model="owner.type_id">
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('owner.type_id')}"
+                            v-model="owner.type_id">
                             <option v-for="so in infos.structure_types" :key="so.id"
                                     :value="so.id" >
                                     {{ so.name }}
                             </option>
                         </select>
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('owner.type_id')"> {{ errors['owner.type_id'].join(',') }} </div>
                     </div>
                 </div>
 
-                <div class="form-group row col-12">
-                    <label class="col-2 text-right">téléphone</label>
-                    <div class="col-10 pt-0">
+                <div class="form-group row col-md-12">
+                    <label class="col-md-2 text-md-right">téléphone</label>
+                    <div class="col-md-10 pt-0">
                         <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('owner.contact.phone')}"
                             v-model="owner.contact.phone" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('owner.contact.phone')"> {{ errors['owner.contact.phone'].join(',') }} </div>
                     </div>
                 </div>
 
-                <div class="form-group row col-12">
-                    <label class="col-2 text-right">email</label>
-                    <div class="col-10 pt-0">
+                <div class="form-group row col-md-12">
+                    <label class="col-md-2 text-md-right">email</label>
+                    <div class="col-md-10 pt-0">
                         <input class="form-control" type="email"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('owner.contact.email')}"
                             v-model="owner.contact.email" />
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('owner.contact.email')"> {{ errors['owner.contact.email'].join(',') }} </div>
                     </div>
                 </div>
             </div>
             <div v-else>
-                <div class="form-group row col-12">
+                <div class="form-group row col-md-12">
                     <!-- TODO make a card of contact infos -->
-                    <label class="col-2 text-right">nom</label>
-                    <div class="col-7 pt-0">
+                    <label class="col-md-2 text-md-right">nom</label>
+                    <div class="col-md-7 pt-0">
                         <input class="form-control-plaintext" type="text"
                             v-model="roof.owner.name" />
                     </div>
@@ -215,73 +314,50 @@
         </fieldset>
 
         <fieldset class="form-group">
-            <legend class="offset-2 col-10">
+            <legend class="offset-2 col-md-10">
                 <small>localisation</small>
             </legend>
 
-            <div class="form-group row col-12">
-                <label class="col-2 text-right" >adresse</label>
-                <div class="col-10 ">
-                    <input type="text" class="form-control" v-model="roof.street" >
+            <div class="form-group row col-md-12">
+                <label class="col-md-2 text-md-right" >adresse</label>
+                <div class="col-md-10 ">
+                    <input type="text" class="form-control"
+                        v-bind:class="{'is-invalid': errors.hasOwnProperty('street')}"
+                        v-model="roof.street" >
+                    <div class="invalid-feedback"
+                        v-if="errors.hasOwnProperty('street')"> {{ errors['street'].join(',') }} </div>
                 </div>
             </div>
 
-            <div class="form-group row col-12">
-                <label class="col-2 text-right">ville</label>
-                <div class="col-10 pt-0">
-                    <input type="text" class="form-control" v-model="roof.city" >
+            <div class="form-group row col-md-12">
+                <label class="col-md-2 text-md-right">ville</label>
+                <div class="col-md-10 pt-0">
+                    <input type="text" class="form-control"
+                        v-bind:class="{'is-invalid': errors.hasOwnProperty('city')}"
+                        v-model="roof.city" >
+                    <div class="invalid-feedback"
+                        v-if="errors.hasOwnProperty('city')"> {{ errors['city'].join(',') }} </div>
                 </div>
-                    <!-- <label class="col-2">département</label> -->
-                    <!-- <select class="form-control col-2" -->
-                        <!-- v-model="roof.department_id"> -->
-                        <!-- <option v-for="dep in infos.departments" :key="dep.id" -->
-                            <!-- :value="dep.id" > -->
-                            <!-- {{ dep.zip }}. {{ dep.name }} -->
-                        <!-- </option> -->
-                    <!-- </select> -->
              </div>
-             <div class="form-group row col-12">
-                    <label class="col-2 text-right">code postal</label>
-                    <div class="pt-0 col-10">
-                        <input type="text" class="form-control" v-model="roof.zip">
+             <div class="form-group row col-md-12">
+                    <label class="col-md-2 text-md-right">code postal</label>
+                    <div class="pt-0 col-md-10">
+                        <input type="text" class="form-control"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('zip')}"
+                            v-model="roof.zip">
+                        <div class="invalid-feedback"
+                            v-if="errors.hasOwnProperty('zip')"> {{ errors['zip'].join(',') }} </div>
                     </div>
                 </div>
             </div>
-
-            <div class="row clearfix position-relative map-edit">
-                <gmap-map
-                    :center="center"
-                    :zoom="zoom"
-                    :map-type-id="mapType"
-                    @maptypeid_changed="updateMapType"
-                    @center_changed="updateGeo"
-                    class="offset-2 col-5 map-preview pl-2" >
-                    <gmap-marker :position.sync="roof.position" ></gmap-marker>
-                </gmap-map>
-                <div class="extra-content">
-                    <button type="button" class="btn btn-primary d-inline-block btn-sm"
-                        v-on:click="updateCenter()">centrer le marqueur</button>
-                </div>
-                <!--v-map class="offset-2 col-5 map-preview" :zoom="zoom"
-                    v-on:l-moveend="updateGeo" :center="center">
-                    <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
-                    <v-marker :lat-lng="[roof.latitude, roof.longitude]" >
-                    </v-marker>
-                    <div class="extra-content">
-                        <button type="button" class="btn btn-primary d-inline-block btn-sm"
-                            v-on:click="updateCenter()">centrer le marqueur</button>
-                    </div>
-                </v-map-->
-            </div>
-
         </fieldset>
 
         <div class="row">
-            <div class="col-6">
+            <div class="col-md-6">
                 <button type="button" class="btn btn-link"
                     v-on:click="backToMap()">retour</button>
             </div>
-            <div class="col-6 text-right">
+            <div class="col-md-6 text-right">
                 <button type="button" class="btn btn-primary"
                     v-on:click="save()">sauvegarder</button>
             </div>
@@ -345,7 +421,8 @@ export default {
             if (this.editingOwner) {
                 params.owner = this.owner;
             }
-            this.$http[method]( url, params).then(
+            this.errors = {};
+            this.$http[method](url, params).then(
                 response => {
                     this.editingOwner = false;
                     if (this.roof.id == false) {
@@ -362,6 +439,12 @@ export default {
                         text: 'well done jack'
                     });
 
+                },
+                response => {
+                    if (response.status !== 400) {
+                        return false;
+                    }
+                    this.errors = response.body;
                 }
             );
         },
@@ -424,6 +507,7 @@ export default {
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             center: center,
             editingOwner: false,
+            errors: {},
             owner: {
                 id: 0,
                 name: '',
@@ -462,7 +546,7 @@ export default {
                 // relations
                 owner_id: 0,
                 owner: { name:'' },
-                structure_id: 0,
+                structure_id: null,
                 purchase_category_id: 0,
                 type_id: 0,
                 department_id: 0
@@ -475,8 +559,13 @@ export default {
 
 <style>
 .map-edit .map-preview {
-    width:300px;
-    height:300px;
+    min-height:300px;
+    height:100%;
+}
+
+
+.map-edit .map-preview .vue-map-hidden {
+    display:block;
 }
 
 .map-edit .extra-content {

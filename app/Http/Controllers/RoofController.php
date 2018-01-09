@@ -41,7 +41,7 @@ class RoofController extends Controller
 
             // relations
             'owner_id' => 'numeric',
-            'structure_id' => 'numeric',
+            'structure_id' => 'numeric|required',
 
             'purchase_category_id' => 'numeric',
             'type_id' => 'numeric',
@@ -119,6 +119,7 @@ class RoofController extends Controller
     protected function validateRequest(Request $request)
     {
         parent::validateRequest($request);
+        $isError = false;
 
         $roof = $this->validator->attributes();
         if (empty($roof['owner']['contact'])) {
@@ -127,14 +128,16 @@ class RoofController extends Controller
 
         if (empty($roof['owner']['type_id'])) {
             $this->validator->errors()->add('owner.type_id', 'missing owner.type_id');
-
-            $this->reportBadRequest();
+            $isError = true;
         }
 
         $contact = $roof['owner']['contact'];
         if (empty($contact['first_name']) && empty($contact['last_name'])) {
-            $this->validator->errors()->add('owner.*_name', 'missing first or last name');
+            $this->validator->errors()->add('owner.name', 'missing first or last name');
+            $isError = true;
+        }
 
+        if ($isError) {
             $this->reportBadRequest();
         }
 

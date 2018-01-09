@@ -3,18 +3,18 @@
         <table class="table">
             <thead>
                 <tr class="row">
-                    <th class="col-2 text-center">utilisateur</th>
-                    <th class="col-2 text-center">date</th>
-                    <th class="col-6 text-center">modifications</th>
+                    <th class="col-sm-2 col-6 text-center">utilisateur</th>
+                    <th class="col-sm-2 col-6 text-center">date</th>
+                    <th class="col-sm-6 col-12 text-center">modifications</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(hist, index) in historicals" :key="hist.id" class="row">
-                    <td class="col-2">
+                    <td class="col-sm-2 col-6">
                         <span >{{ hist.user.name }}</span>
                     </td>
-                    <td class="col-2">{{ hist.created_at }}</td>
-                    <td class="col-6">
+                    <td class="col-sm-2 col-6">{{ hist.created_at }}</td>
+                    <td class="col-sm-6 col-12">
                         <ul>
                             <li v-for="(changes, num) in hist.state" key="num"
                                 v-if="changes.isChanged">

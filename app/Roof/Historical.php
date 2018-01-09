@@ -28,4 +28,16 @@ class Historical extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function save(array $options = [])
+    {
+        $lastHist = Historical::where('roof_id', $this->roof_id)
+            ->orderBy('id', 'desc')
+            ->first();
+        if ($this->state == $lastHist->state) {
+            // si on sauvegarde la même chose on oublie
+            return false;
+        }
+
+        return parent::save($options);
+    }
 }
