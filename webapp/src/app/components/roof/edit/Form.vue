@@ -252,7 +252,8 @@
                 <gmap-map
                     :center="center"
                     :zoom="zoom"
-                    map-type-id="hybrid"
+                    :map-type-id="mapType"
+                    @maptypeid_changed="updateMapType"
                     @center_changed="updateGeo"
                     class="offset-2 col-5 map-preview pl-2" >
                     <gmap-marker :position.sync="roof.position" ></gmap-marker>
@@ -305,9 +306,14 @@ export default {
     components: {
     },
     methods: {
+        // <-- cookies
+        updateMapType: function(mapType) {
+            this.$cookie.set('map-type', mapType, 30);
+        },
         updateGeo: function(center) {
             this.$cookie.set('map-center', [center.lat(), center.lng()], 30);
         },
+        // cookies -->
         updateCenter: function() {
             let center = this.$cookie.get('map-center').split(',')
                 .map(el => parseFloat(el));
@@ -406,8 +412,14 @@ export default {
         }
         coord = coord.map(coord => parseFloat(coord));
         let center = { lat: coord[0], lng: coord[1] };
+
+        let mapType = 'hybrid';
+        if (this.$cookie.get('map-type')) {
+            mapType = this.$cookie.get('map-type');
+        }
         return {
             zoom:18,
+            mapType:mapType,
             url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             center: center,

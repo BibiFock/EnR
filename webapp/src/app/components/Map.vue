@@ -1,18 +1,10 @@
 <template>
     <div class="map-container">
-        <!--v-map class="map-container" :zoom="zoom" :center="[this.lat, this.lng]"
-            v-on:l-moveend="updateGeo">
-            <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
-            <v-marker v-for="roof in roofs" :key="roof.id"
-                :lat-lng="[roof.latitude, roof.longitude]"
-                v-on:l-click="showDetail(roof)" >
-                <v-tooltip :content="getToolTip(roof)"></v-tooltip>
-            </v-marker>
-        </v-map-->
         <gmap-map
             :center="center"
             :zoom="zoom"
-            map-type-id="hybrid"
+            @maptypeid_changed="updateMapType"
+            :map-type-id="mapType"
             @center_changed="updateCenter"
             class="map-container" >
             <gmap-info-window
@@ -33,18 +25,10 @@
                 @click="showDetail(roof)" ></gmap-marker>
         </gmap-map>
         <div class="extra-content">
-            <!-- temporary hide this ->
-            <button type="button" v-on:click="close()" aria-label="Close"
-                class="btn-close m-3 py-1 px-2 close border rounded border-white bg-white">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <!- /temporary hide this -->
             <button type="button" class="btn btn-primary d-inline-block"
                 v-on:click="addRoof()">
                 add
             </button>
-            <!--GmapAutocomplete @place_changed="setPlace">
-            </GmapAutocomplete-->
 
             <autocomplete
                 class="d-inline-block"
@@ -81,20 +65,20 @@ export default {
         Autocomplete
     },
     methods: {
+        // <-- cookies
+        updateMapType: function(mapType) {
+            this.$cookie.set('map-type', mapType, 30);
+        },
+        updateGeo: function(center) {
+            this.$cookie.set('map-center', [center.lat(), center.lng()], 30);
+        },
+        // cookies -->
         exportData: function () {
             this.$cookie.set('token', localStorage.getItem('id_token'), 30);
             window.open(
                 process.env.API_URL + 'export?token=' + localStorage.getItem('id_token'),
                 '_blank'
             );
-        },
-        updateGeo: function(e) {
-            let center = e.target.getCenter();
-            if (center == null) {
-                return true;
-            }
-
-            this.$cookie.set('map-center', [center.lat, center.lng], 30);
         },
         handleSelect: function(obj) {
             this.center.lat = parseFloat(obj.lat);
@@ -163,10 +147,15 @@ export default {
             let cookieCenter = this.$cookie.get('map-center').split(',');
             center = cookieCenter;
         }
+        let mapType = 'hybrid';
+        if (this.$cookie.get('map-type')) {
+            mapType = this.$cookie.get('map-type');
+        }
 
         return {
-            zoom:13,
-            url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+            mapType: mapType,
+            zoom: 13,
+            url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             center: {
                 lat: parseFloat(center[0]),
