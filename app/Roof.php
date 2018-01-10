@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Roof\Tilt;
 use App\Roof\Historical;
 
 class Roof extends Model
@@ -19,26 +20,20 @@ class Roof extends Model
     protected $fillable = [
         'id', 'name', 'probability', 'square_area', 'power_max', 'power_min',
         'erp', 'building_size', 'perimeter_abf', 'remarks',
-        'inverter_location', 'inverter_distance', 'street',
-        'zip', 'city', 'latitude', 'longitude',
-        'slope', 'ground_square_area', 'occupancy_rate',
-        'south_orientation',
+        'street', 'zip', 'city',
         // relations
         'owner_id', 'structure_id',
-        'purchase_category_id', 'type_id'
-        // , 'department_id'
+        'purchase_category_id'
     ];
 
     protected $casts = [
         'erp' => 'boolean',
+        'perimeter_abf' => 'boolean'
     ];
 
-    protected $hidden = [
-        'department_id'
-    ];
 
     protected $toLoad = [
-        'owner', 'structure', 'purchaseCategory', 'type', 'department'
+        'owner', 'structure', 'purchaseCategory', 'tilts'
     ];
 
     public function __construct($params = [])
@@ -57,9 +52,27 @@ class Roof extends Model
     {
         if ($this->owner) {
             $this->owner->push();
+            $this->owner()->associate($this->owner);
         }
 
-        return parent::save($options);
+        $output = parent::save($options);
+
+        // on sauvegarde tout
+        $ids = $this->tilts->map(function ($item) {
+            $item->roof_id = $this->id;
+            $item->save();
+            return $item->id;
+        });
+
+        // on dégage les toitures absentes
+        $tilts = Tilt::where('roof_id', $this->id)
+            ->whereNotIn('id', $ids->toArray())
+            ->get()
+            ->each(function($tilt) {
+                $tilt->delete();
+            });
+
+        return $output;
     }
 
     public function saveState($userId)
@@ -93,19 +106,14 @@ class Roof extends Model
         return $this->belongsTo('\App\Roof\PurchaseCategory');
     }
 
-    public function type()
-    {
-        return $this->belongsTo('\App\Roof\Type');
-    }
-
-    public function department()
-    {
-        return $this->belongsTo('\App\Department');
-    }
-
     public function states()
     {
         return $this->hasMany('\App\Roof\Historical');
+    }
+
+    public function tilts()
+    {
+        return $this->hasMany('\App\Roof\Tilt');
     }
 
     public function getCurrentState()
@@ -118,6 +126,30 @@ class Roof extends Model
         if (!empty($params['owner'])) {
             $this->loadOwner($params['owner']);
         }
+
+        if (!empty($params['tilts'])) {
+            $this->loadTilts($params['tilts']);
+        }
+    }
+
+    protected function loadTilts($params)
+    {
+        $nbTilts = $this->tilts->count();
+        foreach ($params as $k => $param) {
+            if (!empty($this->tilts->get($k))) {
+                $this->tilts->get($k)->fill($param);
+                continue;
+            }
+            $tilt = new Tilt();
+            $tilt->fill($param);
+            $this->tilts->push($tilt);
+        }
+
+        if ($nbTilts <= count($params)) {
+            return true;
+        }
+
+        $this->tilts->splice(count($params), $nbTilts - count($params));
     }
 
     protected function loadOwner($params)
@@ -139,14 +171,14 @@ class Roof extends Model
             }
             $this->owner->type_id = $params['type_id'];
         } else {
-            $owner = $this->owner()->create([
+            $owner = $this->owner()->make([
                 'name' => '',
                 'type_id' => $params['type_id'],
             ]);
 
             $this->owner()->associate($owner);
 
-            $contact = $this->owner->contact()->create($params['contact']);
+            $contact = $this->owner->contact()->make($params['contact']);
 
             $this->owner->contact()->associate($contact);
         }

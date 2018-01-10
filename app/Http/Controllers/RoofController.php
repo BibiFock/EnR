@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Roof;
+use App\Roof\Tilt;
 use App\Contact;
 
 class RoofController extends Controller
@@ -31,21 +32,23 @@ class RoofController extends Controller
 
             'zip' => 'string|max:250',
             'city' => 'string|max:250',
-            'latitude' => 'numeric',
-            'longitude' => 'numeric',
-
-            'slope' => 'numeric',
-            'ground_square_area' => 'numeric',
-            'occupancy_rate' => 'numeric',
-            'south_orientation' => 'numeric',
 
             // relations
-            'owner_id' => 'numeric',
+            'owner_id' => 'numeric|nullable',
             'structure_id' => 'numeric|required',
 
             'purchase_category_id' => 'numeric',
-            'type_id' => 'numeric',
-            'department_id' => 'numeric',
+
+            'tilts' => 'array',
+            'tilts.*.name' => 'string|required',
+            'tilts.*.roof_id' => 'numeric',
+            'tilts.*.latitude' => 'numeric',
+            'tilts.*.longitude' => 'numeric',
+            'tilts.*.slope' => 'numeric',
+            'tilts.*.ground_square_area' => 'numeric',
+            'tilts.*.occupancy_rate' => 'numeric',
+            'tilts.*.south_orientation' => 'numeric',
+            'tilts.*.type_id' => 'numeric',
 
             // other
             'owner.contact.first_name' => 'string|max:200',
@@ -58,7 +61,7 @@ class RoofController extends Controller
 
     public function index()
     {
-        $roofs = Roof::with(['structure', 'owner'])->get();
+        $roofs = Roof::with(['structure', 'owner', 'tilts'])->get();
 
         return response()->json($roofs);
     }
@@ -69,6 +72,8 @@ class RoofController extends Controller
         if (empty($roof)) {
             return response()->json(['roof_not_found'], 404);
         }
+
+        $roof->loadMissing(['structure', 'owner', 'tilts']);
 
         return $this->renderRoof($roof);
     }
@@ -83,6 +88,7 @@ class RoofController extends Controller
         $this->validateRequest($request);
 
         $params = $this->validator->attributes();
+        unset($params['tilts']['*']);
         $roof = new Roof($params);
         $this->saveRoof($roof, $request->user());
 
@@ -94,6 +100,7 @@ class RoofController extends Controller
         $this->validateRequest($request);
 
         $params = $this->validator->attributes();
+        unset($params['tilts']['*']);
         try {
             $roof = Roof::findOrFail($id);
             $roof->fill($params);

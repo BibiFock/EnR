@@ -111,10 +111,6 @@
                 <label class="col-1">zip</label>
                 <input type="text" class="pt-0 col-1 form-control-plaintext" :value="roof.zip">
             </div>
-            <div class="form-group col-2" v-if="roof.department">
-                <label >département</label>
-                <input type="text" class="pt-0 form-control-plaintext" :value="roof.department.code">
-            </div>
         </div>
 
         <div class="row clearfix" v-if="roof.latitude">

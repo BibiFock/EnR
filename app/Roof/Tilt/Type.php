@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Roof;
+namespace App\Roof\Tilt;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Type extends Model
 {
-
-    protected $table = 'roof_types';
-
+    protected $table = 'tilt_types';
     /**
      * The attributes that are mass assignable.
      *
@@ -18,9 +16,9 @@ class Type extends Model
         'id', 'name',
     ];
 
-    public function roofs()
+    public function tilts()
     {
-        return $this->hasMany('App\Roof', 'type_id');
+        return $this->hasMany('App\Roof\Tilt', 'type_id');
     }
 
 }

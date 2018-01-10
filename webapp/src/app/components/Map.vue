@@ -16,6 +16,7 @@
             </gmap-info-window>
             <gmap-marker
                 v-for="(roof, index) in roofs"
+                v-if="roof.position"
                 :key="index"
                 :position="roof.position"
                 :clickable="true"
@@ -125,9 +126,13 @@ export default {
             ).then(
                 response => {
                     this.roofs = response.body.map(roof => {
+                        if (roof.tilts.length == 0) {
+                            console.log('roof id: ' + roof.id + ' missing tilts');
+                            return true;
+                        }
                         roof.position = {
-                            lat: parseFloat(roof.latitude),
-                            lng: parseFloat(roof.longitude)
+                            lat: parseFloat(roof.tilts[0].latitude),
+                            lng: parseFloat(roof.tilts[0].longitude)
                         };
                         return roof;
                     });

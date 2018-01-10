@@ -45,5 +45,13 @@ class Structure extends Model
         return $this->hasMany('App\Roof', 'owner_id');
     }
 
+    public function save(array $options = [])
+    {
+        if (!empty($this->contact)) {
+            $this->contact->push();
+            $this->contact()->associate($this->contact);
+        }
+        return parent::save($options);
+    }
 
 }

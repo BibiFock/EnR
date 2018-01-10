@@ -11,6 +11,6 @@ class RoofTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Roof::class, 20)->create();
+        factory(App\Roof\Tilt::class, 20)->create();
     }
 }

@@ -34,12 +34,11 @@ $router->group(
                 $router->get('structures', 'StructureController@index');
                 $router->get('structures/' . $genericId, 'StructureController@get');
                 $router->get('structure_types', 'StructureTypeController@index');
-                $router->get('departments', 'DepartmentController@index');
 
                 $router->get('export', 'ExportController@index');
 
                 $router->get('roof/purchase_categories', 'RoofPurchaseCategoryController@index');
-                $router->get('roof/types', 'RoofTypeController@index');
+                $router->get('roof/tilt/types', 'Roof\TiltTypeController@index');
                 $router->get('roof/probabilities', 'RoofController@getProbabilities');
 
                 $router->get('roofs', 'RoofController@index');

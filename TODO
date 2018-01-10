@@ -1,3 +1,5 @@
 - revoir la migration 1
     elle doit juste créer la structure de la base pas la compléter, bouger les completions dans le seeder
 - ajouter des clusters dans la map pour unifier les points (dispo sous google map)
+- revoir la recherche (mobile first)
+- interface en général mobile first

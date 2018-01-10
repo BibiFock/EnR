@@ -1,12 +1,12 @@
 <?php
 
-use App\Roof\Type;
+use App\Roof\Tilt\Type;
 
-class RoofTypeControllerTest extends ApiCase
+class TiltTypeControllerTest extends ApiCase
 {
     protected function getUrl()
     {
-        return '/api/roof/types';
+        return '/api/roof/tilt/types';
     }
 
     protected function getBaseStructure()

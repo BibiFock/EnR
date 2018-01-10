@@ -9,8 +9,8 @@ use App\StructureType;
 use App\Structure;
 use App\Roof;
 use App\Roof\PurchaseCategory;
-use App\Roof\Type;
-use App\Department;
+use App\Roof\Tilt;
+use App\Roof\Tilt\Type;
 use App\User;
 
 class ImportCsv extends Command
@@ -114,11 +114,6 @@ class ImportCsv extends Command
                 $row['name'] = $row['street'] . ', ' . $row['city'];
             }
 
-            if (empty($row['structure_name'])) {
-                $row['structure_name'] = $row['contact_firstname'] . ' ' .
-                    $row['contact_lastname'];
-            }
-
             $cleanInts = [
                 'potential_m2', 'estimate_hight', 'estimate_low',
                 'building_hight', 'inverter_distance'
@@ -135,43 +130,34 @@ class ImportCsv extends Command
                 'power_max' => $row['estimate_hight'],
                 'power_min' => $row['estimate_low'],
                 'purchase_category_id' => $purchaseCategory->id,
+                'erp' => ($row['erp'] == 'Oui'),
+                'building_size' => $row['building_hight'],
+                'perimeter_abf' => ($row['ABF_primeter'] == 'Oui'),
+                'remarks' => $row['description'],
+                'street' => $row['street'],
+                'zip' => $row['zip'],
+                'city' => $row['city'],
+                'owner_id' => $this->getOwnerId($row),
+            ]);
+            // on met le userId à 0 pour la console
+            $roof->saveState(0);
+
+            $tilt = Tilt::create([
+                'roof_id' => $roof->id,
+                'name' => 'default',
                 'type_id' => $typeId,
                 'slope' => $slope,
                 'occupancy_rate' => 0,
                 'ground_square_area' => 0,
                 'south_orientation' => $southOrientation,
-                'erp' => ($row['erp'] == 'Oui'),
-                'building_size' => $row['building_hight'],
-                'perimeter_abf' => ($row['ABF_primeter'] == 'Oui'),
-                'remarks' => $row['description'],
                 'inverter_location' => $row['inverter_position'],
                 'inverter_distance' => $row['inverter_distance'],
-                'street' => $row['street'],
-                'zip' => $row['zip'],
-                'city' => $row['city'],
-                // 'department_id' => Department::first([
-                    // 'name' => $row['department']
-                // ])->id,
                 'latitude' => $row['latitude'],
                 'longitude' => $row['longitude'],
-                'owner_id' => Structure::firstOrCreate([
-                    'name' => $row['structure_name'],
-                    'type_id' => StructureType::firstOrCreate([
-                        'name' => $row['structure_type']
-                    ])->id,
-                    'contact_id' => Contact::firstOrCreate([
-                        'first_name' => $row['contact_firstname'],
-                        'last_name' => $row['contact_lastname'],
-                        'email' => $row['contact_email'],
-                        'phone' => $row['contact_phone'],
-                    ])->id
-                ])->id,
             ]);
-            // on met le userId à 0 pour la console
-            $roof->saveState(0);
         }
 
-        $this->line('created users from structure initiatrice');
+        $this->line('--- created users from structure initiatrice');
         $rows = Structure::where('type_id', $structType->id)->get();
         foreach ($rows as $row) {
             User::firstOrCreate(
@@ -186,7 +172,6 @@ class ImportCsv extends Command
     protected function parseCsv()
     {
         $filePath = resource_path('data/data.csv');
-
         $content = file_get_contents($filePath);
         $rows = explode(PHP_EOL, $content);
         $title = explode(';', array_shift($rows));
@@ -285,7 +270,16 @@ class ImportCsv extends Command
             'q' => $query
         ));
 
-        $searchContent = file_get_contents($url);
+        $ctx = stream_context_create(array('http'=>
+            array(
+                'timeout' => 5,  //100 Seconds is 20 Minutes
+            )
+        ));
+        try {
+            $searchContent = file_get_contents($url, false, $ctx);
+        } catch (\Exception $e) {
+            return false;
+        }
         $json = json_decode($searchContent, true);
         if (empty($json)) {
             return false;
@@ -294,4 +288,42 @@ class ImportCsv extends Command
         return $json[0];
     }
 
+    protected function getOwnerId($row)
+    {
+        $canCreateContact = (
+            !empty($row['contact_firstname']) ||
+            !empty($row['contact_lastname'])
+        );
+
+        if (empty($row['structure_name'])) {
+            if (!$canCreateContact) {
+                // on se casse car on ne peut pas créer la structure
+                return null;
+            }
+            $row['structure_name'] = $row['contact_firstname'] . ' ' .
+                $row['contact_lastname'];
+        }
+        $structId = 2; // autre
+        if (!empty($row['structure_type'])) {
+            $structId = StructureType::firstOrCreate([
+                'name' => $row['structure_type']
+            ])->id;
+        }
+
+        $contactId = null;
+        if ($canCreateContact) {
+            $contactId = Contact::firstOrCreate([
+                'first_name' => $row['contact_firstname'],
+                'last_name' => $row['contact_lastname'],
+                'email' => $row['contact_email'],
+                'phone' => $row['contact_phone'],
+            ])->id;
+        }
+
+        return Structure::firstOrCreate([
+            'name' => $row['structure_name'],
+            'type_id' => $structId,
+            'contact_id' => $contactId
+        ])->id;
+    }
 }

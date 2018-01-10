@@ -15,25 +15,9 @@
                     </td>
                     <td class="col-sm-2 col-6">{{ hist.created_at }}</td>
                     <td class="col-sm-6 col-12">
-                        <ul>
-                            <li v-for="(changes, num) in hist.state" key="num"
-                                v-if="changes.isChanged">
-                                <span>{{ changes.key }}</span> :
-                                <ul v-if="changes.diff">
-                                    <li v-for="(row, i) in changes.diff" key="i"
-                                        v-if="row.isChanged">
-                                        <span>{{ row.key }}</span>: 
-                                        <strong>{{ row.old }}</strong> ->
-                                        <strong>{{ row.new }}</strong>
-                                    </li>
-                                </ul>
-                                <span v-else>
-                                    <!-- <span>{{ changes.key }}</span>:  -->
-                                    <strong>{{ changes.old }}</strong> ->
-                                    <strong>{{ changes.new }}</strong>
-                                </span>
-                            </li>
-                        </ul>
+                        <HistoricalDiff
+                            class="historical-diff"
+                            :state="hist.state"></HistoricalDiff>
                     </td>
                 </tr>
             </tbody>
@@ -47,9 +31,14 @@
     </div>
 </template>
 <script>
+import HistoricalDiff from './Historical-diff';
+
 export default {
     props: {
         roofId: 0,
+    },
+    components: {
+        HistoricalDiff
     },
     methods: {
         backToMap:  function() {
@@ -80,7 +69,6 @@ export default {
                 }
             }
 
-
             for (let i = 0; i < keys.length; i++) {
                 key = keys[i];
                 if (hiddenKey.indexOf(key) > -1
@@ -104,11 +92,22 @@ export default {
                 let subDiff = this.searchDiff(oldState[key], newState[key]);
                 if (subDiff.length === 0) {
                     continue;
-                } else if (subDiff.length === 1) {
+                }
+
+                if (subDiff.length === 1) {
                     subDiff[0].key = key;
                     diff.push(subDiff[0]);
                     continue;
                 }
+
+                if (/[0-9]+/.test(key)) {
+                    if (newState[key] && newState[key].name) {
+                        key = newState[key].name;
+                    } else if (oldState[key] && oldState[key].name) {
+                        key = oldState[key].name;
+                    }
+                }
+
                 diff.push({
                     key: key,
                     diff: subDiff,
@@ -133,6 +132,7 @@ export default {
                             ( i > 0 ? rows[i-1].state : {} ),
                             rows[i].state
                         );
+
                     }
 
                     rows.reverse();

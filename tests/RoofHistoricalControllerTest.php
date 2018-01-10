@@ -1,7 +1,5 @@
 <?php
 
-use App\Department;
-
 use App\Roof;
 use App\Roof\Historical;
 

@@ -118,116 +118,39 @@
             <div class="col-md-10 pt-0">
                 <input class="form-control" type="text"
                     v-bind:class="{'is-invalid': errors.hasOwnProperty('building_size')}"
-                    v-model="roof.building_size " />
+                    v-model="roof.building_size" />
                 <div class="invalid-feedback"
                     v-if="errors.hasOwnProperty('building_size')"> {{ errors['building_size'].join(',') }} </div>
             </div>
         </div>
 
         <div class="row mb-4">
-            <fieldset class="form-group col-md-6 col-12 mb-md-0">
-                <legend class="offset-4 col-md-7">
-                    <small>toiture</small>
-                </legend>
-
+            <fieldset class="row col-12">
                 <div class="form-group row col-12">
-                    <label class="col-md-4 ml-2 text-md-right">type</label>
-                    <div class="col-md-7 pt-0">
-                        <select class="form-control"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('type_id')}"
-                            v-model="roof.type_id">
-                            <option v-for="type in infos.types" :key="type.id"
-                                :value="type.id" >
-                                {{ type.name }}
-                            </option>
+                    <label class="col-md-2 text-md-right">toitures</label>
+                    <div class="col-md-10 pt-0">
+                        <select class="form-control col-md-7 d-inline"
+                            v-bind:class="{'is-invalid': errors.tilts.length > 0}"
+                            v-model="tiltIndex" >
+                            <option v-for="(tilt, index) in roof.tilts"
+                                :key="tilt.id"
+                                :value="index" >{{ tilt.name }}</option>
                         </select>
-                        <div class="invalid-feedback"
-                            v-if="errors.hasOwnProperty('type_id')"> {{ errors['type_id'].join(',') }} </div>
+                        <button type="button"
+                            class="btn btn-secondary col-md-2 d-inline"
+                            v-on:click="addTilt()"> ajouter </button>
+                        <button type="button"
+                            v-if="roof.tilts.length > 1"
+                            class="btn btn-secondary col-md-2 d-inline"
+                            v-on:click="deleteTilt()"> supprimer </button>
                     </div>
                 </div>
 
-                <div class="form-group row col-md-12">
-                    <label class="col-md-4 ml-2 text-md-right">pente de toit</label>
-                    <div class="col-md-7 pt-0">
-                        <input class="form-control" type="text"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('slope')}"
-                            v-model="roof.slope" />
-                        <div class="invalid-feedback"
-                            v-if="errors.hasOwnProperty('slope')"> {{ errors['slope'].join(',') }} </div>
-                    </div>
-                </div>
-
-                <div class="form-group row col-md-12">
-                    <label class="col-md-4 ml-2 text-md-right">surface au sol du toit</label>
-                    <div class="col-md-7 pt-0">
-                        <input class="form-control" type="text"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('ground_square_area')}"
-                            v-model="roof.ground_square_area" />
-                        <div class="invalid-feedback"
-                            v-if="errors.hasOwnProperty('ground_square_area')"> {{ errors['ground_square_area'].join(',') }} </div>
-                    </div>
-                </div>
-
-                <div class="form-group row col-md-12">
-                    <label class="col-md-4 ml-2 text-md-right">taux d'occupation</label>
-                    <div class="col-md-7 pt-0">
-                        <input class="form-control" type="text"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('occupancy_rate')}"
-                            v-model="roof.occupancy_rate" />
-                        <div class="invalid-feedback"
-                            v-if="errors.hasOwnProperty('occupancy_rate')"> {{ errors['occupancy_rate'].join(',') }} </div>
-                    </div>
-                </div>
-
-                <div class="form-group row col-md-12">
-                    <label class="col-md-4 ml-2 text-md-right">orientation sud</label>
-                    <div class="col-md-7 pt-0">
-                        <input class="form-control" type="text"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('south_orientation')}"
-                            v-model="roof.south_orientation" />
-                        <div class="invalid-feedback"
-                            v-if="errors.hasOwnProperty('south_orientation')"> {{ errors['south_orientation'].join(',') }} </div>
-                    </div>
-                </div>
-
-                <div class="form-group row col-md-12">
-                    <label class="col-md-4 ml-2 text-md-right">position onduleur</label>
-                    <div class="col-md-7 pt-0">
-                        <input class="form-control" type="text"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_location')}"
-                            v-model="roof.inverter_location" />
-                        <div class="invalid-feedback"
-                            v-if="errors.hasOwnProperty('inverter_location')"> {{ errors['inverter_location'].join(',') }} </div>
-                    </div>
-                </div>
-
-                <div class="form-group row col-md-12">
-                    <label class="col-md-4 ml-2 text-md-right">distance onduleur</label>
-                    <div class="col-md-7 pt-0">
-                        <input class="form-control" type="text"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_distance')}"
-                            v-model="roof.inverter_distance" />
-                        <div class="invalid-feedback"
-                            v-if="errors.hasOwnProperty('inverter_distance')"> {{ errors['inverter_distance'].join(',') }} </div>
-                    </div>
-                </div>
+                <FormTilt
+                    :tilt="roof.tilts[tiltIndex]"
+                    :types="infos.types"
+                    :errors="errors.tilts[tiltIndex]"></FormTilt>
             </fieldset>
-            <div class="map-edit col-md-6 mt-md-5 col-12">
-                <gmap-map
-                    :center="center"
-                    :zoom="zoom"
-                    :map-type-id="mapType"
-                    @maptypeid_changed="updateMapType"
-                    @center_changed="updateGeo"
-                    class="col-md-12 map-preview" >
-                    <gmap-marker :position.sync="roof.position" ></gmap-marker>
-
-                    <div class="extra-content">
-                        <button type="button" class="btn btn-primary d-inline-block btn-sm"
-                            v-on:click="updateCenter()">centrer le marqueur</button>
-                    </div>
-                </gmap-map>
-            </div>
         </div>
 
         <div class="form-group row col-md-12">
@@ -328,7 +251,7 @@
 
             <div class="form-group row col-md-12">
                 <label class="col-md-2 text-md-right" >adresse</label>
-                <div class="col-md-10 ">
+                <div class="col-md-10">
                     <input type="text" class="form-control"
                         v-bind:class="{'is-invalid': errors.hasOwnProperty('street')}"
                         v-model="roof.street" >
@@ -374,6 +297,9 @@
 </template>
 
 <script>
+
+import FormTilt from './Form-tilt.vue';
+
 export default {
     props: {
         infos: {
@@ -387,24 +313,37 @@ export default {
             },
         },
     },
-    components: {
-    },
+    components: { FormTilt },
     methods: {
-        // <-- cookies
-        updateMapType: function(mapType) {
-            this.$cookie.set('map-type', mapType, 30);
+        addTilt: function() {
+            this.roof.tilts.push({
+                name: 'toiture ' + (this.roof.tilts.length+1),
+                latitude: null,
+                longitude: null,
+                slope: 0,
+                ground_square_area: 0,
+                occupancy_rate: 0,
+                south_orientation: 0,
+                // relations
+                type_id: 0,
+            });
+            this.tiltIndex = (this.roof.tilts.length-1);
         },
-        updateGeo: function(center) {
-            this.$cookie.set('map-center', [center.lat(), center.lng()], 30);
-        },
-        // cookies -->
-        updateCenter: function() {
-            let center = this.$cookie.get('map-center').split(',')
-                .map(el => parseFloat(el));
-            this.roof.latitude = center[0];
-            this.roof.longitude = center[1];
-            this.roof.position.lat = center[0];
-            this.roof.position.lng = center[1];
+        deleteTilt: function() {
+            let result  = confirm(
+               'Voulez vous vraiment supprimer la toiture: '
+               + (this.tiltIndex+1) + '. ' + this.roof.tilts[this.tiltIndex].name + '?!',
+            );
+            if (!result) {
+                return false;
+            }
+            let tilts = JSON.parse(JSON.stringify(this.roof.tilts));
+            tilts.splice(this.tiltIndex, 1);
+            if (this.tiltIndex >= tilts.length) {
+                this.tiltIndex = tilts.length-1;
+            }
+
+            this.roof.tilts = tilts;
         },
         backToMap:  function() {
             this.$router.push({ name: 'map' });
@@ -429,10 +368,11 @@ export default {
             if (this.editingOwner) {
                 params.owner = this.owner;
             }
-            this.errors = {};
+            this.errors = {
+                tilts: []
+            };
             this.$http[method](url, params).then(
                 response => {
-                    this.editingOwner = false;
                     if (this.roof.id == false) {
                         this.$router.replace({
                             name:'roof-edit',
@@ -440,6 +380,7 @@ export default {
                         });
                     }
                     this.roof = response.body;
+                    this.editingOwner = (this.roof.owner_id === null);
 
                     this.$notify({
                         type:'success',
@@ -452,7 +393,21 @@ export default {
                     if (response.status !== 400) {
                         return false;
                     }
-                    this.errors = response.body;
+
+                    let errors = { tilts: [] };
+                    for (let key in response.body) {
+                        if (!/^tilts./.test(key)) {
+                            errors[key] = response.body[key];
+                            continue;
+                        }
+                        let details = key.split('.');
+                        if (!errors.tilts[details[1]]) {
+                            errors.tilts[details[1]] = {};
+                        }
+                        errors.tilts[details[1]][details[2]] = response.body[key]
+                            .map(el => el.replace( 'tilts.' + details[1] + '.', ''));
+                    }
+                    this.errors = errors;
                 }
             );
         },
@@ -462,20 +417,22 @@ export default {
             ).then(
                 response => {
                     this.roof = response.body;
-                    let center = {
-                        lat: parseFloat(this.roof.latitude),
-                        lng: parseFloat(this.roof.longitude)
-                    };
-                    this.roof.position = center;
-                    this.center = center;
-                    this.editingOwner = (this.roof.owner_id === 0);
+                    if (this.roof.owner) {
+                        this.editingOwner = false;
+                    } else {
+                        this.editingOwner = true;
+                        this.roof.owner = {};
+                    }
                 }
             );
         },
         loadExtrasInfos: function(name) {
             let url = process.env.API_URL;
-            if (['structures', 'structure_types', 'departments'].indexOf(name) == -1) {
+            if (['structures', 'structure_types'].indexOf(name) == -1) {
                 url += 'roof/';
+                if (name == 'types') {
+                    url += 'tilt/';
+                }
             }
             this.$http.get(
                 url + name
@@ -496,38 +453,16 @@ export default {
         }
     },
     data() {
-        let coord = [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ];
-        if (this.$cookie.get('map-center')) {
-            let cookieCenter = this.$cookie.get('map-center').split(',');
-            coord = cookieCenter;
-        }
-        coord = coord.map(coord => parseFloat(coord));
-        let center = { lat: coord[0], lng: coord[1] };
-
-        let mapType = 'hybrid';
-        if (this.$cookie.get('map-type')) {
-            mapType = this.$cookie.get('map-type');
-        }
         return {
-            zoom:18,
-            mapType:mapType,
-            url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-            attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            center: center,
             editingOwner: false,
-            errors: {},
+            errors: { tilts: [] },
             owner: {
                 id: 0,
                 name: '',
                 contact_id: 0,
-                contact: {
-                    // id: 0,
-                    // first_name: '',
-                    // last_name: '',
-                    // phone: '',
-                    // email: ''
-                }
+                contact: { }
             },
+            tiltIndex: 0,
             roof: {
                 id: 0,
                 name: '',
@@ -539,25 +474,15 @@ export default {
                 building_size: 0,
                 perimeter_abf: false,
                 remarks: '',
-                inverter_location: '',
-                inverter_distance: 0,
                 street: '',
                 zip: '',
                 city: '',
-                latitude: center.lat,
-                longitude: center.lng,
-                position: center,
-                slope: 0,
-                ground_square_area: 0,
-                occupancy_rate: 0,
-                south_orientation: 0,
                 // relations
+                tilts: [],
                 owner_id: 0,
                 owner: { name:'' },
                 structure_id: null,
                 purchase_category_id: 0,
-                type_id: 0,
-                department_id: 0
             }
         }
     }
@@ -566,20 +491,4 @@ export default {
 </script>
 
 <style>
-.map-edit .map-preview {
-    min-height:300px;
-    height:100%;
-}
-
-
-.map-edit .map-preview .vue-map-hidden {
-    display:block;
-}
-
-.map-edit .extra-content {
-    z-index:500;
-    position:absolute;
-    left:0;
-    bottom:0;
-}
 </style>
