@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Faker\Factory as Faker;
 
 use App\Contact;
 use App\StructureType;
@@ -54,6 +55,7 @@ class ImportCsv extends Command
                     'last_name' => $row['responsable_lastname'],
                 ]);
             }
+
             $struct = Structure::firstOrCreate([
                 'name' => $row['structure'],
             ], [
@@ -118,6 +120,7 @@ class ImportCsv extends Command
                 'potential_m2', 'estimate_hight', 'estimate_low',
                 'building_hight', 'inverter_distance'
             ];
+
             foreach ($cleanInts as $field) {
                 $row[$field] = preg_replace('/[\s ]+/', '', $row[$field]);
             }
@@ -174,7 +177,6 @@ class ImportCsv extends Command
         $filePath = resource_path('data/data.csv');
         $content = file_get_contents($filePath);
         $rows = explode(PHP_EOL, $content);
-        $title = explode(';', array_shift($rows));
 
         $keys = array(
             'id',
@@ -228,7 +230,7 @@ class ImportCsv extends Command
                 continue;
             }
             $row = explode(';', $row);
-            $tmp = array();
+            $tmp = array_fill_keys($keys, null);
             foreach ($row as $k => $v) {
                 if (!empty($keys[$k])) {
                     $tmp[$keys[$k]] = trim($v);
@@ -239,23 +241,41 @@ class ImportCsv extends Command
                 $this->line('no link here');
                 if (!($gps = $this->getGPSCoord($tmp))) {
                     $this->error(
-                        'GPS not found for ' . $tmp['street'] . ' ' . $tmp['city'] . ' ' . $tmp['zip']
+                        'GPS not found for '
+                        . (!empty($tmp['street']) ? $tmp['street'] : '') . ' '
+                        . (!empty($tmp['city']) ? $tmp['city'] : '') . ' '
+                        . (!empty($tmp['zip']) ? $tmp['zip'] : '')
                     );
                     continue;
                 }
                 $tmp['latitude'] = $gps['lat'];
                 $tmp['longitude'] = $gps['lon'];
-            } elseif (
-                preg_match('/google.fr.*@(?P<latitude>[0-9.]+),(?P<longitude>[0-9.]+)/i', $tmp['link'], $results)
-            ) {
-                // $tmp['google_link'] = $tmp['latitude'];
+            } elseif ($results = $this->parseUrlMaps($tmp)) {
                 $tmp['latitude'] = $results['latitude'];
                 $tmp['longitude'] = $results['longitude'];
             }
+
             $data[] = $tmp;
         }
 
         return $data;
+    }
+
+
+    protected function parseUrlMaps(&$tmp)
+    {
+        // search target point in data
+        $regexp = '#google.fr/maps/place.*\!3d(?P<latitude>[0-9.]+)\!4d(?P<longitude>[0-9.]+)$#i';
+        if (preg_match($regexp, $tmp['link'], $results)) {
+            return $results;
+        }
+        // try to find parameter in url
+        $regexp = '/google.fr.*@(?P<latitude>[0-9.]+),(?P<longitude>[0-9.]+)/i';
+        if (preg_match($regexp, $tmp['link'], $results)) {
+            return $results;
+        }
+
+        return false;
     }
 
     protected function getGPSCoord($row)
@@ -270,16 +290,22 @@ class ImportCsv extends Command
             'q' => $query
         ));
 
-        $ctx = stream_context_create(array('http'=>
-            array(
-                'timeout' => 5,  //100 Seconds is 20 Minutes
-            )
+        $ch = curl_init($url);
+
+        $faker = Faker::create();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'User-Agent: ' . $faker->userAgent
         ));
-        try {
-            $searchContent = file_get_contents($url, false, $ctx);
-        } catch (\Exception $e) {
+
+        $searchContent = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($httpCode !== 200) {
             return false;
         }
+
         $json = json_decode($searchContent, true);
         if (empty($json)) {
             return false;
