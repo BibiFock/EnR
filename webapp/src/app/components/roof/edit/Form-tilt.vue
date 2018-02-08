@@ -31,9 +31,15 @@
             <div class="form-group row col-md-12">
                 <label class="col-md-4 ml-2 text-md-right">pente de toit</label>
                 <div class="col-md-7 pt-0">
-                    <input class="form-control" type="text"
-                                                v-bind:class="{'is-invalid': errors.hasOwnProperty('slope')}"
-                                                v-model="tilt.slope" />
+                    <div class="input-group">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('slope')}"
+                            v-model="tilt.slope" />
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">°</div>
+                        </div>
+                    </div>
+
                     <div class="invalid-feedback"
                          v-if="errors.hasOwnProperty('slope')"> {{ errors['slope'].join(',') }} </div>
                 </div>
@@ -42,9 +48,14 @@
             <div class="form-group row col-md-12">
                 <label class="col-md-4 ml-2 text-md-right">surface au sol du toit</label>
                 <div class="col-md-7 pt-0">
-                    <input class="form-control" type="text"
-                                                v-bind:class="{'is-invalid': errors.hasOwnProperty('ground_square_area')}"
-                                                v-model="tilt.ground_square_area" />
+                    <div class="input-group">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('ground_square_area')}"
+                            v-model="tilt.ground_square_area" />
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">m²</div>
+                        </div>
+                    </div>
                     <div class="invalid-feedback"
                          v-if="errors.hasOwnProperty('ground_square_area')"> {{ errors['ground_square_area'].join(',') }} </div>
                 </div>
@@ -53,9 +64,14 @@
             <div class="form-group row col-md-12">
                 <label class="col-md-4 ml-2 text-md-right">taux d'occupation</label>
                 <div class="col-md-7 pt-0">
-                    <input class="form-control" type="text"
-                                                v-bind:class="{'is-invalid': errors.hasOwnProperty('occupancy_rate')}"
-                                                v-model="tilt.occupancy_rate" />
+                    <div class="input-group">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('occupancy_rate')}"
+                            v-model="tilt.occupancy_rate" />
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">%</div>
+                        </div>
+                    </div>
                     <div class="invalid-feedback"
                          v-if="errors.hasOwnProperty('occupancy_rate')"> {{ errors['occupancy_rate'].join(',') }} </div>
                 </div>
@@ -64,16 +80,22 @@
             <div class="form-group row col-md-12">
                 <label class="col-md-4 ml-2 text-md-right">orientation sud</label>
                 <div class="col-md-7 pt-0">
-                    <input class="form-control" type="text"
-                                                v-bind:class="{'is-invalid': errors.hasOwnProperty('south_orientation')}"
-                                                v-model="tilt.south_orientation" />
+                    <div class="input-group">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('south_orientation')}"
+                            v-model="tilt.south_orientation" />
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">°</div>
+                        </div>
+                    </div>
+
                     <div class="invalid-feedback"
                          v-if="errors.hasOwnProperty('south_orientation')"> {{ errors['south_orientation'].join(',') }} </div>
                 </div>
             </div>
 
             <div class="form-group row col-md-12">
-                <label class="col-md-4 ml-2 text-md-right">position onduleur</label>
+                <label class="col-md-4 ml-2 text-md-right">emplacement onduleur</label>
                 <div class="col-md-7 pt-0">
                     <input class="form-control" type="text"
                                                 v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_location')}"
@@ -86,9 +108,15 @@
             <div class="form-group row col-md-12">
                 <label class="col-md-4 ml-2 text-md-right">distance onduleur</label>
                 <div class="col-md-7 pt-0">
-                    <input class="form-control" type="text"
-                                                v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_distance')}"
-                                                v-model="tilt.inverter_distance" />
+                    <div class="input-group">
+                        <input class="form-control" type="text"
+                            v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_distance')}"
+                            v-model="tilt.inverter_distance" />
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">m</div>
+                        </div>
+                    </div>
+
                     <div class="invalid-feedback"
                          v-if="errors.hasOwnProperty('inverter_distance')"> {{ errors['inverter_distance'].join(',') }} </div>
                 </div>

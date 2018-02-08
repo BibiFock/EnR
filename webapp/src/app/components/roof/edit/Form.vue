@@ -44,9 +44,15 @@
         <div class="form-group row col-12">
             <label class="col-md-2 text-md-right">surface</label>
             <div class="col-md-10 pt-0">
-                <input class="form-control" type="text"
-                    v-bind:class="{'is-invalid': errors.hasOwnProperty('square_area')}"
-                    v-model="roof.square_area">
+                <div class="input-group">
+                    <input class="form-control" type="text"
+                        v-bind:class="{'is-invalid': errors.hasOwnProperty('square_area')}"
+                        v-model="roof.square_area">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">m²</div>
+                    </div>
+                </div>
+
                 <div class="invalid-feedback"
                     v-if="errors.hasOwnProperty('square_area')"> {{ errors['square_area'].join(',') }} </div>
             </div>
@@ -55,24 +61,35 @@
         <div class="form-row col-12">
             <label class="col-md-2 col-12 text-md-right">puissance</label>
             <div class="col-md-10 col-12 pt-0 row mb-2">
-                <div class="col-6 row">
+                <div class="col-12 col-sm-6 row">
                     <label class="col-4 text-md-right">min</label>
                     <div class="col-8 pt-0">
-                        <input type="text" class="form-control"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('power_min')}"
-                            v-model="roof.power_min">
+                        <div class="input-group">
+                            <input type="text" class="form-control"
+                                v-bind:class="{'is-invalid': errors.hasOwnProperty('power_min')}"
+                                v-model="roof.power_min">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">kWc</div>
+                            </div>
+                        </div>
                         <div class="invalid-feedback"
                             v-if="errors.hasOwnProperty('power_min')">
                             {{ errors['power_min'].join(',') }}
                         </div>
                     </div>
                 </div>
-                <div class="col-6 row">
+                <div class="col-12 col-sm-6 row">
                     <label class="col-4 text-md-right">max</label>
                     <div class="col-8 pt-0">
-                        <input type="text" class="form-control"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('power_max')}"
-                            v-model="roof.power_max">
+                        <div class="input-group">
+                            <input type="text" class="form-control"
+                                v-bind:class="{'is-invalid': errors.hasOwnProperty('power_max')}"
+                                v-model="roof.power_max">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">kWc</div>
+                            </div>
+                        </div>
+
                         <div class="invalid-feedback"
                             v-if="errors.hasOwnProperty('power_max')">
                             {{ errors['power_max'].join(',') }}
@@ -114,11 +131,16 @@
         </div>
 
         <div class="form-group row col-12">
-            <label class="col-md-2 text-md-right">taille du bâtiment</label>
+            <label class="col-md-2 text-md-right">hauteur du bâtiment</label>
             <div class="col-md-10 pt-0">
-                <input class="form-control" type="text"
-                    v-bind:class="{'is-invalid': errors.hasOwnProperty('building_size')}"
-                    v-model="roof.building_size" />
+                <div class="input-group">
+                    <input class="form-control" type="text"
+                        v-bind:class="{'is-invalid': errors.hasOwnProperty('building_size')}"
+                        v-model="roof.building_size" />
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">m</div>
+                    </div>
+                </div>
                 <div class="invalid-feedback"
                     v-if="errors.hasOwnProperty('building_size')"> {{ errors['building_size'].join(',') }} </div>
             </div>
