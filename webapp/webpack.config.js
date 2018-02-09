@@ -1,10 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const PATHS = {
     app: path.resolve(__dirname,'src/app'),
     build: path.resolve(__dirname,'../public'),
-    // assets: path.resolve(__dirname,'assets')
+    assets: path.resolve(__dirname,'src/public/assets')
 };
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -70,6 +71,9 @@ module.exports = {
             template: 'underscore-template-loader!./src/public/index.html',
             chunksSortMode: 'dependency'
         }),
+        new CopyWebpackPlugin([{
+            from: PATHS.assets, to: 'assets'
+        }]),
         new webpack.DefinePlugin({
             // Environment helpers
             'process.env': {
@@ -78,6 +82,11 @@ module.exports = {
                 'COORD': {
                     'LATITUDE': 48.8566,
                     'LONGITUDE': 2.3522,
+                },
+                'MAP': {
+                    'TYPE': '"hybrid"',
+                    'ZOOM': 13,
+                    'ZOOM_EDIT': 17
                 }
             }
         }),

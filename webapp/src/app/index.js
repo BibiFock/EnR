@@ -1,7 +1,7 @@
-require('bootstrap/dist/css/bootstrap.min.css');
-require('bootstrap-vue/dist/bootstrap-vue.css');
-require('font-awesome/css/font-awesome.css');
-require('../style/main.scss');
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+import 'font-awesome/css/font-awesome.css';
+import '../style/main.scss';
 
 import Vue from 'vue';
 import VueResource from 'vue-resource';
@@ -28,7 +28,7 @@ Vue.use(BootstrapVue);
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyAtBdbbDY8RT5P5T4r2ATknGrxGUbJuIVI',
-    libraries: 'places', // This is required if you use the Autocomplete plugin
+    libraries: 'places,geometry', // This is required if you use the Autocomplete plugin
     // OR: libraries: 'places,drawing'
     // OR: libraries: 'places,drawing,visualization'
     // (as you require)

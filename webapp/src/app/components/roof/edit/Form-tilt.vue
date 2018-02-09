@@ -77,9 +77,11 @@
                 </div>
             </div>
 
-            <div class="form-group row col-md-12">
-                <label class="col-md-4 ml-2 text-md-right">orientation sud</label>
-                <div class="col-md-7 pt-0">
+            <div class="form-row col-md-12">
+                <div class="form-group col-md-4 ml-2">
+                    <label class="text-md-right">orientation sud</label>
+                </div>
+                <div class="form-group col-11 col-md-6 col-lg-3 pt-0">
                     <div class="input-group">
                         <input class="form-control" type="text"
                             v-bind:class="{'is-invalid': errors.hasOwnProperty('south_orientation')}"
@@ -89,9 +91,15 @@
                         </div>
                     </div>
 
-                    <div class="invalid-feedback"
-                         v-if="errors.hasOwnProperty('south_orientation')"> {{ errors['south_orientation'].join(',') }} </div>
                 </div>
+                <div class="form-group col-1 col-md-1 col-lg-3">
+                    <ToolOrientationFinder
+                        v-on:updateOrientation="updateOrientation"
+                        :orientation="tilt.south_orientation"></ToolOrientationFinder>
+                </div>
+
+                <div class="invalid-feedback"
+                        v-if="errors.hasOwnProperty('south_orientation')"> {{ errors['south_orientation'].join(',') }} </div>
             </div>
 
             <div class="form-group row col-md-12">
@@ -127,6 +135,7 @@
                 :center="center"
                 :zoom="zoom"
                 :map-type-id="mapType"
+                :options="options"
                 @maptypeid_changed="updateMapType"
                 @center_changed="updateGeo"
                 class="col-md-12 map-preview" >
@@ -134,15 +143,28 @@
 
                 <div class="extra-content">
                     <button type="button" class="btn btn-primary d-inline-block btn-sm"
-                        v-on:click="updateCenter()">centrer le marqueur</button>
+                        v-on:click="updateCenter()">
+                        <i class="fa fa-bullseye"></i>
+                        <span>centrer le marqueur</span>
+                    </button>
+
+                    <!-- <button type="button" class="btn btn-primary d-inline-block btn-sm" -->
+                        <!-- v-on:click="updateCenter()"> -->
+                        <!-- <i class="fa fa-location-arrow"></i> -->
+                        <!-- <span>trouver l'orientation</span> -->
+                    <!-- </button> -->
                 </div>
             </gmap-map>
         </div>
+
     </div>
 </template>
 
 <script>
+import ToolOrientationFinder from './tools/OrientationFinder.vue';
+
 export default {
+    components: { ToolOrientationFinder },
     props: {
         errors: { type:Object, default: {} },
         tilt: {
@@ -179,6 +201,9 @@ export default {
         }
     },
     methods: {
+        updateOrientation: function(southOrientation) {
+            this.tilt.south_orientation = southOrientation;
+        },
         // <-- cookies
         updateMapType: function(mapType) {
             this.$cookie.set('map-type', mapType, 30);
@@ -195,6 +220,11 @@ export default {
             this.position.lat = center[0];
             this.position.lng = center[1];
         },
+        toggleOrientationFinder: function(tilt) {
+            // open modal gmaps
+            // code orientation finder
+            // god help me please
+        }
     },
     data() {
         let coord = [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ];
@@ -205,15 +235,18 @@ export default {
         coord = coord.map(coord => parseFloat(coord));
         let center = { lat: coord[0], lng: coord[1] };
 
-        let mapType = 'hybrid';
+        let mapType = process.env.MAP.TYPE;
         if (this.$cookie.get('map-type')) {
             mapType = this.$cookie.get('map-type');
         }
         return {
-            zoom:18,
+            zoom:process.env.MAP.ZOOM_EDIT,
             mapType:mapType,
             center: center,
             position: center,
+            options: {
+                tilt:0
+            }
         }
     }
 }
