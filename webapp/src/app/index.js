@@ -4,6 +4,7 @@ import 'font-awesome/css/font-awesome.css';
 import '../style/main.scss';
 
 import Vue from 'vue';
+import Vuex from 'vuex';
 import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 import Notifications from 'vue-notification';
@@ -17,8 +18,9 @@ import RoofEdit from './components/roof/Edit';
 import RoofEditForm from './components/roof/edit/Form';
 import RoofEditHistorical from './components/roof/edit/Historical';
 import Login from './components/auth/Login';
-import Auth from './service/auth.js';
+// import Auth from './service/auth.js';
 import Http from './service/http.js';
+import store from './store';
 
 Vue.use(VueResource);
 Vue.use(VueRouter);
@@ -36,6 +38,12 @@ Vue.use(VueGoogleMaps, {
 })
 
 Vue.http.interceptors.push(Http.interceptor);
+
+store.dispatch('loadCacheInfos');
+
+if (process.env.ENV === 'dev') {
+    Vue.config.devtools = true;
+}
 
 const routes = [
     { path: '', component: App,
@@ -61,7 +69,7 @@ var router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(m => m.meta.needGuard) && !Auth.user.authenticated) {
+    if (to.matched.some(m => m.meta.needGuard) && !store.getters['auth/authenticated']) {
         next('/auth/login')
     } else {
         next()
@@ -70,5 +78,6 @@ router.beforeEach((to, from, next) => {
 
 export default new Vue({
     router,
+    store
 }).$mount('#app');
 

@@ -3,7 +3,7 @@
         <div class="alert alert-danger" v-if="error">
             <p>There was an error, unable to sign in with those credentials.</p>
         </div>
-        <form autocomplete="off" v-on:submit="signin">
+        <form autocomplete="off" v-on:submit="doLogin">
             <div class="form-group">
                 <label for="name">Structure</label>
                 <select class="form-control" v-model="id">
@@ -23,7 +23,7 @@
     </div>
 </template>
 <script>
-import auth from '../../service/auth.js';
+import { mapActions } from 'vuex';
 
 export default {
     data() {
@@ -35,10 +35,24 @@ export default {
         }
     },
     methods: {
-        signin(event) {
+        doLogin(event) {
             event.preventDefault()
-            auth.signin(this.id, this.password)
-        }
+            this.signIn({
+                id: this.id,
+                password: this.password
+            }).then( () => {
+                this.$router.push({
+                    name: 'map'
+                });
+            }, error => {
+                this.$notify({
+                    type: 'error',
+                    title: 'login failed',
+                    text: error,
+                });
+            });
+        },
+        ...mapActions('auth', [ 'signIn' ])
     },
     mounted() {
         this.$http.get(

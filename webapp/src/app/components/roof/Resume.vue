@@ -151,7 +151,7 @@ export default {
                     this.roof = response.body;
                 },
                 response => {
-                    console.log(response)
+                    console.error('error details', response);
                     alert('todo make nofication error');
                 }
             );

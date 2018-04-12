@@ -1,10 +1,13 @@
 import Vue from '../index.js';
-import Auth from './auth.js';
+import store from '../store';
 
 var Http = {
     interceptor: (request, next)  => {
-        if (Auth.user.authenticated) {
-            request.headers.append('Authorization', 'Bearer ' + localStorage.getItem('id_token'));
+        if (store.getters['auth/authenticated']) {
+            request.headers.append(
+                'Authorization',
+                'Bearer ' + store.getters['auth/token']
+            );
         }
 
         next((response) => {
@@ -29,7 +32,7 @@ var Http = {
                         // title: response.status + '. ' + response.statustext,
                         // text: response.body,
                     // });
-                    Auth.signout(Vue);
+                    store.dispatch('auth/signOut');
                     break;
 
                 case 500:

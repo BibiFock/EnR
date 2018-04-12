@@ -43,7 +43,17 @@ const webpackConfig = {
     module: {
         rules: [{
             test: /\.vue$/,
-            loader: 'vue-loader'
+            loader: 'vue-loader',
+            options: {
+                loaders: {
+                    js: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['es2015', 'stage-2']
+                        }
+                    },
+                }
+            }
         }, {
             test: /\.scss$/,
             loaders: ['style-loader','css-loader', 'sass-loader']
@@ -86,6 +96,7 @@ const webpackConfig = {
         new webpack.DefinePlugin({
             // Environment helpers
             'process.env': {
+                'NODE_ENV': (isProd ? '"production"' : '"development"'),
                 'ENV': (isProd ? '"production"' : '"dev"'),
                 'API_URL': (isProd ? '"https://photovolt.poulpy.org/api/"' : '"http://localhost:6869/api/"'),
                 'COORD': {

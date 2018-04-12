@@ -12,6 +12,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
@@ -43,6 +47,7 @@
     "bootstrap-vue": "^2.0.0-rc.9",
     "font-awesome": "^4.7.0",
     "vue": "^2.5.16",
-    "vue-cookie": "^1.1.4"
+    "vue-cookie": "^1.1.4",
+    "vuex": "^3.0.1"
   }
 }

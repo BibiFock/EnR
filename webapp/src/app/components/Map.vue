@@ -3,9 +3,9 @@
         <gmap-map
             :center="center"
             :zoom="zoom"
-            @maptypeid_changed="updateMapType"
-            :map-type-id="mapType"
-            @center_changed="updateCenter"
+            @maptypeid_changed="typeChanged"
+            :map-type-id="type"
+            @center_changed="centerChanged"
             class="map-container" >
             <gmap-info-window
                 :options="infoOptions"
@@ -58,32 +58,32 @@
 <script>
 import Autocomplete from 'vue2-autocomplete-js';
 
+import { mapState, mapActions, mapGetters, mapMutations } from 'vuex';
+
 export default {
-    props: {
-        roofs: { type: Array, default: [] }
-    },
     components: {
         Autocomplete
     },
+    computed: {
+        ...mapState('roofs', [ 'roofs' ]),
+        ...mapGetters('auth', [ 'token' ]),
+        ...mapState('map', ['center', 'type', 'zoom'])
+    },
     methods: {
-        // <-- cookies
-        updateMapType: function(mapType) {
-            this.$cookie.set('map-type', mapType, 30);
-        },
-        updateGeo: function(center) {
-            this.$cookie.set('map-center', [center.lat(), center.lng()], 30);
-        },
-        // cookies -->
+        ...mapActions('roofs', [ 'loadRoofs' ]),
+        ...mapMutations('map', [ 'typeChanged', 'centerChanged' ]),
         exportData: function () {
-            this.$cookie.set('token', localStorage.getItem('id_token'), 30);
+            this.$cookie.set('token', this.token, 30);
             window.open(
-                process.env.API_URL + 'export?token=' + localStorage.getItem('id_token'),
+                process.env.API_URL + 'export?token=' + this.token,
                 '_blank'
             );
         },
         handleSelect: function(obj) {
-            this.center.lat = parseFloat(obj.lat);
-            this.center.lng = parseFloat(obj.lon);
+            this.centerChanged({
+                lat: () => parseFloat(obj.lat),
+                lng: () => parseFloat(obj.lng)
+            });
         },
         overOfRoof: function(roof) {
             this.infoWinOpen = true;
@@ -120,52 +120,15 @@ export default {
             });
             this.$emit('close');
         },
-        loadRoofs: function () {
-            this.$http.get(
-                process.env.API_URL + 'roofs'
-            ).then(
-                response => {
-                    this.roofs = response.body.map(roof => {
-                        if (roof.tilts.length == 0) {
-                            console.log('roof id: ' + roof.id + ' missing tilts');
-                            return true;
-                        }
-                        roof.position = {
-                            lat: parseFloat(roof.tilts[0].latitude),
-                            lng: parseFloat(roof.tilts[0].longitude)
-                        };
-                        return roof;
-                    });
-                }
-            );
-        },
     },
     mounted() {
         this.$router.push({
             name: 'map'
         });
-        this.loadRoofs();
+        setTimeout(() => this.loadRoofs(), 10);
     },
     data () {
-        let center = [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ];
-        if (this.$cookie.get('map-center')) {
-            let cookieCenter = this.$cookie.get('map-center').split(',');
-            center = cookieCenter;
-        }
-        let mapType = 'hybrid';
-        if (this.$cookie.get('map-type')) {
-            mapType = this.$cookie.get('map-type');
-        }
-
         return {
-            mapType: mapType,
-            zoom: 13,
-            url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-            attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            center: {
-                lat: parseFloat(center[0]),
-                lng: parseFloat(center[1])
-            },
             urlAutocomplete: process.env.API_URL + 'map/search',
             infoOptions: {
                 pixelOffset: {

@@ -16,7 +16,7 @@
                 <select class="form-control"
                     v-bind:class="{'is-invalid': errors.hasOwnProperty('probability')}"
                     v-model="roof.probability">
-                    <option v-for="probability in infos.probabilities" :key="index" >
+                    <option v-for="probability in types.probabilities" :key="index" >
                         {{ probability }}
                     </option>
                 </select>
@@ -31,7 +31,7 @@
                 <select class="form-control"
                     v-bind:class="{'is-invalid': errors.hasOwnProperty('structure_id')}"
                     v-model="roof.structure_id">
-                    <option v-for="structure in infos.structures" :key="structure.id"
+                    <option v-for="structure in types.structures" :key="structure.id"
                         :value="structure.id" >
                         {{ structure.name }}
                     </option>
@@ -105,7 +105,7 @@
                 <select class="form-control"
                     v-bind:class="{'is-invalid': errors.hasOwnProperty('purchase_category_id')}"
                     v-model="roof.purchase_category_id">
-                    <option v-for="pc in infos.purchase_categories" :key="pc.id"
+                    <option v-for="pc in types.purchase_categories" :key="pc.id"
                         :value="pc.id" >
                         {{ pc.name }}
                     </option>
@@ -170,7 +170,7 @@
 
                 <FormTilt
                     :tilt="roof.tilts[tiltIndex]"
-                    :types="infos.types"
+                    :types="types.types"
                     :errors="errors.tilts[tiltIndex]"></FormTilt>
             </fieldset>
         </div>
@@ -219,7 +219,7 @@
                         <select class="form-control"
                             v-bind:class="{'is-invalid': errors.hasOwnProperty('owner.type_id')}"
                             v-model="owner.type_id">
-                            <option v-for="so in infos.structure_types" :key="so.id"
+                            <option v-for="so in types.structure_types" :key="so.id"
                                     :value="so.id" >
                                     {{ so.name }}
                             </option>
@@ -319,24 +319,18 @@
 </template>
 
 <script>
-
+import cloneDeep from 'lodash/cloneDeep';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import FormTilt from './Form-tilt.vue';
 
 export default {
-    props: {
-        infos: {
-            type:Object,
-            default: {
-                types: null,
-                probabilities: null,
-                structures: null,
-                purchase_categories: null,
-                structure_types: null,
-            },
-        },
+    computed: {
+        ...mapState('roofs', [ 'types' ])
     },
     components: { FormTilt },
     methods: {
+        ...mapActions('roofs', [ 'loadTypesInfos', 'loadRoof' ]),
+        ...mapMutations('roofs', [ 'roofSaved' ]),
         addTilt: function() {
             this.roof.tilts.push({
                 name: 'toiture ' + (this.roof.tilts.length+1),
@@ -390,9 +384,11 @@ export default {
             if (this.editingOwner) {
                 params.owner = this.owner;
             }
+
             this.errors = {
                 tilts: []
             };
+
             this.$http[method](url, params).then(
                 response => {
                     if (this.roof.id == false) {
@@ -410,6 +406,7 @@ export default {
                         text: 'well done jack'
                     });
 
+                    this.roofSaved(response.body);
                 },
                 response => {
                     if (response.status !== 400) {
@@ -432,44 +429,26 @@ export default {
                     this.errors = errors;
                 }
             );
-        },
-        loadRoof: function(roofId) {
-            this.$http.get(
-                process.env.API_URL + 'roofs/' + roofId
-            ).then(
-                response => {
-                    this.roof = response.body;
-                    if (this.roof.owner) {
-                        this.editingOwner = false;
-                    } else {
-                        this.editingOwner = true;
-                        this.roof.owner = {};
-                    }
-                }
-            );
-        },
-        loadExtrasInfos: function(name) {
-            let url = process.env.API_URL;
-            if (['structures', 'structure_types'].indexOf(name) == -1) {
-                url += 'roof/';
-                if (name == 'types') {
-                    url += 'tilt/';
-                }
-            }
-            this.$http.get(
-                url + name
-            ).then(response => {
-                this.infos[name] = response.body
-            });
-        }
+         }
     },
     mounted() {
-        for (let key in this.infos) {
-            this.loadExtrasInfos(key);
-        }
+        setTimeout(() => this.loadTypesInfos(), 10);
 
         if (this.$route.params.roofId != false) {
-            this.loadRoof(this.$route.params.roofId);
+            let roofId = this.$route.params.roofId;
+            setTimeout(() => {
+                this.loadRoof(roofId)
+                    .then(roof => {
+                        this.roof = cloneDeep(roof);
+                        if (this.roof.owner) {
+                            this.editingOwner = false;
+                        } else {
+                            this.roof.owner = {};
+                            this.editingOwner = true;
+                        }
+
+                    });
+            }, 100);
         } else {
             this.addTilt();
             this.editingOwner = true;
