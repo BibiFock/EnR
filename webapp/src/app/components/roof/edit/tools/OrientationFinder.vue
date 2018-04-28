@@ -23,7 +23,7 @@
                         ref="marker"
                         :position="marker"
                         :clickable="false"
-                        :draggable="false"
+                        :draggable="true"
                         @drag="updateOrientation"></gmap-marker>
 
                     <gmap-marker
@@ -40,8 +40,15 @@
 </template>
 
 <script>
+
+import cloneDeep from 'lodash/cloneDeep';
+
 export default {
     props: {
+        center: {
+            type: Array,
+            default: null
+        },
         orientation: { type: Number, default: 0 }
     },
     methods: {
@@ -138,13 +145,6 @@ export default {
         }
     },
     data() {
-        let coord = [ process.env.COORD.LATITUDE, process.env.COORD.LONGITUDE ];
-        if (this.$cookie.get('map-center')) {
-            let cookieCenter = this.$cookie.get('map-center').split(',');
-            coord = cookieCenter;
-        }
-        coord = coord.map(coord => parseFloat(coord));
-
         let mapType = process.env.MAP.TYPE;
         if (this.$cookie.get('map-type')) {
             mapType = this.$cookie.get('map-type');
@@ -153,18 +153,8 @@ export default {
             zoom: process.env.MAP.ZOOM_EDIT,
             mapType: mapType,
             effOrientation: null,
-            center: {
-                lat: parseFloat(coord[0]),
-                lng: parseFloat(coord[1])
-            },
-            marker: {
-                lat: parseFloat(coord[0]),
-                lng: parseFloat(coord[1])
-            },
-            markerOrientation: {
-                lat: parseFloat(coord[0]),
-                lng: parseFloat(coord[1])
-            }
+            marker: cloneDeep(this.center),
+            markerOrientation: cloneDeep(this.center)
         }
     }
 }

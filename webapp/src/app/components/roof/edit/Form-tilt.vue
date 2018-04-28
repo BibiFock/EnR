@@ -95,6 +95,7 @@
                 <div class="form-group col-1 col-md-1 col-lg-3">
                     <ToolOrientationFinder
                         v-on:updateOrientation="updateOrientation"
+                        :center="position"
                         :orientation="tilt.south_orientation"></ToolOrientationFinder>
                 </div>
 
