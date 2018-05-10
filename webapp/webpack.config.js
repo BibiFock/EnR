@@ -1,6 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+// opti build
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const PATHS = {
     app: path.resolve(__dirname,'src/app'),
@@ -8,12 +11,13 @@ const PATHS = {
     assets: path.resolve(__dirname,'src/public/assets')
 };
 
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-var ENV = process.env.npm_lifecycle_event;
-var isProd = ENV === 'build';
+const ENV = process.env.npm_lifecycle_event;
+const isProd = ENV === 'build';
 
-module.exports = {
+const webpackConfig = {
+    mode: (isProd ? 'production' : 'development'),
     entry: {
         app: PATHS.app + "/index.js"
     },
@@ -21,7 +25,7 @@ module.exports = {
         path: PATHS.build,
         publicPath: isProd ? '/' : 'http://localhost:6868/',
         filename: isProd ? 'js/[name].[hash].js' : 'js/[name].js',
-        chunkFilename: isProd ? '[id].[hash].chunk.js' : '[id].chunk.js'
+        chunkFilename: isProd ? 'js/[id].[hash].chunk.js' : 'js/[id].chunk.js'
     },
     resolve: {
         extensions: ['.js', '.vue'],
@@ -35,9 +39,9 @@ module.exports = {
         port: 6868,
         historyApiFallback: true,
     },
-    devtool: 'inline-source-map',
+    devtool: (isProd ? false : 'inline-source-map'),
     module: {
-        loaders: [{
+        rules: [{
             test: /\.vue$/,
             loader: 'vue-loader'
         }, {
@@ -45,7 +49,11 @@ module.exports = {
             loaders: ['style-loader','css-loader', 'sass-loader']
         }, {
             test: /\.css$/,
-            loaders: ['style-loader','css-loader']
+            loaders: [
+                'vue-style-loader',
+                'style-loader',
+                'css-loader'
+            ]
         }, {
             test: /\.(jpg|png)$/,
             loader: 'file-loader?name=images/[name].[ext]'
@@ -67,6 +75,7 @@ module.exports = {
         }],
     },
     plugins: [
+        new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             template: 'underscore-template-loader!./src/public/index.html',
             chunksSortMode: 'dependency'
@@ -92,3 +101,31 @@ module.exports = {
         }),
     ]
 };
+
+if (isProd) {
+    webpackConfig.optimization = {
+        splitChunks: {
+            cacheGroups: {
+                default: false,
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                    chunks: "all"
+                }
+            }
+        }
+    },
+    webpackConfig.plugins.push(
+        new UglifyJsPlugin({
+            uglifyOptions: {
+                compress: {
+                    warnings: false
+                }
+            },
+            sourceMap: false,
+            parallel: true
+        })
+    );
+}
+
+module.exports = webpackConfig;
