@@ -107,8 +107,8 @@
                 <label class="col-md-4 ml-2 text-md-right">emplacement onduleur</label>
                 <div class="col-md-7 pt-0">
                     <input class="form-control" type="text"
-                                                v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_location')}"
-                                                v-model="tilt.inverter_location" />
+                        v-bind:class="{'is-invalid': errors.hasOwnProperty('inverter_location')}"
+                        v-model="tilt.inverter_location" />
                     <div class="invalid-feedback"
                          v-if="errors.hasOwnProperty('inverter_location')"> {{ errors['inverter_location'].join(',') }} </div>
                 </div>
@@ -148,12 +148,6 @@
                         <i class="fa fa-bullseye"></i>
                         <span>centrer le marqueur</span>
                     </button>
-
-                    <!-- <button type="button" class="btn btn-primary d-inline-block btn-sm" -->
-                        <!-- v-on:click="updateCenter()"> -->
-                        <!-- <i class="fa fa-location-arrow"></i> -->
-                        <!-- <span>trouver l'orientation</span> -->
-                    <!-- </button> -->
                 </div>
             </gmap-map>
         </div>

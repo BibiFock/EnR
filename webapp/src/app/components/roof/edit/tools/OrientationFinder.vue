@@ -10,7 +10,8 @@
             id="modOrFinder"
             :title="'orientation par rapport au sud: ' + effOrientation + ' °'"
             @ok="onOk"
-            @shown="onShow">
+            @show="onShow"
+            @shown="onShown">
             <div class="map-edit">
                 <gmap-map
                     ref="map"
@@ -56,6 +57,10 @@ export default {
             this.$emit('updateOrientation', this.effOrientation);
         },
         onShow: function() {
+            this.marker = { ...this.center };
+            this.markerOrientation = { ...this.center };
+        },
+        onShown: function() {
             this.effOrientation = this.orientation;
             let marker = this.$refs.marker.$markerObject;
             let mOrientation = this.$refs.orientation.$markerObject;
