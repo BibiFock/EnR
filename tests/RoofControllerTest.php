@@ -64,6 +64,9 @@ class RoofControllerTest extends ApiCase
     {
         $roof = factory($this->getFactoryClass())->make();
         $params = $roof->getAttributes();
+        $params['tilts'] = [
+            factory(App\Roof\Tilt::class)->make()->getAttributes()
+        ];
 
         // missing owner.type_id
         $params['owner'] = [
@@ -118,6 +121,27 @@ class RoofControllerTest extends ApiCase
             ->call('POST', $this->getUrl(), $params);
         $this->assertEquals( 400, $response->status());
         $this->seeJsonStructure(['owner.name'], $response->getData(true));
+    }
+
+    public function testAddRoofWithoutTilt()
+    {
+        $roof = factory(App\Roof::class)->make();
+        // roof
+        $params = $roof->getAttributes();
+
+        $response = $this->actingAs($this->user)
+            ->call('post', $this->getUrl(), $params);
+
+        $this->assertEquals( 400, $response->status());
+        $this->seeJsonStructure(['tilts'], $response->getData(true));
+
+        $params['tilts'] = array();
+
+        $response = $this->actingAs($this->user)
+            ->call('post', $this->getUrl(), $params);
+
+        $this->assertEquals( 400, $response->status());
+        $this->seeJsonStructure(['tilts'], $response->getData(true));
     }
 
     public function testAddRoof()
@@ -282,7 +306,6 @@ class RoofControllerTest extends ApiCase
 
     public function testDeleteTilts()
     {
-
         $tilt = factory(App\Roof\Tilt::class)->create();
         $newTilt = factory(App\Roof\Tilt::class)->create([
             'roof_id' => $tilt->roof_id

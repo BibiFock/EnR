@@ -24,11 +24,15 @@ class RoofHistoricalControllerTest extends ApiCase
     {
         $nbState = $this->getNbState();
 
+        $tilt = factory(App\Roof\Tilt::class)->make();
+        $params = $tilt->roof->getAttributes();
+        $params['tilts'] = [ $tilt->getAttributes() ];
+
         $response = $this->actingAs($this->user)
             ->call(
                 'PUT',
                 '/api/roofs/' . $this->roof->id,
-                factory('App\Roof')->make()->getAttributes()
+                $params
             );
         $this->assertEquals( 200, $response->status());
 

@@ -39,7 +39,7 @@ class RoofController extends Controller
 
             'purchase_category_id' => 'numeric',
 
-            'tilts' => 'array',
+            'tilts' => 'array|required',
             'tilts.*.name' => 'string|required',
             'tilts.*.roof_id' => 'numeric',
             'tilts.*.latitude' => 'numeric',
@@ -129,18 +129,23 @@ class RoofController extends Controller
         $isError = false;
 
         $roof = $this->validator->attributes();
-        if (empty($roof['owner']['contact'])) {
-            return true;
+        if (!empty($roof['owner']['contact'])) {
+            // si on a un contact on check le contenu
+            if (empty($roof['owner']['type_id'])) {
+                $this->validator->errors()->add('owner.type_id', 'missing owner.type_id');
+                $isError = true;
+            }
+
+            $contact = $roof['owner']['contact'];
+            if (empty($contact['first_name']) && empty($contact['last_name'])) {
+                $this->validator->errors()->add('owner.name', 'missing first or last name');
+                $isError = true;
+            }
         }
 
-        if (empty($roof['owner']['type_id'])) {
-            $this->validator->errors()->add('owner.type_id', 'missing owner.type_id');
-            $isError = true;
-        }
-
-        $contact = $roof['owner']['contact'];
-        if (empty($contact['first_name']) && empty($contact['last_name'])) {
-            $this->validator->errors()->add('owner.name', 'missing first or last name');
+        unset($roof['tilts']['*']);
+        if (empty($roof['tilts'])) {
+            $this->validator->errors()->add('tilts', 'can\'t be empty');
             $isError = true;
         }
 
