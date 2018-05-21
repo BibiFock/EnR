@@ -10,7 +10,7 @@ class MapSearchController extends Controller
 {
     public function index(Request $request)
     {
-        $url = 'http://nominatim.openstreetmap.org/search?'
+        $url = 'https://nominatim.openstreetmap.org/search?'
             . $request->server('QUERY_STRING');
 
         $ch = curl_init($url);
