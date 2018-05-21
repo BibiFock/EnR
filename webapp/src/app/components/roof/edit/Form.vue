@@ -471,6 +471,7 @@ export default {
         if (this.$route.params.roofId != false) {
             this.loadRoof(this.$route.params.roofId);
         } else {
+            this.addTilt();
             this.editingOwner = true;
         }
     },
