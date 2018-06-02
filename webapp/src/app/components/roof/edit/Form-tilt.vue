@@ -161,10 +161,10 @@ import ToolOrientationFinder from './tools/OrientationFinder.vue';
 export default {
     components: { ToolOrientationFinder },
     props: {
-        errors: { type:Object, default: {} },
+        errors: { type:Object, default: function() { return {};} },
         tilt: {
             type: Object,
-            default: {
+            default: () => ({
                 id: 0,
                 name: '',
                 latitude: null,
@@ -174,8 +174,8 @@ export default {
                 occupancy_rate: 0,
                 south_orientation: 0,
                 // relations
-                type_id: 0,
-            }
+                type_id: 0
+            })
         },
         types: { default:[] },
     },

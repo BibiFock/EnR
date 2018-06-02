@@ -76,27 +76,27 @@
 
         <div class="form-group row">
             <label class="col-2 text-right">taille du bâtiment</label>
-            <textarea class="col-10 pt-0 form-control-plaintext" type="text">{{ roof.building_size }}</textarea>
+            <textarea class="col-10 pt-0 form-control-plaintext" type="text" v-model="roof.building_size"></textarea>
         </div>
 
         <div class="form-group row">
             <label class="col-2 text-right">position onduleur</label>
-            <textarea class="col-10 pt-0 form-control-plaintext" type="text">{{ roof.inverter_location }}</textarea>
+            <textarea class="col-10 pt-0 form-control-plaintext" type="text" v-model="roof.inverter_location"></textarea>
         </div>
 
         <div class="form-group row">
             <label class="col-2 text-right">distance onduleur</label>
-            <textarea class="col-10 pt-0 form-control-plaintext" type="text">{{ roof.inverter_distance }}</textarea>
+            <textarea class="col-10 pt-0 form-control-plaintext" type="text" v-model="roof.inverter_distance"></textarea>
         </div>
 
         <div class="form-group row">
             <label class="col-2 text-right">distance onduleur</label>
-            <textarea class="col-10 pt-0 form-control-plaintext" type="text">{{ roof.inverter_distance }}</textarea>
+            <textarea class="col-10 pt-0 form-control-plaintext" type="text" v-model="roof.inverter_distance"></textarea>
         </div>
 
         <div class="form-group row">
             <label class="col-2 text-right">remarques</label>
-            <textarea class="col-10 pt-0 form-control-plaintext" type="text">{{ roof.remarks }}</textarea>
+            <textarea class="col-10 pt-0 form-control-plaintext" type="text" v-model="roof.remarks"></textarea>
         </div>
 
         <div class="form-group">
@@ -131,7 +131,7 @@ import Vue2Leaflet from 'vue2-leaflet';
 
 export default {
     props: {
-        roof:{ type:Object, default:{} },
+        roof:{ type:Object, default: () => {} },
     },
     components: {
         'v-map': Vue2Leaflet.Map,

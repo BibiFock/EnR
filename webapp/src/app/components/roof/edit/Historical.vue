@@ -9,7 +9,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(hist, index) in historicals" :key="hist.id" class="row">
+                <tr v-for="hist in historicals" :key="hist.id" class="row">
                     <td class="col-sm-2 col-6">
                         <span >{{ hist.user.name }}</span>
                     </td>

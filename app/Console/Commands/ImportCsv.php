@@ -76,19 +76,19 @@ class ImportCsv extends Command
 
             $slope = null;
             switch ($row['inclinaison']) {
-                case '35° optimale' :
+                case '35° optimale':
                     $slope = 35;
                     break;
-                case '> 25°/40°<' :
+                case '> 25°/40°<':
                     $slope = 32;
                     break;
-                case '0° (à plat) à 10°' :
+                case '0° (à plat) à 10°':
                     $slope = 5;
                     break;
-                case '90° verticale (déconseillée)' :
+                case '90° verticale (déconseillée)':
                     $slope = 90;
                     break;
-                case '> 10°/25°<' :
+                case '> 10°/25°<':
                     $slope = 17;
                     break;
             }

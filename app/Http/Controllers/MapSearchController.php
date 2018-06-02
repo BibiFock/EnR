@@ -36,5 +36,4 @@ class MapSearchController extends Controller
             'message' => 'error ' . $httpCode
         ));
     }
-
 }

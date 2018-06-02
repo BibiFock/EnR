@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --progress --display-error-details",
-    "start": "webpack-dev-server --progress --colors --inline"
+    "build:dev": "webpack-dev-server --progress --colors --inline",
+    "lint": "eslint \"src/**/*.@(js|jsx|vue)\""
   },
   "keywords": [],
   "author": "",

@@ -128,7 +128,7 @@ export default {
 
             let cHead = google.maps.geometry.spherical.computeHeading(
                 this.line.binder.get(0),
-                this.line.binder.get(1),
+                this.line.binder.get(1)
             );
             // console.log(
             //     "Bearing is " + cHead.toFixed(1) + " or "

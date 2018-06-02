@@ -68,7 +68,7 @@ class Roof extends Model
         $tilts = Tilt::where('roof_id', $this->id)
             ->whereNotIn('id', $ids->toArray())
             ->get()
-            ->each(function($tilt) {
+            ->each(function ($tilt) {
                 $tilt->delete();
             });
 
@@ -158,8 +158,7 @@ class Roof extends Model
             return true;
         }
 
-        if (
-            empty($params['contact']['first_name'])
+        if (empty($params['contact']['first_name'])
             && empty($params['contact']['last_name'])
         ) {
             return true;

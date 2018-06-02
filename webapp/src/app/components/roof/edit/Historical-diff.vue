@@ -1,6 +1,6 @@
 <template>
     <ul>
-        <li v-for="(change, num) in state" key="num"
+        <li v-for="(change, num) in state" :key="num"
             v-if="change.isChanged">
             <span>{{ change.key }}</span> :
             <HistoricalDiff

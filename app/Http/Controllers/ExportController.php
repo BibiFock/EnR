@@ -93,10 +93,9 @@ class ExportController extends Controller
                 ($roof->owner_id && $roof->owner->contact_id ? $roof->owner->contact->phone : '-' ),
                 ($roof->owner_id && $roof->owner->contact_id ? $roof->owner->contact->email : '-' ),
             ];
-
         }
 
-        $csvContent = implode( PHP_EOL, array_map(
+        $csvContent = implode(PHP_EOL, array_map(
             function ($row) {
                 return '"' . implode('";"', $row) . '"';
             },

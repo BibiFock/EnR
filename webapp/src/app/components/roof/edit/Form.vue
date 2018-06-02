@@ -16,7 +16,7 @@
                 <select class="form-control"
                     v-bind:class="{'is-invalid': errors.hasOwnProperty('probability')}"
                     v-model="roof.probability">
-                    <option v-for="probability in types.probabilities" :key="index" >
+                    <option v-for="(probability, index) in types.probabilities" :key="index" >
                         {{ probability }}
                     </option>
                 </select>
@@ -293,14 +293,13 @@
                 </div>
              </div>
              <div class="form-group row col-md-12">
-                    <label class="col-md-2 text-md-right">code postal</label>
-                    <div class="pt-0 col-md-10">
-                        <input type="text" class="form-control"
-                            v-bind:class="{'is-invalid': errors.hasOwnProperty('zip')}"
-                            v-model="roof.zip">
-                        <div class="invalid-feedback"
-                            v-if="errors.hasOwnProperty('zip')"> {{ errors['zip'].join(',') }} </div>
-                    </div>
+                <label class="col-md-2 text-md-right">code postal</label>
+                <div class="pt-0 col-md-10">
+                    <input type="text" class="form-control"
+                        v-bind:class="{'is-invalid': errors.hasOwnProperty('zip')}"
+                        v-model="roof.zip" />
+                    <div class="invalid-feedback"
+                        v-if="errors.hasOwnProperty('zip')"> {{ errors['zip'].join(',') }} </div>
                 </div>
             </div>
         </fieldset>
@@ -348,7 +347,7 @@ export default {
         deleteTilt: function() {
             let result  = confirm(
                'Voulez vous vraiment supprimer la toiture: '
-               + (this.tiltIndex+1) + '. ' + this.roof.tilts[this.tiltIndex].name + '?!',
+               + (this.tiltIndex+1) + '. ' + this.roof.tilts[this.tiltIndex].name + '?!'
             );
             if (!result) {
                 return false;
